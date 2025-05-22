@@ -18,6 +18,7 @@ namespace LuckOTP.Repositories
         /// <returns></returns>
         public bool UpsertSim(Sim obj, bool simDisable, string country, Dictionary<string, int> services)
         {
+            logger.Info($"UpsertSim data: {obj.phone_number} - {obj.iccid} - {obj.supplier_id} - {simDisable} - {country}");
             string upsertQuery = @"SELECT upsert_sim(@phone_number, @iccid, @supplier_id, @sim_disable, @country, @services);";
             try
             {
@@ -34,6 +35,7 @@ namespace LuckOTP.Repositories
                         string servicesJson = JsonConvert.SerializeObject(services);
                         command.Parameters.AddWithValue("@services", NpgsqlTypes.NpgsqlDbType.Jsonb, servicesJson);
                         var result = command.ExecuteScalar();
+                        logger.Info($"result data: {obj.phone_number} - {result}");
                         return (bool)result;
                     }
                 }

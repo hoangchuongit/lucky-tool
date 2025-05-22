@@ -333,7 +333,7 @@ namespace LuckOTP
             {
                 MessageCOMs[sp.PortName] = string.Empty;
                 // Cập nhật SIM lên hệ thống database
-                UploadSimToSystem(sp.PortName, true);
+                UploadSimToSystem(sp.PortName,string.Empty, string.Empty, true);
                 // Cập nhật gridview
                 UpdateComData(sp.PortName, dto =>
                 {
@@ -360,7 +360,7 @@ namespace LuckOTP
             logger.Error($"Error on port {sp.PortName}: {e.EventType}");
             MessageCOMs[sp.PortName] = string.Empty;
             // Cập nhật SIM lên hệ thống database
-            UploadSimToSystem(sp.PortName, true);
+            UploadSimToSystem(sp.PortName, string.Empty, string.Empty, true);
             // Cập nhật gridview
             UpdateComData(sp.PortName, dto => dto.Phone = "PHONE ERROR", "Phone");
         }
@@ -667,7 +667,7 @@ namespace LuckOTP
                 {
                     MessageCOMs[sp.PortName] = string.Empty;
 
-                    UpdateComData(sp.PortName, dto => dto.TrangThai = "SIM SẴN SÀNG", "TrangThai");
+                    UpdateComData(sp.PortName, dto => dto.TrangThai = "SIM READY", "TrangThai");
 
                     SendATCommand(sp, "AT+QCCID");
                 }
@@ -720,11 +720,19 @@ namespace LuckOTP
 
                     MessageCOMs[sp.PortName] = string.Empty;
 
-                    var result = UploadSimToSystem(sp.PortName, false);
-                    if (result)
-                        UpdateComData(sp.PortName, dto => { dto.Phone = phone; dto.Message = "Đồng bộ SIM lên hệ thống thành công."; }, "Phone", "Message");
+                    if (!string.IsNullOrEmpty(phone))
+                    {
+                        var item = ComDataGrid.FirstOrDefault(dto => dto.Com == sp.PortName);
+                        var result = UploadSimToSystem(sp.PortName, phone, item.ICCID.ToString(), false);
+                        if (result)
+                            UpdateComData(sp.PortName, dto => { dto.Phone = phone; dto.Message = "Đồng bộ SIM lên hệ thống thành công."; }, "Phone", "Message");
+                        else
+                            UpdateComData(sp.PortName, dto => { dto.Phone = "PHONE ERROR"; dto.Message = "Đồng bộ SIM lên hệ thống thất bại, kiểm tra lại!"; }, "Phone", "Message");
+                    }
                     else
-                        UpdateComData(sp.PortName, dto => { dto.Phone = "PHONE ERROR"; dto.Message = "Đồng bộ SIM lên hệ thống thất bại, kiểm tra lại!"; }, "Phone", "Message");
+                    {
+                        UpdateComData(sp.PortName, dto => { dto.Phone = "PHONE ERROR"; dto.Message = string.Empty; }, "Phone", "Message");
+                    }
                 }
             }
             catch (Exception ex)
@@ -760,19 +768,15 @@ namespace LuckOTP
         /// Cập nhật thông tin SIM lên hệ thống OTP
         /// </summary>
         /// <param name="portName"></param>
-        private bool UploadSimToSystem(string portName, bool simDisable)
+        private bool UploadSimToSystem(string portName, string phone, string iccid, bool simDisable)
         {
             try
             {
-                var item = ComDataGrid.FirstOrDefault(dto => dto.Com == portName);
-                if (item == null || item.Phone == null) return false;
-
-                var phone_number = item.Phone.ToString();
                 var simRepository = new SimRepository();
                 var sim = new Sim()
                 {
-                    phone_number = phone_number,
-                    iccid = item.ICCID.ToString(),
+                    phone_number = phone,
+                    iccid = iccid,
                     supplier_id = Guid.Parse(AccountId)
                 };
                 var services = new Dictionary<string, int>();

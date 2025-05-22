@@ -187,15 +187,13 @@ namespace LuckOTP
             // gcCOM
             // 
             this.gcCOM.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gcCOM.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.gcCOM.Location = new System.Drawing.Point(2, 2);
             this.gcCOM.MainView = this.gvCOM;
-            this.gcCOM.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.gcCOM.Name = "gcCOM";
             this.gcCOM.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemComboBox1,
             this.repositoryItemTextEdit1});
-            this.gcCOM.Size = new System.Drawing.Size(1180, 702);
+            this.gcCOM.Size = new System.Drawing.Size(1011, 652);
             this.gcCOM.TabIndex = 4;
             this.gcCOM.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gvCOM});
@@ -212,6 +210,7 @@ namespace LuckOTP
             this.Phone,
             this.TrangThai,
             this.Message});
+            this.gvCOM.DetailHeight = 325;
             this.gvCOM.GridControl = this.gcCOM;
             this.gvCOM.Name = "gvCOM";
             this.gvCOM.OptionsSelection.MultiSelect = true;
@@ -225,12 +224,13 @@ namespace LuckOTP
             // 
             this.IMEI.Caption = "IMEI";
             this.IMEI.FieldName = "IMEI";
+            this.IMEI.MinWidth = 17;
             this.IMEI.Name = "IMEI";
             this.IMEI.OptionsColumn.AllowEdit = false;
             this.IMEI.OptionsColumn.AllowSize = false;
             this.IMEI.OptionsColumn.FixedWidth = true;
             this.IMEI.OptionsFilter.AllowAutoFilter = false;
-            this.IMEI.Width = 120;
+            this.IMEI.Width = 103;
             // 
             // Com
             // 
@@ -240,7 +240,6 @@ namespace LuckOTP
             this.Com.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.Com.Caption = "COM";
             this.Com.FieldName = "Com";
-            this.Com.MinWidth = 23;
             this.Com.Name = "Com";
             this.Com.OptionsColumn.AllowEdit = false;
             this.Com.OptionsColumn.AllowSize = false;
@@ -250,7 +249,7 @@ namespace LuckOTP
             this.Com.OptionsFilter.AllowFilter = false;
             this.Com.Visible = true;
             this.Com.VisibleIndex = 0;
-            this.Com.Width = 60;
+            this.Com.Width = 51;
             // 
             // Stt
             // 
@@ -261,7 +260,6 @@ namespace LuckOTP
             this.Stt.Caption = "No.";
             this.Stt.ColumnEdit = this.repositoryItemComboBox1;
             this.Stt.FieldName = "Stt";
-            this.Stt.MinWidth = 23;
             this.Stt.Name = "Stt";
             this.Stt.OptionsColumn.AllowGroup = DevExpress.Utils.DefaultBoolean.False;
             this.Stt.OptionsColumn.AllowMerge = DevExpress.Utils.DefaultBoolean.False;
@@ -274,7 +272,7 @@ namespace LuckOTP
             this.Stt.OptionsFilter.AllowFilter = false;
             this.Stt.Visible = true;
             this.Stt.VisibleIndex = 1;
-            this.Stt.Width = 60;
+            this.Stt.Width = 51;
             // 
             // repositoryItemComboBox1
             // 
@@ -793,7 +791,6 @@ namespace LuckOTP
             this.ICCID.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.ICCID.Caption = "ICCID";
             this.ICCID.FieldName = "ICCID";
-            this.ICCID.MinWidth = 23;
             this.ICCID.Name = "ICCID";
             this.ICCID.OptionsColumn.AllowEdit = false;
             this.ICCID.OptionsColumn.AllowSize = false;
@@ -803,7 +800,7 @@ namespace LuckOTP
             this.ICCID.OptionsFilter.AllowFilter = false;
             this.ICCID.Visible = true;
             this.ICCID.VisibleIndex = 2;
-            this.ICCID.Width = 150;
+            this.ICCID.Width = 129;
             // 
             // Phone
             // 
@@ -813,7 +810,6 @@ namespace LuckOTP
             this.Phone.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.Phone.Caption = "Số điện thoại";
             this.Phone.FieldName = "Phone";
-            this.Phone.MinWidth = 23;
             this.Phone.Name = "Phone";
             this.Phone.OptionsColumn.AllowEdit = false;
             this.Phone.OptionsColumn.AllowSize = false;
@@ -824,7 +820,7 @@ namespace LuckOTP
             this.Phone.OptionsFilter.FilterPopupMode = DevExpress.XtraGrid.Columns.FilterPopupMode.CheckedList;
             this.Phone.Visible = true;
             this.Phone.VisibleIndex = 3;
-            this.Phone.Width = 100;
+            this.Phone.Width = 86;
             // 
             // TrangThai
             // 
@@ -834,7 +830,6 @@ namespace LuckOTP
             this.TrangThai.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.TrangThai.Caption = "Trạng thái";
             this.TrangThai.FieldName = "TrangThai";
-            this.TrangThai.MinWidth = 23;
             this.TrangThai.Name = "TrangThai";
             this.TrangThai.OptionsColumn.AllowEdit = false;
             this.TrangThai.OptionsColumn.AllowSize = false;
@@ -844,7 +839,7 @@ namespace LuckOTP
             this.TrangThai.OptionsFilter.AllowFilter = false;
             this.TrangThai.Visible = true;
             this.TrangThai.VisibleIndex = 4;
-            this.TrangThai.Width = 90;
+            this.TrangThai.Width = 77;
             // 
             // Message
             // 
@@ -852,7 +847,6 @@ namespace LuckOTP
             this.Message.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
             this.Message.Caption = "Tin nhắn";
             this.Message.FieldName = "Message";
-            this.Message.MinWidth = 23;
             this.Message.Name = "Message";
             this.Message.OptionsColumn.AllowEdit = false;
             this.Message.OptionsColumn.AllowSize = false;
@@ -861,7 +855,7 @@ namespace LuckOTP
             this.Message.OptionsFilter.AllowFilter = false;
             this.Message.Visible = true;
             this.Message.VisibleIndex = 5;
-            this.Message.Width = 718;
+            this.Message.Width = 615;
             // 
             // repositoryItemTextEdit1
             // 
@@ -872,15 +866,13 @@ namespace LuckOTP
             // GridControlServices
             // 
             this.GridControlServices.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.GridControlServices.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.GridControlServices.Location = new System.Drawing.Point(2, 2);
             this.GridControlServices.MainView = this.GridViewServices;
-            this.GridControlServices.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.GridControlServices.Name = "GridControlServices";
             this.GridControlServices.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemCheckEdit2,
             this.repositoryItemTimeEdit2});
-            this.GridControlServices.Size = new System.Drawing.Size(196, 702);
+            this.GridControlServices.Size = new System.Drawing.Size(167, 652);
             this.GridControlServices.TabIndex = 6;
             this.GridControlServices.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.GridViewServices});
@@ -898,10 +890,11 @@ namespace LuckOTP
             this.GridViewServices.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.gridColumn2,
             this.gridColumn1});
+            this.GridViewServices.DetailHeight = 325;
             this.GridViewServices.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.None;
             this.GridViewServices.GridControl = this.GridControlServices;
             this.GridViewServices.Name = "GridViewServices";
-            this.GridViewServices.OptionsSelection.CheckBoxSelectorColumnWidth = 30;
+            this.GridViewServices.OptionsSelection.CheckBoxSelectorColumnWidth = 26;
             this.GridViewServices.OptionsSelection.EnableAppearanceFocusedCell = false;
             this.GridViewServices.OptionsSelection.EnableAppearanceFocusedRow = false;
             this.GridViewServices.OptionsSelection.EnableAppearanceHideSelection = false;
@@ -919,18 +912,19 @@ namespace LuckOTP
             this.gridColumn2.AppearanceHeader.Options.UseFont = true;
             this.gridColumn2.Caption = "Chọn toàn bộ";
             this.gridColumn2.FieldName = "name";
-            this.gridColumn2.MinWidth = 23;
             this.gridColumn2.Name = "gridColumn2";
             this.gridColumn2.OptionsColumn.AllowEdit = false;
             this.gridColumn2.OptionsColumn.FixedWidth = true;
             this.gridColumn2.Visible = true;
             this.gridColumn2.VisibleIndex = 1;
-            this.gridColumn2.Width = 150;
+            this.gridColumn2.Width = 129;
             // 
             // gridColumn1
             // 
             this.gridColumn1.FieldName = "code";
+            this.gridColumn1.MinWidth = 17;
             this.gridColumn1.Name = "gridColumn1";
+            this.gridColumn1.Width = 64;
             // 
             // repositoryItemCheckEdit2
             // 
@@ -946,12 +940,12 @@ namespace LuckOTP
             // 
             // BtnUpdateService
             // 
-            this.BtnUpdateService.Appearance.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.BtnUpdateService.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
             this.BtnUpdateService.Appearance.Options.UseFont = true;
             this.BtnUpdateService.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("BtnUpdateService.ImageOptions.Image")));
-            this.BtnUpdateService.Location = new System.Drawing.Point(12, 6);
+            this.BtnUpdateService.Location = new System.Drawing.Point(10, 6);
             this.BtnUpdateService.Name = "BtnUpdateService";
-            this.BtnUpdateService.Size = new System.Drawing.Size(188, 40);
+            this.BtnUpdateService.Size = new System.Drawing.Size(161, 37);
             this.BtnUpdateService.TabIndex = 4;
             this.BtnUpdateService.Text = "Cập nhật dịch vụ";
             this.BtnUpdateService.Click += new System.EventHandler(this.BtnUpdateService_Click);
@@ -971,65 +965,70 @@ namespace LuckOTP
             this.panelControl3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelControl3.Location = new System.Drawing.Point(0, 0);
             this.panelControl3.Name = "panelControl3";
-            this.panelControl3.Size = new System.Drawing.Size(1384, 50);
+            this.panelControl3.Size = new System.Drawing.Size(1186, 46);
             this.panelControl3.TabIndex = 25;
             // 
             // btnRefactoryComs
             // 
-            this.btnRefactoryComs.Appearance.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.btnRefactoryComs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRefactoryComs.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
             this.btnRefactoryComs.Appearance.Options.UseFont = true;
-            this.btnRefactoryComs.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton5.ImageOptions.Image")));
-            this.btnRefactoryComs.Location = new System.Drawing.Point(1121, 6);
+            this.btnRefactoryComs.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnRefactoryComs.ImageOptions.Image")));
+            this.btnRefactoryComs.Location = new System.Drawing.Point(961, 6);
             this.btnRefactoryComs.Name = "btnRefactoryComs";
-            this.btnRefactoryComs.Size = new System.Drawing.Size(251, 40);
+            this.btnRefactoryComs.Size = new System.Drawing.Size(215, 37);
             this.btnRefactoryComs.TabIndex = 9;
             this.btnRefactoryComs.Text = "Khôi phục gốc cổng COMs";
             this.btnRefactoryComs.Click += new System.EventHandler(this.BtnRefactoryComs_Click);
             // 
             // btnChangeIMEI
             // 
-            this.btnChangeIMEI.Appearance.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.btnChangeIMEI.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnChangeIMEI.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
             this.btnChangeIMEI.Appearance.Options.UseFont = true;
-            this.btnChangeIMEI.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton4.ImageOptions.Image")));
-            this.btnChangeIMEI.Location = new System.Drawing.Point(413, 6);
+            this.btnChangeIMEI.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnChangeIMEI.ImageOptions.Image")));
+            this.btnChangeIMEI.Location = new System.Drawing.Point(354, 6);
             this.btnChangeIMEI.Name = "btnChangeIMEI";
-            this.btnChangeIMEI.Size = new System.Drawing.Size(218, 40);
+            this.btnChangeIMEI.Size = new System.Drawing.Size(187, 37);
             this.btnChangeIMEI.TabIndex = 8;
             this.btnChangeIMEI.Text = "Đổi IMEI cổng COMs";
             this.btnChangeIMEI.Click += new System.EventHandler(this.BtnChangeIMEI_Click);
             // 
             // btnResetCom
             // 
-            this.btnResetCom.Appearance.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.btnResetCom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnResetCom.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
             this.btnResetCom.Appearance.Options.UseFont = true;
-            this.btnResetCom.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton3.ImageOptions.Image")));
-            this.btnResetCom.Location = new System.Drawing.Point(929, 6);
+            this.btnResetCom.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnResetCom.ImageOptions.Image")));
+            this.btnResetCom.Location = new System.Drawing.Point(796, 6);
             this.btnResetCom.Name = "btnResetCom";
-            this.btnResetCom.Size = new System.Drawing.Size(186, 40);
+            this.btnResetCom.Size = new System.Drawing.Size(159, 37);
             this.btnResetCom.TabIndex = 7;
             this.btnResetCom.Text = "Reset cổng COMs";
             this.btnResetCom.Click += new System.EventHandler(this.BtnResetCom_Click);
             // 
             // btnResetNo
             // 
-            this.btnResetNo.Appearance.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.btnResetNo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnResetNo.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
             this.btnResetNo.Appearance.Options.UseFont = true;
-            this.btnResetNo.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton2.ImageOptions.Image")));
-            this.btnResetNo.Location = new System.Drawing.Point(790, 5);
+            this.btnResetNo.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnResetNo.ImageOptions.Image")));
+            this.btnResetNo.Location = new System.Drawing.Point(677, 5);
             this.btnResetNo.Name = "btnResetNo";
-            this.btnResetNo.Size = new System.Drawing.Size(133, 40);
+            this.btnResetNo.Size = new System.Drawing.Size(114, 37);
             this.btnResetNo.TabIndex = 6;
             this.btnResetNo.Text = "Cài lại No.";
             this.btnResetNo.Click += new System.EventHandler(this.BtnResetNo_Click);
             // 
             // btnUpdateNo
             // 
-            this.btnUpdateNo.Appearance.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.btnUpdateNo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnUpdateNo.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
             this.btnUpdateNo.Appearance.Options.UseFont = true;
-            this.btnUpdateNo.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton1.ImageOptions.Image")));
-            this.btnUpdateNo.Location = new System.Drawing.Point(637, 6);
+            this.btnUpdateNo.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdateNo.ImageOptions.Image")));
+            this.btnUpdateNo.Location = new System.Drawing.Point(546, 6);
             this.btnUpdateNo.Name = "btnUpdateNo";
-            this.btnUpdateNo.Size = new System.Drawing.Size(147, 40);
+            this.btnUpdateNo.Size = new System.Drawing.Size(126, 37);
             this.btnUpdateNo.TabIndex = 5;
             this.btnUpdateNo.Text = "Cập nhật No.";
             this.btnUpdateNo.Click += new System.EventHandler(this.BtnUpdateNo_Click);
@@ -1038,30 +1037,29 @@ namespace LuckOTP
             // 
             this.panelControl4.Controls.Add(this.GridControlServices);
             this.panelControl4.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panelControl4.Location = new System.Drawing.Point(0, 50);
+            this.panelControl4.Location = new System.Drawing.Point(0, 46);
             this.panelControl4.Name = "panelControl4";
-            this.panelControl4.Size = new System.Drawing.Size(200, 706);
+            this.panelControl4.Size = new System.Drawing.Size(171, 656);
             this.panelControl4.TabIndex = 26;
             // 
             // panelControl5
             // 
             this.panelControl5.Controls.Add(this.gcCOM);
             this.panelControl5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelControl5.Location = new System.Drawing.Point(200, 50);
+            this.panelControl5.Location = new System.Drawing.Point(171, 46);
             this.panelControl5.Name = "panelControl5";
-            this.panelControl5.Size = new System.Drawing.Size(1184, 706);
+            this.panelControl5.Size = new System.Drawing.Size(1015, 656);
             this.panelControl5.TabIndex = 27;
             // 
             // GSMForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1384, 756);
+            this.ClientSize = new System.Drawing.Size(1186, 702);
             this.Controls.Add(this.panelControl5);
             this.Controls.Add(this.panelControl4);
             this.Controls.Add(this.panelControl3);
             this.IconOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("GSMForm.IconOptions.LargeImage")));
-            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "GSMForm";
             this.Text = "LUCK OTP GSM";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
