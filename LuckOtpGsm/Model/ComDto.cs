@@ -10,5 +10,6 @@
         public string Phone { get; set; }
         public string TrangThai { get; set; }
         public string Message { get; set; }
+        public long UseTotal { get; set; }
     }
 }

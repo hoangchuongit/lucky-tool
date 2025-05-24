@@ -239,9 +239,8 @@ namespace LuckOTP.Repositories
                             {
                                 var list = new GsmReportICCIDDto
                                 {
-                                    code = reader["code"].ToString(),
-                                    name = reader["name"].ToString(),
-                                    total = Int64.Parse(reader["total"].ToString()),
+                                    phone_number = reader["phone_number"].ToString(),
+                                    total = reader["total"] != DBNull.Value ? Convert.ToInt64(reader["total"]) : 0
                                 };
                                 lists.Add(list);
                             }

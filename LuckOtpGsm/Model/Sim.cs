@@ -65,8 +65,7 @@ namespace LuckOTP.Model
 
     public class GsmReportICCIDDto
     {
-        public string code { get; set; }
-        public string name { get; set; }
+        public string phone_number { get; set; }
         public Int64 total { get; set; }
     }
 }

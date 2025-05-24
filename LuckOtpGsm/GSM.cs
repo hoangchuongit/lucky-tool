@@ -63,7 +63,7 @@ namespace LuckOTP
             Country = country;
             SetupServices();
             ReadPUDBinanceCheck();
-            StartListeningForNotifications();
+            //StartListeningForNotifications();
             LoadCOMForm();
             TimerCheckSimError.Start();
             TimerSyncDB.Start();
@@ -333,7 +333,7 @@ namespace LuckOTP
             {
                 MessageCOMs[sp.PortName] = string.Empty;
                 // Cập nhật SIM lên hệ thống database
-                UploadSimToSystem(sp.PortName,string.Empty, string.Empty, true);
+                UploadSimToSystem(sp.PortName, string.Empty, string.Empty, true);
                 // Cập nhật gridview
                 UpdateComData(sp.PortName, dto =>
                 {
@@ -691,7 +691,7 @@ namespace LuckOTP
                 MessageCOMs[sp.PortName] = string.Empty;
                 UpdateComData(sp.PortName, dto => dto.ICCID = mess.Substring(0, 19), "ICCID");
                 // Gửi AT lấy số điện thoại
-                SendATCommand(sp, $"AT+CUSD=1,\"{this.PUDCheckBinance}\",15");
+                SendATCommand(sp, $"AT+CUSD=1,\"{PUDCheckBinance}\",15");
             }
             catch (Exception)
             {
@@ -716,28 +716,25 @@ namespace LuckOTP
                 {
                     var mess = MessageCOMs[sp.PortName].AT_Command($"AT+CUSD=1,\"{PUDCheckBinance}\",15");
                     var phoneStr = mess.Split(',')[1].Replace("\"", "");
-                    var phone = Common.GetPhoneNumber(phoneStr);
+                    var phone = Common.GetPhoneNumber(phoneStr).Trim();
 
                     MessageCOMs[sp.PortName] = string.Empty;
 
-                    if (!string.IsNullOrEmpty(phone))
+                    if (!string.IsNullOrEmpty(phone) && !phone.Equals("PHONE ERROR"))
                     {
                         var item = ComDataGrid.FirstOrDefault(dto => dto.Com == sp.PortName);
                         var result = UploadSimToSystem(sp.PortName, phone, item.ICCID.ToString(), false);
                         if (result)
                             UpdateComData(sp.PortName, dto => { dto.Phone = phone; dto.Message = "Đồng bộ SIM lên hệ thống thành công."; }, "Phone", "Message");
                         else
-                            UpdateComData(sp.PortName, dto => { dto.Phone = "PHONE ERROR"; dto.Message = "Đồng bộ SIM lên hệ thống thất bại, kiểm tra lại!"; }, "Phone", "Message");
+                            UpdateComData(sp.PortName, dto => { dto.Phone = "PHONE ERROR"; dto.Message = "Đồng bộ SIM lên hệ thống thất bại!"; }, "Phone", "Message");
                     }
-                    else
-                    {
-                        UpdateComData(sp.PortName, dto => { dto.Phone = "PHONE ERROR"; dto.Message = string.Empty; }, "Phone", "Message");
-                    }
+                    else UpdateComData(sp.PortName, dto => { dto.Phone = "PHONE ERROR"; dto.Message = string.Empty; }, "Phone", "Message");
                 }
             }
             catch (Exception ex)
             {
-                UpdateComData(sp.PortName, dto => { dto.Phone = "PHONE ERROR"; dto.Message = ex.Message; }, "Phone", "Message");
+                UpdateComData(sp.PortName, dto => { dto.Phone = "PHONE ERROR"; dto.Message = $"Đồng bộ SIM lên hệ thống thất bại: {ex.Message}"; }, "Phone", "Message");
                 logger.Error($"[{sp.PortName}] - ListenEventPhoneNumber Error: {ex.Message}");
             }
         }
@@ -948,11 +945,19 @@ namespace LuckOTP
                 if (simItems.Count > 0) simRepo.UpsertTimeSimInsert(string.Join(",", simItems), AccountId);
                 var iccids = string.Join("|", ComDataGrid.Select(x => x.ICCID).ToList());
                 var service = simRepo.GsmReportICCD(iccids, AccountId);
-                foreach (var item in ServiceGrid)
+                if (service.Count > 0)
                 {
-                    item.count = service.Find(x => x.code == item.code)?.total.ToString() ?? "";
+                    Thread thread = new Thread(() =>
+                    {
+                        foreach (var item in service)
+                        {
+                            var comData = ComDataGrid.FirstOrDefault(x => x.Phone.Equals(item.phone_number));
+                            if (comData != null) UpdateComData(comData.Com, dto => dto.UseTotal = item.total, "UseTotal");
+                        }
+                    })
+                    { IsBackground = true };
+                    thread.Start();
                 }
-                GridViewServices.RefreshData();
             }
             catch (Exception ex)
             {
@@ -1127,5 +1132,6 @@ namespace LuckOTP
                 }
             }
         }
+
     }
 }
