@@ -29,201 +29,146 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            DevExpress.XtraEditors.Controls.EditorButtonImageOptions editorButtonImageOptions1 = new DevExpress.XtraEditors.Controls.EditorButtonImageOptions();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
-            DevExpress.XtraEditors.Controls.EditorButtonImageOptions editorButtonImageOptions3 = new DevExpress.XtraEditors.Controls.EditorButtonImageOptions();
-            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject9 = new DevExpress.Utils.SerializableAppearanceObject();
-            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject10 = new DevExpress.Utils.SerializableAppearanceObject();
-            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject11 = new DevExpress.Utils.SerializableAppearanceObject();
-            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject12 = new DevExpress.Utils.SerializableAppearanceObject();
-            DevExpress.XtraEditors.Controls.EditorButtonImageOptions editorButtonImageOptions4 = new DevExpress.XtraEditors.Controls.EditorButtonImageOptions();
-            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject13 = new DevExpress.Utils.SerializableAppearanceObject();
-            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject14 = new DevExpress.Utils.SerializableAppearanceObject();
-            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject15 = new DevExpress.Utils.SerializableAppearanceObject();
-            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject16 = new DevExpress.Utils.SerializableAppearanceObject();
+            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject1 = new DevExpress.Utils.SerializableAppearanceObject();
+            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject2 = new DevExpress.Utils.SerializableAppearanceObject();
+            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject3 = new DevExpress.Utils.SerializableAppearanceObject();
+            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject4 = new DevExpress.Utils.SerializableAppearanceObject();
             this.panelControl1 = new DevExpress.XtraEditors.PanelControl();
-            this.TxtFolderADB = new DevExpress.XtraEditors.TextEdit();
-            this.BtnChooseFolderADB = new DevExpress.XtraEditors.SimpleButton();
-            this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
-            this.comboBoxEdit1 = new DevExpress.XtraEditors.ComboBoxEdit();
-            this.checkEdit2 = new DevExpress.XtraEditors.CheckEdit();
-            this.checkEdit1 = new DevExpress.XtraEditors.CheckEdit();
-            this.simpleButton4 = new DevExpress.XtraEditors.SimpleButton();
-            this.simpleButton3 = new DevExpress.XtraEditors.SimpleButton();
+            this.BtnEditAdb = new DevExpress.XtraEditors.ButtonEdit();
+            this.BtnProxy = new DevExpress.XtraEditors.SimpleButton();
+            this.BtnClearDBSim = new DevExpress.XtraEditors.SimpleButton();
+            this.BtnExportExcel = new DevExpress.XtraEditors.SimpleButton();
             this.BtnStopAll = new DevExpress.XtraEditors.SimpleButton();
             this.BtnRunAll = new DevExpress.XtraEditors.SimpleButton();
             this.GcDevice = new DevExpress.XtraGrid.GridControl();
             this.GvDevice = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.serial = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.proxy = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.message = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.isRunning = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.GvBtnAction = new DevExpress.XtraEditors.Repository.RepositoryItemButtonEdit();
+            this.Serial = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.Proxy = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.proxyMemoEdit = new DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit();
+            this.Message = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.Status = new DevExpress.XtraGrid.Columns.GridColumn();
             this.AdbFolderBrowserDialog = new DevExpress.XtraEditors.XtraFolderBrowserDialog(this.components);
+            this.loadingPanel = new DevExpress.XtraWaitForm.ProgressPanel();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).BeginInit();
             this.panelControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.TxtFolderADB.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.comboBoxEdit1.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.checkEdit2.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.checkEdit1.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BtnEditAdb.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.GcDevice)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.GvDevice)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.GvBtnAction)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.proxyMemoEdit)).BeginInit();
             this.SuspendLayout();
             // 
             // panelControl1
             // 
             this.panelControl1.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-            this.panelControl1.Controls.Add(this.TxtFolderADB);
-            this.panelControl1.Controls.Add(this.BtnChooseFolderADB);
-            this.panelControl1.Controls.Add(this.labelControl1);
-            this.panelControl1.Controls.Add(this.comboBoxEdit1);
-            this.panelControl1.Controls.Add(this.checkEdit2);
-            this.panelControl1.Controls.Add(this.checkEdit1);
-            this.panelControl1.Controls.Add(this.simpleButton4);
-            this.panelControl1.Controls.Add(this.simpleButton3);
+            this.panelControl1.Controls.Add(this.BtnEditAdb);
+            this.panelControl1.Controls.Add(this.BtnProxy);
+            this.panelControl1.Controls.Add(this.BtnClearDBSim);
+            this.panelControl1.Controls.Add(this.BtnExportExcel);
             this.panelControl1.Controls.Add(this.BtnStopAll);
             this.panelControl1.Controls.Add(this.BtnRunAll);
             this.panelControl1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelControl1.Location = new System.Drawing.Point(0, 0);
             this.panelControl1.Name = "panelControl1";
-            this.panelControl1.Size = new System.Drawing.Size(1022, 88);
+            this.panelControl1.Size = new System.Drawing.Size(1022, 105);
             this.panelControl1.TabIndex = 0;
             // 
-            // TxtFolderADB
+            // BtnEditAdb
             // 
-            this.TxtFolderADB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.TxtFolderADB.Location = new System.Drawing.Point(122, 11);
-            this.TxtFolderADB.Name = "TxtFolderADB";
-            this.TxtFolderADB.Properties.AutoHeight = false;
-            this.TxtFolderADB.Size = new System.Drawing.Size(573, 30);
-            this.TxtFolderADB.TabIndex = 9;
+            this.BtnEditAdb.EditValue = "Nhập đường dẫn đến folder chứa file adb.exe";
+            this.BtnEditAdb.Location = new System.Drawing.Point(358, 11);
+            this.BtnEditAdb.Name = "BtnEditAdb";
+            this.BtnEditAdb.Properties.AutoHeight = false;
+            editorButtonImageOptions1.Image = ((System.Drawing.Image)(resources.GetObject("editorButtonImageOptions1.Image")));
+            editorButtonImageOptions1.ImageToTextAlignment = DevExpress.XtraEditors.ImageAlignToText.LeftCenter;
+            serializableAppearanceObject1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            serializableAppearanceObject1.ForeColor = System.Drawing.Color.OrangeRed;
+            serializableAppearanceObject1.Options.UseFont = true;
+            serializableAppearanceObject1.Options.UseForeColor = true;
+            this.BtnEditAdb.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph, "Folder Adb", -1, true, true, false, editorButtonImageOptions1, new DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), serializableAppearanceObject1, serializableAppearanceObject2, serializableAppearanceObject3, serializableAppearanceObject4, "", "Adb", null, DevExpress.Utils.ToolTipAnchor.Default)});
+            this.BtnEditAdb.Properties.ButtonsStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.BtnEditAdb.Properties.NullText = "Nhập đường dẫn đến folder chứa file adb.exe";
+            this.BtnEditAdb.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+            this.BtnEditAdb.Size = new System.Drawing.Size(400, 40);
+            this.BtnEditAdb.TabIndex = 11;
+            this.BtnEditAdb.ToolTip = "Nhập đường dẫn đến folder chứa file adb.exe";
+            this.BtnEditAdb.ButtonClick += new DevExpress.XtraEditors.Controls.ButtonPressedEventHandler(this.BtnEditAdb_ButtonClick);
             // 
-            // BtnChooseFolderADB
+            // BtnProxy
             // 
-            this.BtnChooseFolderADB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BtnChooseFolderADB.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.BtnChooseFolderADB.Appearance.Options.UseFont = true;
-            this.BtnChooseFolderADB.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("BtnChooseFolderADB.ImageOptions.Image")));
-            this.BtnChooseFolderADB.Location = new System.Drawing.Point(12, 11);
-            this.BtnChooseFolderADB.Name = "BtnChooseFolderADB";
-            this.BtnChooseFolderADB.Size = new System.Drawing.Size(104, 30);
-            this.BtnChooseFolderADB.TabIndex = 8;
-            this.BtnChooseFolderADB.Text = "Folder ADB";
-            this.BtnChooseFolderADB.ToolTip = "Chọn folder chứa ADB";
-            this.BtnChooseFolderADB.Click += new System.EventHandler(this.BtnChooseFolderADB_Click);
+            this.BtnProxy.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnProxy.Appearance.Options.UseFont = true;
+            this.BtnProxy.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("BtnProxy.ImageOptions.Image")));
+            this.BtnProxy.Location = new System.Drawing.Point(638, 55);
+            this.BtnProxy.Name = "BtnProxy";
+            this.BtnProxy.Size = new System.Drawing.Size(120, 40);
+            this.BtnProxy.TabIndex = 10;
+            this.BtnProxy.Text = "Nhập Proxy";
+            this.BtnProxy.Click += new System.EventHandler(this.BtnProxy_Click);
             // 
-            // labelControl1
+            // BtnClearDBSim
             // 
-            this.labelControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelControl1.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelControl1.Appearance.Options.UseFont = true;
-            this.labelControl1.Location = new System.Drawing.Point(37, 55);
-            this.labelControl1.Name = "labelControl1";
-            this.labelControl1.Size = new System.Drawing.Size(79, 14);
-            this.labelControl1.TabIndex = 7;
-            this.labelControl1.Text = "Đơn vị Gmail";
+            this.BtnClearDBSim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.BtnClearDBSim.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnClearDBSim.Appearance.Options.UseFont = true;
+            this.BtnClearDBSim.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("BtnClearDBSim.ImageOptions.Image")));
+            this.BtnClearDBSim.Location = new System.Drawing.Point(890, 10);
+            this.BtnClearDBSim.Name = "BtnClearDBSim";
+            this.BtnClearDBSim.Size = new System.Drawing.Size(120, 40);
+            this.BtnClearDBSim.TabIndex = 3;
+            this.BtnClearDBSim.Text = "Xóa Data";
+            this.BtnClearDBSim.Click += new System.EventHandler(this.BtnClearDBSim_Click);
             // 
-            // comboBoxEdit1
+            // BtnExportExcel
             // 
-            this.comboBoxEdit1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxEdit1.EditValue = "Tất cả";
-            this.comboBoxEdit1.Location = new System.Drawing.Point(122, 47);
-            this.comboBoxEdit1.Name = "comboBoxEdit1";
-            this.comboBoxEdit1.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboBoxEdit1.Properties.Appearance.Options.UseFont = true;
-            this.comboBoxEdit1.Properties.AutoHeight = false;
-            this.comboBoxEdit1.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.comboBoxEdit1.Properties.Items.AddRange(new object[] {
-            "Tất cả",
-            "shopgmail",
-            "sptmail"});
-            this.comboBoxEdit1.Size = new System.Drawing.Size(129, 30);
-            this.comboBoxEdit1.TabIndex = 6;
-            // 
-            // checkEdit2
-            // 
-            this.checkEdit2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkEdit2.Location = new System.Drawing.Point(353, 52);
-            this.checkEdit2.Name = "checkEdit2";
-            this.checkEdit2.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkEdit2.Properties.Appearance.Options.UseFont = true;
-            this.checkEdit2.Properties.Caption = "Tự động reset tài khoản 2FA";
-            this.checkEdit2.Size = new System.Drawing.Size(175, 20);
-            this.checkEdit2.TabIndex = 5;
-            this.checkEdit2.ToolTip = "Kiểm tra trạng thái Telegram của từng Sim - Không thực hiện Reg tài khoản Telegra" +
-    "m";
-            // 
-            // checkEdit1
-            // 
-            this.checkEdit1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkEdit1.Location = new System.Drawing.Point(257, 52);
-            this.checkEdit1.Name = "checkEdit1";
-            this.checkEdit1.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkEdit1.Properties.Appearance.Options.UseFont = true;
-            this.checkEdit1.Properties.Caption = "Check Sim";
-            this.checkEdit1.Size = new System.Drawing.Size(90, 20);
-            this.checkEdit1.TabIndex = 4;
-            this.checkEdit1.ToolTip = "Kiểm tra trạng thái Telegram của từng Sim - Không thực hiện Reg tài khoản Telegra" +
-    "m";
-            // 
-            // simpleButton4
-            // 
-            this.simpleButton4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.simpleButton4.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.simpleButton4.Appearance.Options.UseFont = true;
-            this.simpleButton4.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton4.ImageOptions.Image")));
-            this.simpleButton4.Location = new System.Drawing.Point(862, 11);
-            this.simpleButton4.Name = "simpleButton4";
-            this.simpleButton4.Size = new System.Drawing.Size(150, 30);
-            this.simpleButton4.TabIndex = 3;
-            this.simpleButton4.Text = "Xóa Data Phones";
-            // 
-            // simpleButton3
-            // 
-            this.simpleButton3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.simpleButton3.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.simpleButton3.Appearance.Options.UseFont = true;
-            this.simpleButton3.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton3.ImageOptions.Image")));
-            this.simpleButton3.Location = new System.Drawing.Point(706, 11);
-            this.simpleButton3.Name = "simpleButton3";
-            this.simpleButton3.Size = new System.Drawing.Size(150, 30);
-            this.simpleButton3.TabIndex = 2;
-            this.simpleButton3.Text = "Xuất Data Phones";
+            this.BtnExportExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.BtnExportExcel.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnExportExcel.Appearance.Options.UseFont = true;
+            this.BtnExportExcel.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("BtnExportExcel.ImageOptions.Image")));
+            this.BtnExportExcel.Location = new System.Drawing.Point(764, 10);
+            this.BtnExportExcel.Name = "BtnExportExcel";
+            this.BtnExportExcel.Size = new System.Drawing.Size(120, 40);
+            this.BtnExportExcel.TabIndex = 2;
+            this.BtnExportExcel.Text = "Xuất Data";
+            this.BtnExportExcel.Click += new System.EventHandler(this.BtnExportExcel_Click);
             // 
             // BtnStopAll
             // 
             this.BtnStopAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BtnStopAll.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.BtnStopAll.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BtnStopAll.Appearance.Options.UseFont = true;
-            this.BtnStopAll.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton2.ImageOptions.Image")));
-            this.BtnStopAll.Location = new System.Drawing.Point(862, 47);
+            this.BtnStopAll.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("BtnStopAll.ImageOptions.Image")));
+            this.BtnStopAll.Location = new System.Drawing.Point(890, 55);
             this.BtnStopAll.Name = "BtnStopAll";
-            this.BtnStopAll.Size = new System.Drawing.Size(150, 30);
+            this.BtnStopAll.Size = new System.Drawing.Size(120, 40);
             this.BtnStopAll.TabIndex = 1;
-            this.BtnStopAll.Text = "Dừng tất cả";
+            this.BtnStopAll.Text = "Kết Thúc";
+            this.BtnStopAll.Click += new System.EventHandler(this.BtnStopAll_Click);
             // 
             // BtnRunAll
             // 
             this.BtnRunAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BtnRunAll.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.BtnRunAll.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BtnRunAll.Appearance.Options.UseFont = true;
-            this.BtnRunAll.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton1.ImageOptions.Image")));
-            this.BtnRunAll.Location = new System.Drawing.Point(706, 47);
+            this.BtnRunAll.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("BtnRunAll.ImageOptions.Image")));
+            this.BtnRunAll.Location = new System.Drawing.Point(764, 55);
             this.BtnRunAll.Name = "BtnRunAll";
-            this.BtnRunAll.Size = new System.Drawing.Size(150, 30);
+            this.BtnRunAll.Size = new System.Drawing.Size(120, 40);
             this.BtnRunAll.TabIndex = 0;
-            this.BtnRunAll.Text = "Chạy tất cả";
+            this.BtnRunAll.Text = "Bắt Đầu";
+            this.BtnRunAll.Click += new System.EventHandler(this.BtnRunAll_Click);
             // 
             // GcDevice
             // 
             this.GcDevice.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.GcDevice.Location = new System.Drawing.Point(0, 88);
+            this.GcDevice.Location = new System.Drawing.Point(0, 105);
             this.GcDevice.MainView = this.GvDevice;
             this.GcDevice.Name = "GcDevice";
             this.GcDevice.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
-            this.GvBtnAction});
-            this.GcDevice.Size = new System.Drawing.Size(1022, 648);
+            this.proxyMemoEdit});
+            this.GcDevice.Size = new System.Drawing.Size(1022, 631);
             this.GcDevice.TabIndex = 1;
             this.GcDevice.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.GvDevice});
@@ -231,96 +176,117 @@
             // GvDevice
             // 
             this.GvDevice.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.serial,
-            this.proxy,
-            this.message,
-            this.isRunning});
+            this.Serial,
+            this.Proxy,
+            this.Message,
+            this.Status});
             this.GvDevice.DetailHeight = 325;
             this.GvDevice.GridControl = this.GcDevice;
             this.GvDevice.Name = "GvDevice";
+            this.GvDevice.OptionsSelection.EnableAppearanceFocusedRow = false;
             this.GvDevice.OptionsView.ShowGroupPanel = false;
+            this.GvDevice.RowHeight = 37;
             // 
-            // serial
+            // Serial
             // 
-            this.serial.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.serial.AppearanceHeader.Options.UseFont = true;
-            this.serial.Caption = "Device";
-            this.serial.FieldName = "serial";
-            this.serial.MinWidth = 17;
-            this.serial.Name = "serial";
-            this.serial.OptionsColumn.AllowEdit = false;
-            this.serial.OptionsColumn.FixedWidth = true;
-            this.serial.OptionsFilter.AllowAutoFilter = false;
-            this.serial.Visible = true;
-            this.serial.VisibleIndex = 0;
-            this.serial.Width = 150;
+            this.Serial.AppearanceCell.Options.UseTextOptions = true;
+            this.Serial.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.Serial.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.Serial.AppearanceHeader.Options.UseFont = true;
+            this.Serial.Caption = "Device";
+            this.Serial.FieldName = "Serial";
+            this.Serial.MinWidth = 17;
+            this.Serial.Name = "Serial";
+            this.Serial.OptionsColumn.AllowEdit = false;
+            this.Serial.OptionsColumn.FixedWidth = true;
+            this.Serial.OptionsFilter.AllowAutoFilter = false;
+            this.Serial.Visible = true;
+            this.Serial.VisibleIndex = 0;
+            this.Serial.Width = 103;
             // 
-            // proxy
+            // Proxy
             // 
-            this.proxy.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.proxy.AppearanceHeader.Options.UseFont = true;
-            this.proxy.Caption = "Proxy";
-            this.proxy.FieldName = "proxy";
-            this.proxy.MinWidth = 17;
-            this.proxy.Name = "proxy";
-            this.proxy.OptionsColumn.AllowEdit = false;
-            this.proxy.OptionsColumn.FixedWidth = true;
-            this.proxy.OptionsFilter.AllowAutoFilter = false;
-            this.proxy.Visible = true;
-            this.proxy.VisibleIndex = 1;
-            this.proxy.Width = 150;
+            this.Proxy.AppearanceCell.Options.UseTextOptions = true;
+            this.Proxy.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.Proxy.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.Proxy.AppearanceHeader.Options.UseFont = true;
+            this.Proxy.Caption = "Proxy";
+            this.Proxy.ColumnEdit = this.proxyMemoEdit;
+            this.Proxy.FieldName = "Proxy";
+            this.Proxy.MinWidth = 17;
+            this.Proxy.Name = "Proxy";
+            this.Proxy.OptionsFilter.AllowAutoFilter = false;
+            this.Proxy.Visible = true;
+            this.Proxy.VisibleIndex = 1;
+            this.Proxy.Width = 343;
             // 
-            // message
+            // proxyMemoEdit
             // 
-            this.message.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.message.AppearanceHeader.Options.UseFont = true;
-            this.message.Caption = "Thông báo";
-            this.message.FieldName = "message";
-            this.message.MinWidth = 17;
-            this.message.Name = "message";
-            this.message.OptionsColumn.AllowEdit = false;
-            this.message.Visible = true;
-            this.message.VisibleIndex = 2;
-            this.message.Width = 594;
+            this.proxyMemoEdit.Name = "proxyMemoEdit";
             // 
-            // isRunning
+            // Message
             // 
-            this.isRunning.AppearanceCell.Options.UseTextOptions = true;
-            this.isRunning.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.isRunning.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-            this.isRunning.AppearanceHeader.Options.UseFont = true;
-            this.isRunning.AppearanceHeader.Options.UseTextOptions = true;
-            this.isRunning.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.isRunning.Caption = " ";
-            this.isRunning.ColumnEdit = this.GvBtnAction;
-            this.isRunning.FieldName = "isRunning";
-            this.isRunning.MinWidth = 17;
-            this.isRunning.Name = "isRunning";
-            this.isRunning.OptionsColumn.AllowEdit = false;
-            this.isRunning.OptionsColumn.FixedWidth = true;
-            this.isRunning.OptionsFilter.AllowAutoFilter = false;
-            this.isRunning.Visible = true;
-            this.isRunning.VisibleIndex = 3;
-            this.isRunning.Width = 103;
+            this.Message.AppearanceCell.Options.UseTextOptions = true;
+            this.Message.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.Message.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.Message.AppearanceHeader.Options.UseFont = true;
+            this.Message.Caption = "Thông báo";
+            this.Message.FieldName = "Message";
+            this.Message.MinWidth = 17;
+            this.Message.Name = "Message";
+            this.Message.OptionsColumn.AllowEdit = false;
+            this.Message.Visible = true;
+            this.Message.VisibleIndex = 2;
+            this.Message.Width = 393;
             // 
-            // GvBtnAction
+            // Status
             // 
-            this.GvBtnAction.AutoHeight = false;
-            this.GvBtnAction.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Ellipsis, "Chạy", -1, true, true, false, editorButtonImageOptions3, new DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), serializableAppearanceObject9, serializableAppearanceObject10, serializableAppearanceObject11, serializableAppearanceObject12, "", "Start", null, DevExpress.Utils.ToolTipAnchor.Default),
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Ellipsis, "Dừng", -1, true, true, false, editorButtonImageOptions4, new DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), serializableAppearanceObject13, serializableAppearanceObject14, serializableAppearanceObject15, serializableAppearanceObject16, "", "Stop", null, DevExpress.Utils.ToolTipAnchor.Default)});
-            this.GvBtnAction.Name = "GvBtnAction";
+            this.Status.AppearanceCell.Options.UseTextOptions = true;
+            this.Status.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.Status.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.Status.AppearanceHeader.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.Status.AppearanceHeader.Options.UseFont = true;
+            this.Status.AppearanceHeader.Options.UseTextOptions = true;
+            this.Status.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.Status.Caption = "Trạng thái";
+            this.Status.FieldName = "Status";
+            this.Status.MinWidth = 17;
+            this.Status.Name = "Status";
+            this.Status.OptionsColumn.AllowEdit = false;
+            this.Status.OptionsColumn.FixedWidth = true;
+            this.Status.OptionsFilter.AllowAutoFilter = false;
+            this.Status.Visible = true;
+            this.Status.VisibleIndex = 3;
+            this.Status.Width = 86;
             // 
             // AdbFolderBrowserDialog
             // 
             this.AdbFolderBrowserDialog.SelectedPath = "xtraFolderBrowserDialog1";
             this.AdbFolderBrowserDialog.ShowNewFolderButton = false;
             // 
+            // loadingPanel
+            // 
+            this.loadingPanel.Appearance.BackColor = System.Drawing.Color.White;
+            this.loadingPanel.Appearance.Options.UseBackColor = true;
+            this.loadingPanel.AppearanceCaption.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.loadingPanel.AppearanceCaption.Options.UseFont = true;
+            this.loadingPanel.Caption = "... Đang tải ...";
+            this.loadingPanel.ContentAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            this.loadingPanel.Location = new System.Drawing.Point(419, 351);
+            this.loadingPanel.Name = "loadingPanel";
+            this.loadingPanel.ShowDescription = false;
+            this.loadingPanel.Size = new System.Drawing.Size(124, 38);
+            this.loadingPanel.TabIndex = 2;
+            this.loadingPanel.Text = "progressPanel1";
+            this.loadingPanel.Visible = false;
+            this.loadingPanel.WaitAnimationType = DevExpress.Utils.Animation.WaitingAnimatorType.Bar;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1022, 736);
+            this.Controls.Add(this.loadingPanel);
             this.Controls.Add(this.GcDevice);
             this.Controls.Add(this.panelControl1);
             this.IconOptions.Image = ((System.Drawing.Image)(resources.GetObject("Main.IconOptions.Image")));
@@ -329,16 +295,13 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Luck LDPlayer Telegram";
             this.Load += new System.EventHandler(this.Main_Load);
+            this.Shown += new System.EventHandler(this.Main_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).EndInit();
             this.panelControl1.ResumeLayout(false);
-            this.panelControl1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.TxtFolderADB.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.comboBoxEdit1.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.checkEdit2.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.checkEdit1.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BtnEditAdb.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.GcDevice)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.GvDevice)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.GvBtnAction)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.proxyMemoEdit)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -346,23 +309,20 @@
         #endregion
 
         private DevExpress.XtraEditors.PanelControl panelControl1;
-        private DevExpress.XtraEditors.SimpleButton simpleButton3;
+        private DevExpress.XtraEditors.SimpleButton BtnExportExcel;
         private DevExpress.XtraEditors.SimpleButton BtnStopAll;
         private DevExpress.XtraEditors.SimpleButton BtnRunAll;
-        private DevExpress.XtraEditors.SimpleButton simpleButton4;
-        private DevExpress.XtraEditors.CheckEdit checkEdit1;
-        private DevExpress.XtraEditors.CheckEdit checkEdit2;
-        private DevExpress.XtraEditors.ComboBoxEdit comboBoxEdit1;
-        private DevExpress.XtraEditors.LabelControl labelControl1;
+        private DevExpress.XtraEditors.SimpleButton BtnClearDBSim;
         private DevExpress.XtraGrid.GridControl GcDevice;
         private DevExpress.XtraGrid.Views.Grid.GridView GvDevice;
-        private DevExpress.XtraGrid.Columns.GridColumn serial;
-        private DevExpress.XtraGrid.Columns.GridColumn proxy;
-        private DevExpress.XtraGrid.Columns.GridColumn message;
-        private DevExpress.XtraGrid.Columns.GridColumn isRunning;
-        private DevExpress.XtraEditors.Repository.RepositoryItemButtonEdit GvBtnAction;
+        private DevExpress.XtraGrid.Columns.GridColumn Serial;
+        private DevExpress.XtraGrid.Columns.GridColumn Proxy;
+        private DevExpress.XtraGrid.Columns.GridColumn Message;
+        private DevExpress.XtraGrid.Columns.GridColumn Status;
         private DevExpress.XtraEditors.XtraFolderBrowserDialog AdbFolderBrowserDialog;
-        private DevExpress.XtraEditors.TextEdit TxtFolderADB;
-        private DevExpress.XtraEditors.SimpleButton BtnChooseFolderADB;
+        private DevExpress.XtraWaitForm.ProgressPanel loadingPanel;
+        private DevExpress.XtraEditors.SimpleButton BtnProxy;
+        private DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit proxyMemoEdit;
+        private DevExpress.XtraEditors.ButtonEdit BtnEditAdb;
     }
 }
