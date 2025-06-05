@@ -1,0 +1,4 @@
+cuộn xuống để hiện nút tôi đồng ý
+tọa độ nút đồng ý x: 677, y: 1742
+                  x: 985, y: 1819
+

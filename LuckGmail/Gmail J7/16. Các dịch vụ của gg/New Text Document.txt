@@ -1,0 +1,11 @@
+tọa độ nút khác x:780, y: 1777
+                x: 985, y: 1841
+
+click tọa độ nút khác 3 lần sẽ ra nút chấp nhận
+
+
+
+tọa độ nút chấp nhận x: 713, y: 1769
+                     x: 991, y: 1845
+
+

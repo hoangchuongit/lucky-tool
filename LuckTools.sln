@@ -13,6 +13,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckCheat", "LuckCheat\Luck
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckTelegram", "LuckTelegram\LuckTelegram.csproj", "{4D062EA7-3AC1-4BC8-96DE-A2DD12E2B4AC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckTest", "LuckTest\LuckTest.csproj", "{359A3E31-994B-4616-B4D0-7C71D43E7385}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "LuckVoiceToText", "LuckVoiceToText\LuckVoiceToText.pyproj", "{849BADC5-BF1B-43AB-978A-4AE54C6B9DB0}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "LuckGmail", "LuckGmail\LuckGmail.pyproj", "{CF3EBA2E-6275-4DE5-AB74-94AF21E2F65D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +45,14 @@ Global
 		{4D062EA7-3AC1-4BC8-96DE-A2DD12E2B4AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D062EA7-3AC1-4BC8-96DE-A2DD12E2B4AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D062EA7-3AC1-4BC8-96DE-A2DD12E2B4AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{359A3E31-994B-4616-B4D0-7C71D43E7385}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{359A3E31-994B-4616-B4D0-7C71D43E7385}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{359A3E31-994B-4616-B4D0-7C71D43E7385}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{359A3E31-994B-4616-B4D0-7C71D43E7385}.Release|Any CPU.Build.0 = Release|Any CPU
+		{849BADC5-BF1B-43AB-978A-4AE54C6B9DB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{849BADC5-BF1B-43AB-978A-4AE54C6B9DB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF3EBA2E-6275-4DE5-AB74-94AF21E2F65D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF3EBA2E-6275-4DE5-AB74-94AF21E2F65D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

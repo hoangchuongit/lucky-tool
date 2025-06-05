@@ -1,0 +1,10 @@
+Cuộn kéo xuống cuối cùng tích vào
+
+1. tọa độ tôi đã đọc và đồng ý với tất cả nội dung trên
+x: 112, y: 1630
+x: 134, y: 1654
+
+2. tọa độ nút tiếp theo
+x: 748, y: 1837
+x: 903, y: 1851
+

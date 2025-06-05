@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  # API Gateway - Nhận và phân phối request
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_HOST=redis
+      - API_KEYS=${API_KEYS:-your_secret_key1,your_secret_key2}
+      - MAX_CONCURRENT_PER_WORKER=3
+      - TEMP_FILE_DIR=/app/temp_files  # Thêm biến môi trường này
+    volumes:
+      - temp_files:/app/temp_files     # Thêm volume này
+    depends_on:
+      - redis
+    networks:
+      - whisper_network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 2G
+    restart: unless-stopped
+
+  # Worker - Xử lý transcription
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    environment:
+      - REDIS_HOST=redis
+      - MODEL_SIZE=${MODEL_SIZE:-small}
+      - DEVICE=cpu
+      - COMPUTE_TYPE=int8
+      - NUM_THREADS=6
+      - TEMP_FILE_DIR=/app/temp_files  # Thêm biến môi trường này
+    volumes:
+      - whisper_cache:/root/.cache/whisper
+      - temp_files:/app/temp_files     # Đảm bảo cùng volume với API
+    depends_on:
+      - redis
+    networks:
+      - whisper_network
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: '2.5'
+          memory: 4G
+    restart: unless-stopped
+  
+  # Redis - Quản lý queue và cache
+  redis:
+    image: redis:alpine
+    command: >
+      redis-server --appendonly yes
+      --maxmemory 1536mb
+      --maxmemory-policy allkeys-lru
+      --save 900 1 --save 300 10 --save 60 10000
+    volumes:
+      - redis_data:/data
+    networks:
+      - whisper_network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+    restart: unless-stopped
+
+networks:
+  whisper_network:
+
+volumes:
+  redis_data:
+  whisper_cache:
+  temp_files:

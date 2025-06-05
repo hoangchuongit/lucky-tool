@@ -75,6 +75,7 @@ namespace LuckBurnTK
                 SerialPort sp = new SerialPort(port)
                 {
                     BaudRate = 115200,
+                    Encoding = Encoding.ASCII,
                     Parity = Parity.None,
                     StopBits = StopBits.One,
                     DataBits = 8,
@@ -149,7 +150,7 @@ namespace LuckBurnTK
             }
 
             MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
-            //Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
+            Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
 
             if (MessageCOMs[sp.PortName].Contains("RING"))
             {
@@ -161,7 +162,7 @@ namespace LuckBurnTK
             {
                 UpdateComData(sp.PortName, dto =>
                 {
-                    dto.Message = "Gửi SMS thất bại. Sim có thể bị khóa chiều gửi sms, kiểm tra lại sim. Dừng đốt";
+                    dto.Message = "Gửi SMS thất bại. Cổng COM gặp lỗi. Rút sim ra, chờ 20s sau đó lắp lại và tiếp tục.";
                     dto.SmsId = Guid.Empty;
                     dto.IsFinish = true;
                 }, "Message", "SmsId");
@@ -371,18 +372,19 @@ namespace LuckBurnTK
                                 dto.PhoneNumber = phone;
                                 dto.TKChinh = currentTKC;
                                 dto.Message101 = mess2;
-                                dto.Message = $"Số dư không đủ để tiếp tục. Dừng đốt TKC.";
+                                dto.Message = $"Chờ lượt gửi SMS tiếp theo...";
                                 dto.IsFinish = true;
                             }, "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish");
+                            Thread.Sleep(300000); // 5 phút
+                            // Gửi AT lấy số điện thoại và gửi SMS
+                            SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                         }
                         else
                         {
-                            SendATCommand(sp, $"AT+CMGS=\"{prefix}\"", 500);
-                            SendATCommand(sp, $"{message}{(char)26}", 500);
-
-                            var item = ComDataGrid.FirstOrDefault(dto => dto.COM == sp.PortName);
-                            var smsId = _dbController.InsertSMSHistory(item.ICCID, phone, prefix, message, amountValue, Guid.Parse(AccountId));
-
+                            //SendATCommand(sp, $"AT+CMGS=\"{prefix}\"", 500);
+                            //SendATCommand(sp, $"{message}{(char)26}", 500);
+                            //var item = ComDataGrid.FirstOrDefault(dto => dto.COM == sp.PortName);
+                            //var smsId = _dbController.InsertSMSHistory(item.ICCID, phone, prefix, message, amountValue, Guid.Parse(AccountId));
                             UpdateComData(sp.PortName, dto =>
                             {
                                 dto.PhoneNumber = phone;
@@ -390,7 +392,7 @@ namespace LuckBurnTK
                                 dto.Message101 = phoneStr;
                                 dto.Message = "Gửi SMS ...";
                                 dto.IsFinish = false;
-                                dto.SmsId = smsId;
+                                //dto.SmsId = smsId;
                             }, "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish");
                         }
                     }
