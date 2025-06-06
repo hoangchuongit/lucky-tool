@@ -654,6 +654,13 @@ def main(wifiname, wifipass, url_proxy):
     subprocess.Popen(f'adb shell input tap 763 1363', shell=True)
     time.sleep(2)
 
+    # Cấp quyền su để ng
+    subprocess.Popen(f'adb shell su -c whoami', shell=True)
+    time.sleep(5)
+
+    subprocess.Popen(f'adb shell input tap 763 1363', shell=True)
+    time.sleep(2)
+
     # def thread_accept_root():
     #     if find_text_on_screen("Yêu cầu quyền truy câp superuser", False, 30):
     #         run_adb_command(f'adb shell input tap 763 1363')
