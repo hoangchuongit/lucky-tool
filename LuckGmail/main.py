@@ -115,11 +115,11 @@ def get_window_coordinates_and_focus():
         if not target_window.isActive:
             target_window.activate()
             print("Da focus vao cua so.")
-            time.sleep(1)
+            time.sleep(2)
         if not target_window.isMaximized:
             print("Dang phong to (maximize) cua so...")
             target_window.maximize()
-            time.sleep(1)
+            time.sleep(2)
         return True
     except Exception as e:
         print(f"Da xay ra loi khi lay toa do/focus cua so: {e}")
@@ -136,12 +136,13 @@ def click_at_coordinates(x, y):
         print(f"Da xay ra loi khi click: {e}")
 
 
-def find_text_on_screen(target_text="Bắt đầu", timeout=None):
+def find_text_on_screen(target_text="Bắt đầu", on_screen=False, timeout=None):
     count = 0
     while True:
         try:
             # Làm sáng màn hình thì mới lấy text được
-            run_adb_command("adb shell input keyevent 224")
+            if on_screen:
+                run_adb_command("adb shell input keyevent 224")
             # Dump UI hierarchy ra file xml trên thiết bị
             run_adb_command("adb shell uiautomator dump /sdcard/ui.xml")
             # Pull file xml về máy tính
@@ -158,13 +159,11 @@ def find_text_on_screen(target_text="Bắt đầu", timeout=None):
         except:
             if os.path.exists("ui.xml"):
                 os.remove("ui.xml")
-            print(
-                f'Khong tim thay "{target_text}" tren man hinh. Thu lai sau 5s.')
+            print(f'Khong tim thay "{target_text}" tren man hinh. Thu lai sau 5s.')
             time.sleep(5)
         count += 1
         if timeout is not None and count >= timeout:
-            print(
-                f"Đã thử {timeout} lần nhưng không tìm thấy '{target_text}'.")
+            print(f"Đã thử {timeout} lần nhưng không tìm thấy '{target_text}'.")
             return False
 
 
@@ -207,7 +206,8 @@ def input_text_with_delay(text, min_delay=0.1, max_delay=0.3):
     try:
         for char in text:
             escaped_char = char.replace('"', '\\"').replace('\\', '\\\\')
-            run_adb_command(f'adb shell input text "{escaped_char}"')
+            # run_adb_command(f'adb shell input text "{escaped_char}"')
+            subprocess.Popen(f'adb shell input text "{escaped_char}"')
             time.sleep(random.uniform(min_delay, max_delay))
     except Exception as e:
         print(f"Lỗi khi nhập text: {str(e)}", "ERROR")
@@ -233,8 +233,7 @@ def fake_realistic_gmail():
 
 
 def screenshot_pull(filename="screen.png"):
-    subprocess.call(
-        "adb shell screencap -p /sdcard/tmp_screen.png", shell=True)
+    subprocess.call("adb shell screencap -p /sdcard/tmp_screen.png", shell=True)
     subprocess.call(f"adb pull /sdcard/tmp_screen.png {filename}", shell=True)
     subprocess.call("adb shell rm /sdcard/tmp_screen.png", shell=True)
 
@@ -279,7 +278,7 @@ def human_like_scroll_to_bottom(max_scrolls=10):
 
 def step1():
     print("Man hinh 1 - Chao mung")
-    find_text_on_screen("Bắt đầu")
+    find_text_on_screen("Bắt đầu", True)
     time.sleep(random.randint(2, 5))
     random_input_swipe(x_range=(510, 563), y_range=(772, 837))
 
@@ -396,7 +395,7 @@ def step7():
 
 def step8():
     print("Man hinh 8 - Chon dia chi Gmail cua ban")
-    if find_text_on_screen("Chọn địa chỉ Gmail của bạn", 5):
+    if find_text_on_screen("Chọn địa chỉ Gmail của bạn", False, 5):
         print("Man hinh 8 - Tim: Tao dia chi Gmail cua rieng ban")
         find_text_on_screen("Tạo địa chỉ Gmail của riêng bạn")
         time.sleep(random.randint(2, 5))
@@ -410,22 +409,31 @@ def step8():
 
         return gmail
     else:
-        print(
-            "Man hinh 8 - Tao mot dia chi Gmail de dang nhap vao Tai khoan Google cua ban")
-        find_text_on_screen(
-            "Tạo một địa chỉ Gmail để đăng nhập vào Tài khoản Google của bạn")
+        print("Man hinh 8 - Tao mot dia chi Gmail de dang nhap vao Tai khoan Google cua ban")
+        find_text_on_screen("Tạo một địa chỉ Gmail để đăng nhập vào Tài khoản Google của bạn")
         random_input_swipe(x_range=(104, 677), y_range=(744, 847))
-        gmail = fake_realistic_gmail()
-        time.sleep(random.randint(2, 5))
-        input_text_with_delay(gmail)
-        time.sleep(random.randint(2, 5))
+        while True:
+            gmail = fake_realistic_gmail()
+            time.sleep(random.randint(2, 5))
+            input_text_with_delay(gmail)
+            time.sleep(random.randint(2, 5))
 
-        print("Man hinh 8 - An nut BACK")
-        run_adb_command("adb shell input keyevent 4")
-        time.sleep(random.randint(2, 5))
+            print("Man hinh 8 - An nut BACK")
+            run_adb_command("adb shell input keyevent 4")
+            time.sleep(random.randint(2, 5))
 
-        print("Man hinh 8 - Click button tiep theo")
-        random_input_swipe(x_range=(693, 993), y_range=(1748, 1819))
+            print("Man hinh 8 - Click button tiep theo")
+            random_input_swipe(x_range=(693, 993), y_range=(1748, 1819))
+
+            if find_text_on_screen("Tên người dùng đã được sử dụng", False, 3):
+                random_input_swipe(x_range=(104, 677), y_range=(744, 847))
+                # di chuyển con trỏ xuống cuối
+                run_adb_command("adb shell input keyevent 123")
+                # xóa gmail cũ
+                for _ in len(gmail):
+                    run_adb_command("adb shell input keyevent 67")
+            else:
+                break
 
         return f"{gmail}@gmail.com"
 
@@ -462,6 +470,9 @@ def step9():
 
 
 def step10():
+    if find_text_on_screen("Xác minh bạn không phải là ro-bot", False, 3):
+        return False
+    
     print("Man hinh 10 - Thêm số điện thoại")
     find_text_on_screen("Thêm số điện thoại")
     time.sleep(random.randint(2, 5))
@@ -638,10 +649,17 @@ def main(wifiname, wifipass, url_proxy):
 
     # Cấp quyền su để ng
     subprocess.Popen(f'adb shell su -c whoami', shell=True)
-    time.sleep(2)
+    time.sleep(5)
 
     subprocess.Popen(f'adb shell input tap 763 1363', shell=True)
     time.sleep(2)
+
+    # def thread_accept_root():
+    #     if find_text_on_screen("Yêu cầu quyền truy câp superuser", False, 30):
+    #         run_adb_command(f'adb shell input tap 763 1363')
+
+    # accept_root_thread = threading.Thread(target=thread_accept_root)
+    # accept_root_thread.start()
 
     while True:
         try:
@@ -729,7 +747,9 @@ def main(wifiname, wifipass, url_proxy):
     print(f"Gmail: {gmail}")
     print(f"Password: {password}")
 
-    step10()
+    isDone = step10()
+    if isDone==False:
+        return
 
     step11()
 
