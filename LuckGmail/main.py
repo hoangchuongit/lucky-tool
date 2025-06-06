@@ -669,8 +669,8 @@ def main(wifiname, wifipass, url_proxy):
                     click_at_coordinates(350, 32)
                     # time.sleep(3)
 
-                    print("Buoc 2: Click vao dropdown de chon thiet bi (350, 75)")
-                    click_at_coordinates(350, 75)
+                    print("Buoc 2: Click vao dropdown de chon thiet bi (843, 75)")
+                    click_at_coordinates(843, 75)
                     # time.sleep(3)
 
                     print("Buoc 3: Nhan pagedown va enter")
@@ -743,9 +743,6 @@ def main(wifiname, wifipass, url_proxy):
     gmail = step8()
 
     password = step9()
-
-    print(f"Gmail: {gmail}")
-    print(f"Password: {password}")
 
     isDone = step10()
     if isDone==False:
