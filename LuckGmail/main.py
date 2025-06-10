@@ -231,6 +231,23 @@ def fake_realistic_gmail():
             email = random.choice(username_formats)
             return email
 
+def human_like_password():
+    # Một số từ phổ biến hoặc tên
+    words = [fake.first_name(), fake.last_name(), fake.word()]
+    word = random.choice(words)
+    # Thêm số hoặc năm sinh
+    number = str(random.randint(10, 99))
+    # Thêm ký tự đặc biệt
+    special = random.choice(['!', '@', '#', '$', '%', '&', '*'])
+    # Có thể thêm chữ hoa ở đầu
+    if random.random() > 0.5:
+        word = word.capitalize()
+    # Ghép lại
+    password = f"{word}{number}{special}"
+    # Đảm bảo đủ độ dài
+    if len(password) < 8:
+        password += fake.password(length=8-len(password), special_chars=False, digits=True, upper_case=True, lower_case=True)
+    return password
 
 def screenshot_pull(filename="screen.png"):
     subprocess.call("adb shell screencap -p /sdcard/tmp_screen.png", shell=True)
@@ -445,16 +462,7 @@ def step9():
     random_input_swipe(x_range=(136, 677), y_range=(748, 855))
     
     print("Man hinh 9 - Tao mot mat khau manh")
-    while True:
-        password = fake.password(
-            length=random.randint(10, 14),
-            special_chars=True,
-            digits=True,
-            upper_case=True,
-            lower_case=True
-        )
-        if "|" not in password:
-            break
+    password = human_like_password()
 
     time.sleep(random.randint(2, 5))
     input_text_with_delay(password)
@@ -482,8 +490,8 @@ def step10():
     time.sleep(random.randint(2, 5))
     random_input_swipe(x_range=(86, 357), y_range=(1531, 1553))
 
-    print("Man hinh 10 - Chọn tuỳ chọn phù hợp với bạn")
-    find_text_on_screen("Chọn tuỳ chọn phù hợp với bạn")
+    print("Man hinh 10 - Chọn tùy chọn phù hợp với bạn")
+    find_text_on_screen("Chọn tùy chọn phù hợp với bạn")
     time.sleep(random.randint(2, 5))
 
     print("Man hinh 10 - Không, đừng thêm số điện thoại")
@@ -546,8 +554,8 @@ def step15():
     random_input_swipe(x_range=(776, 981), y_range=(1761, 1829))
 
 def step16():
-    print("Man hinh 16 - Cách dịch vụ của Google")
-    find_text_on_screen("Cách dịch vụ của Google")
+    print("Man hinh 16 - Các dịch vụ của Google")
+    find_text_on_screen("Các dịch vụ của Google")
     print("Man hinh 16 - Click Khác")
     time.sleep(random.randint(2, 5))
     random_input_swipe(x_range=(780, 985), y_range=(1777, 1841))
