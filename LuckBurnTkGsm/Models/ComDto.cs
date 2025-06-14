@@ -15,5 +15,6 @@ namespace LuckBurn.Model
         public string Message { get; set; }
         public bool IsFinish { get; set; }
         public Guid SmsId { get; set; }
+        public string Telecom { get; set; }
     }
 }

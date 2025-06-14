@@ -12,8 +12,8 @@ namespace LuckBurnTK
 		private readonly HttpClient _httpClient;
 		
 		public LoginForm()
-		{
-			InitializeComponent();
+        {
+            InitializeComponent();
 			_httpClient = new HttpClient();
 			
 			// Thiết lập tab cho các control
@@ -21,10 +21,15 @@ namespace LuckBurnTK
 			txtPassword.TabIndex = 1;
 			chkRememberMe.TabIndex = 2;
 			btnLogin.TabIndex = 3;
-			this.AcceptButton = btnLogin;
-		}
-		
-		private async void BtnLogin_Click(object sender, EventArgs e)
+			AcceptButton = btnLogin;
+        }
+
+        private void LoginForm_Load(object sender, EventArgs e)
+        {
+            Text = $"Luck Burn - {Application.ProductVersion}";
+        }
+
+        private async void BtnLogin_Click(object sender, EventArgs e)
 		{
 			string email = txtEmail.Text.Trim();
 			string password = txtPassword.Text.Trim();
@@ -53,12 +58,12 @@ namespace LuckBurnTK
 				string jsonData = JsonConvert.SerializeObject(loginData);
 				var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 				
-				HttpResponseMessage response = await _httpClient.PostAsync("https://buysellemail.com/api/customer", content);
-				string responseBody = await response.Content.ReadAsStringAsync();
+				HttpResponseMessage response = await _httpClient.PostAsync("https://luckburn.mobi/auth/login", content);
 				
 				if (response.IsSuccessStatusCode)
-				{
-					dynamic result = JsonConvert.DeserializeObject(responseBody);
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    dynamic result = JsonConvert.DeserializeObject(responseBody);
 					
 					// Lưu thông tin đăng nhập
 					Properties.Settings.Default.UserEmail = chkRememberMe.Checked ? email : string.Empty;
@@ -66,7 +71,7 @@ namespace LuckBurnTK
 					Properties.Settings.Default.RememberMe = chkRememberMe.Checked;
 					Properties.Settings.Default.Save();
 					Hide();
-					var mainForm = new BurnTKForm(result.id.ToString());
+					var mainForm = new BurnTKForm(result.id.ToString(), result.api_key.ToString());
 					mainForm.ShowDialog();
                     Close();
                 }
@@ -110,5 +115,5 @@ namespace LuckBurnTK
 			else
 				txtEmail.Focus();
 		}
-	}
+    }
 }
