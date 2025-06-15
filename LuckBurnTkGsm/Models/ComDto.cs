@@ -17,4 +17,10 @@ namespace LuckBurn.Model
         public Guid SmsId { get; set; }
         public string Telecom { get; set; }
     }
+
+    public class FileToCom
+    {
+        public int fd { get; set; }
+        public byte[] data { get; set; }
+    }
 }

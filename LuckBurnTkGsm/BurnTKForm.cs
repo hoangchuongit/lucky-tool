@@ -1,4 +1,5 @@
-﻿using DevExpress.Data.Extensions;
+﻿using DevExpress.ClipboardSource.SpreadsheetML;
+using DevExpress.Data.Extensions;
 using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
 using LuckBurn.Model;
@@ -9,8 +10,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.IO.Ports;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -34,6 +37,15 @@ namespace LuckBurnTK
 
         /// Lịch sử các tin nhắn của từng cổng COM
         private readonly ConcurrentDictionary<string, string> MessageCOMs = new ConcurrentDictionary<string, string>();
+
+        /// Danh sách cổng COM đang ghi âm
+        private readonly List<string> RecordingPorts = new List<string>();
+
+        /// Nội dung ghi âm của từng cổng COM
+        private readonly ConcurrentDictionary<string, byte[]> RecordingCOMs = new ConcurrentDictionary<string, byte[]>();
+
+        /// Danh sách các cổng COM đang upload file đến thiết bị
+        private readonly ConcurrentDictionary<string, FileToCom> FileToCOMs = new ConcurrentDictionary<string, FileToCom>();
 
         private readonly PrefixNumberController _prefixController;
 
@@ -80,9 +92,6 @@ namespace LuckBurnTK
                         _simCheckLimiter.Release();
                     }
                 });
-                //var thread = new Thread(() => InitializeModem(port)) { IsBackground = true };
-                //thread.Start();
-                //Task.Run(() => InitializeModem(port));
             }
         }
 
@@ -149,7 +158,7 @@ namespace LuckBurnTK
                 //SendATCommand(sp, "AT+CCFC=0,0");
                 //sp.WriteLine("AT+CCFC=0,0\n");
                 // Xóa tất cả file trong RAM - chủ yếu các file ghi âm
-                //SendATCommand(sp, "AT+QFDEL=\"RAM:record.wav\"", 1000);
+                //SendATCommand(sp, "AT+QFDEL=\"RAM:record.amr\"", 1000);
                 // Kiểm tra cổng COM đã cắm SIM hay chưa?
                 //SendATCommand(sp, "AT+QSIMSTAT?");
             }
@@ -164,6 +173,7 @@ namespace LuckBurnTK
             SerialPort sp = (SerialPort)sender;
             byte[] buffer = new byte[sp.BytesToRead];
             int bytesRead = 0;
+            bool inWAVDownload = false;
             try
             {
                 bytesRead = sp.Read(buffer, 0, buffer.Length);
@@ -186,18 +196,53 @@ namespace LuckBurnTK
             {
                 UpdateComData(sp.PortName, dto =>
                 {
-                    dto.Message = "Gửi SMS thất bại. Cổng COM gặp lỗi. Rút sim ra, chờ 20s sau đó lắp lại và tiếp tục.";
+                    dto.Message = "Cổng COM gặp lỗi. Rút SIM và chờ 20s sau đó lắp lại.";
                     dto.SmsId = Guid.Empty;
                     dto.IsFinish = true;
                 }, "Message", "SmsId");
             }
 
-            // Nhận SMS tin nhắn văn bản
-            //if (MessageCOMs[sp.PortName].Contains("+CMT:"))
+            // Nếu bắt đầu bằng chữ CONNECT là đang bắt đầu lưu file wav vào trong folder
+            //if (MessageCOMs[sp.PortName].Contains("\r\nCONNECT\r\n")) inWAVDownload = true;
+
+            // Nhận cuộc gọi
+            if (MessageCOMs[sp.PortName].Contains("NO CARRIER") || MessageCOMs[sp.PortName].Contains("HANG UP"))
+                StopRecording(sp);
+
+            // Kiểm tra nếu cổng COM nằm trong danh sách đang ghi âm cuộc gọi và lưu file ghi âm
+            //if (inWAVDownload || RecordingCOMs.ContainsKey(sp.PortName))
             //{
-            //    var message = MessageCOMs[sp.PortName].AT_Command();
-            //    Sms_Received(sp, message);
+            // Nếu cổng COM chưa nằm trong danh sách ghi âm thì bổ sung vào danh sách. Nếu đã có thì ghi nối tiếp dữ liệu
+            if (!MessageCOMs[sp.PortName].Contains("+QFDWL:") && MessageCOMs[sp.PortName].Contains("\r\nCONNECT\r\n"))
+            {
+                if (RecordingCOMs.ContainsKey(sp.PortName))
+                {
+                    if (buffer.Length > 0)
+                    {
+                        byte[] existingData = RecordingCOMs[sp.PortName];
+                        byte[] newData = new byte[existingData.Length + buffer.Length];
+                        Buffer.BlockCopy(existingData, 0, newData, 0, existingData.Length);
+                        Buffer.BlockCopy(buffer, 0, newData, existingData.Length, buffer.Length);
+                        RecordingCOMs[sp.PortName] = newData;
+                    }
+                }
+                else
+                {
+                    byte[] cleanBuffer = Common.RemoveConnectHeader(buffer);
+                    RecordingCOMs.TryAdd(sp.PortName, cleanBuffer);
+                }
+            }
+            // Kiểm tra nếu cổng COM nằm trong danh sách đang ghi âm và nhận được tín hiệu kết thúc ghi âm,
+            // lưu lại file .wav và chuyển đổi thành văn bản
+            if (MessageCOMs[sp.PortName].Contains("+QFDWL:") && MessageCOMs[sp.PortName].Contains("\r\nCONNECT\r\n"))
+            {
+                if (RecordingPorts.Contains(sp.PortName)) SaveRecord(sp);
+                RecordingCOMs.TryRemove(sp.PortName, out byte[] _);
+            }
             //}
+
+            // Lắng nghe change IMEI thành công
+            ListenEventChangeIMEI(sp);
 
             // Lắng nghe xem SIM có được cắm vào cổng COM hay không
             ListenEventSIMInsert(sp);
@@ -214,8 +259,11 @@ namespace LuckBurnTK
             // Lắng nghe để lấy thông tin Số điện thoại
             ListenEventPhoneNumber(sp);
 
-            // Lắng nghe change IMEI thành công
-            ListenEventChangeIMEI(sp);
+            // Lắng nghe cuộc gọi của thuê bao với tổng đài
+            ListenEventCallPrefix(sp);
+
+            // Xử lý trường hợp upload file amr tới thiết bị
+            ListenEventUploadAmrFileToDevice(sp);
 
             // Lắng nghe xem sim gửi SMS thành công chưa
             ListenEventSendSms(sp);
@@ -241,8 +289,7 @@ namespace LuckBurnTK
             if (MessageCOMs[sp.PortName].Contains("Call Ready") && MessageCOMs[sp.PortName].Contains("+CPIN: READY"))
             {
                 MessageCOMs[sp.PortName] = string.Empty;
-
-                UpdateComData(sp.PortName, dto => dto.Message = $"Bắt đầu nạp dữ liệu cổng COM...", "Message");
+                UpdateComData(sp.PortName, dto => dto.Message101 = $"SIM đã sẵn sàng.s", "Message101");
                 SendATCommand(sp, "AT+QSIMSTAT?");
             }
         }
@@ -252,7 +299,97 @@ namespace LuckBurnTK
             SerialPort sp = (SerialPort)sender;
             logger.Error($"Error on port {sp.PortName}: {e.EventType}");
             MessageCOMs[sp.PortName] = string.Empty;
-            UpdateComData(sp.PortName, dto => dto.PhoneNumber = "PHONE NOT FOUND", "PhoneNumber");
+            UpdateComData(sp.PortName, dto => dto.PhoneNumber = "Phone Unknow", "PhoneNumber");
+        }
+
+        /// <summary>
+        /// Dừng ghi âm cuộc gọi
+        /// </summary>
+        /// <param name="sp"></param>
+        private void StopRecording(SerialPort sp)
+        {
+            try
+            {
+                if (!RecordingPorts.Contains(sp.PortName)) return;
+                // Dừng ghi âm
+                SendATCommand(sp, "AT+QAUDRD=0", 1000);
+                // Tải xuống file âm thanh voice.wav từ RAM của module.
+                // Dữ liệu sẽ được truyền qua Serial và thu thập từng gói cho đến khi hoàn thành.
+                sp.WriteLine("AT+QFDWL=\"RAM:record.amr\"");
+            }
+            catch (Exception ex)
+            {
+                UpdateComData(sp.PortName, dto => dto.Message = $"Lỗi dừng cuộc gọi thất bại: {ex.Message}", "Message");
+                logger.Error($"[{sp.PortName}] - StopRecording Error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Lưu bản ghi âm thành file
+        /// </summary>
+        /// <param name="sp"></param>
+        private void SaveRecord(SerialPort sp)
+        {
+            try
+            {
+                // Kiểm tra key trong dictionary RecordingCOMs
+                if (!RecordingCOMs.ContainsKey(sp.PortName))
+                {
+                    UpdateComData(sp.PortName, dto => dto.Message = $"Lỗi Voice to Text: COM không của dịch vụ nào", "Message");
+                    logger.Error($"Error Voice to Text: RecordingCOMs does not contain the key: {sp.PortName}");
+                    // Xóa file ghi âm trên RAM
+                    SendATCommand(sp, "AT+QFDEL=\"RAM:record.amr\"", 1000);
+                    // Xóa khỏi danh sách cổng COM đang ghi âm
+                    if (RecordingPorts.Contains(sp.PortName)) RecordingPorts.Remove(sp.PortName);
+                    MessageCOMs[sp.PortName] = string.Empty;
+                    return;
+                }
+                string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                string recordDirectory = Path.Combine(baseDirectory, "record");
+                Directory.CreateDirectory(recordDirectory);
+
+                // Lấy dữ liệu audio
+                byte[] audioData = RecordingCOMs[sp.PortName];
+                var phone = ComDataGrid.FirstOrDefault(x => x.COM == sp.PortName).PhoneNumber ?? Guid.NewGuid().ToString();
+                string filePath = Path.Combine(recordDirectory, $"{phone}_{DateTime.Now:yyyyMMddHHmmss}.amr");
+                File.WriteAllBytes(filePath, audioData);
+                //byte[] audioData = RecordingCOMs[sp.PortName];
+                //byte[] wavHeader = Common.CreateWavHeader(audioData.Length, 8000, 1, 16);
+                //byte[] finalData = new byte[wavHeader.Length + audioData.Length];
+                //Buffer.BlockCopy(wavHeader, 0, finalData, 0, wavHeader.Length);
+                //Buffer.BlockCopy(audioData, 0, finalData, wavHeader.Length, audioData.Length);
+                //string filePath = Path.Combine(recordDirectory, $"{sp.PortName}_{DateTime.Now:yyyyMMddHHmmss}.amr");
+                //File.WriteAllBytes(filePath, finalData);
+
+                // Xóa file ghi âm trên RAM
+                SendATCommand(sp, "AT+QFDEL=\"RAM:record.amr\"", 1000);
+                // Xóa khỏi danh sách cổng COM đang ghi âm
+                if (RecordingPorts.Contains(sp.PortName)) RecordingPorts.Remove(sp.PortName);
+                MessageCOMs[sp.PortName] = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                UpdateComData(sp.PortName, dto => dto.Message = $"Lỗi Voice to Text: {ex.Message}", "Message");
+                logger.Error($"[{sp.PortName}] - SaveRecord Error: {ex.Message}");
+            }
+        }
+
+        private void ListenEventChangeIMEI(SerialPort sp)
+        {
+            try
+            {
+                if (!MessageCOMs[sp.PortName].Contains("AT+EGMR=") || !MessageCOMs[sp.PortName].Contains("\nOK")) return;
+                var mess = MessageCOMs[sp.PortName].AT_Command("AT+EGMR=");
+                MessageCOMs[sp.PortName] = string.Empty;
+                Console.WriteLine($"mess: {mess}");
+                UpdateComData(sp.PortName, dto => dto.IMEI = mess, "IMEI");
+                Thread.Sleep(5000);
+                SendATCommand(sp, "AT+QSIMSTAT?");
+            }
+            catch (Exception)
+            {
+                UpdateComData(sp.PortName, dto => dto.ICCID = string.Empty, "ICCID");
+            }
         }
 
         private void ListenEventSIMInsert(SerialPort sp)
@@ -273,7 +410,7 @@ namespace LuckBurnTK
             }
             catch (Exception)
             {
-                UpdateComData(sp.PortName, dto => dto.PhoneNumber = "PHONE NOT FOUND", "PhoneNumber");
+                UpdateComData(sp.PortName, dto => dto.PhoneNumber = "Phone Unknow", "PhoneNumber");
             }
         }
 
@@ -300,13 +437,13 @@ namespace LuckBurnTK
                 if (mess.Contains("+CPIN: READY"))
                 {
                     MessageCOMs[sp.PortName] = string.Empty;
-                    UpdateComData(sp.PortName, dto => dto.Message = "SIM đã sẵn sàng.", "Message");
+                    UpdateComData(sp.PortName, dto => dto.Message101 = "SIM đã sẵn sàng.", "Message101");
                     SendATCommand(sp, "AT+QCCID");
                 }
             }
             catch (Exception)
             {
-                UpdateComData(sp.PortName, dto => dto.Message = string.Empty, "Message");
+                UpdateComData(sp.PortName, dto => dto.Message101 = string.Empty, "Message101");
             }
         }
 
@@ -356,7 +493,7 @@ namespace LuckBurnTK
                 if (MessageCOMs[sp.PortName].Contains("+CUSD:") && MessageCOMs[sp.PortName].Contains("ERROR"))
                 {
                     MessageCOMs[sp.PortName] = string.Empty;
-                    UpdateComData(sp.PortName, dto => dto.PhoneNumber = "PHONE NOT FOUND", "PhoneNumber");
+                    UpdateComData(sp.PortName, dto => dto.PhoneNumber = "Phone Unknow", "PhoneNumber");
                     gvCOM.RefreshRow(gvCOM.LocateByValue("COM", sp.PortName));
                 }
                 else if (MessageCOMs[sp.PortName].Contains("+CUSD:") && MessageCOMs[sp.PortName].Contains("\nOK"))
@@ -376,94 +513,224 @@ namespace LuckBurnTK
             try
             {
                 var mess = MessageCOMs[sp.PortName].AT_Command($"AT+CUSD=1,\"*101#\",15");
+                MessageCOMs[sp.PortName] = string.Empty;
                 mess = mess.Substring(mess.IndexOf("+CUSD"));
                 if (mess.Split(',').Length <= 0) return;
                 var mess2 = mess.Split('\"')[1];
+                UpdateComData(sp.PortName, dto => dto.Message101 = mess2, "Message101");
+
                 var phoneStr = mess2.Replace("\"", string.Empty);
                 if (string.IsNullOrEmpty(phoneStr)) return;
                 var phone = Common.GetPhoneNumber(phoneStr);
                 if (string.IsNullOrEmpty(phone))
                 {
-                    UpdateComData(sp.PortName, dto => dto.Message = $"Chờ 3-5s trước khi tiếp tục...", "Message");
-                    // tạm dừng
                     int delay = new Random(Guid.NewGuid().GetHashCode()).Next(3000, 5001);
                     Thread.Sleep(delay);
-                    // Gửi AT lấy số điện thoại và gửi SMS
                     SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                 }
                 else
                 {
                     int? tkchinh = Common.ExtractBalance(mess);
-                    MessageCOMs[sp.PortName] = string.Empty;
-
                     int currentTKC = (int)(tkchinh.HasValue ? tkchinh : 0);
-                    int minAccount = int.Parse(txtMinAccountControl.Text.Replace(".", string.Empty));
+                    UpdateComData(sp.PortName, dto =>
+                    {
+                        dto.PhoneNumber = phone; dto.TKChinh = currentTKC;
+                    }, "PhoneNumber", "TKChinh");
 
+                    int minAccount = int.Parse(txtMinAccountControl.Text.Replace(".", string.Empty));
                     if (currentTKC <= minAccount)
                     {
                         UpdateComData(sp.PortName, dto =>
                         {
-                            dto.PhoneNumber = phone;
-                            dto.TKChinh = currentTKC;
-                            dto.Message101 = mess2;
-                            dto.Message = $"Số dư không đủ để tiếp tục. Dừng đốt TKC.";
-                            dto.IsFinish = true;
-                        }, "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish");
+                            dto.Message = $"Stop burn"; dto.IsFinish = true;
+                        }, "Message", "IsFinish");
+                        return;
+                    }
+                    var telecom = ComDataGrid.FirstOrDefault(x => x.COM == sp.PortName).Telecom;
+                    if (telecom == null) return;
+                    var prefixSmsReq = new GetPrefixSmsReq()
+                    {
+                        phone_number = phone,
+                        amount = currentTKC,
+                        amount_left = minAccount,
+                        telecom = telecom
+                    };
+                    var prefixSmsRes = await _prefixController.GetPrefixNumber(prefixSmsReq, ApiKey);
+                    Console.WriteLine(prefixSmsRes);
+                    if (prefixSmsRes == null)
+                    {
+                        UpdateComData(sp.PortName, dto =>
+                        {
+                            dto.Message = $"Burning ..."; dto.IsFinish = true;
+                        }, "Message", "IsFinish");
+                        // Thử lại sau 2 phút
+                        Thread.Sleep(120000);
+                        // Gửi AT lấy số điện thoại và gửi SMS
+                        SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                     }
                     else
                     {
-                        var telecom = ComDataGrid.FirstOrDefault(x => x.COM == sp.PortName).Telecom;
-                        if (telecom != null)
+                        if (sp.PortName == "COM16")
                         {
-                            var prefixSmsReq = new GetPrefixSmsReq()
-                            {
-                                phone_number = phone,
-                                amount = currentTKC,
-                                amount_left = minAccount,
-                                telecom = telecom
-                            };
-                            var prefixSmsRes = await _prefixController.GetPrefixNumber(prefixSmsReq);
-                            Console.WriteLine(prefixSmsRes);
-                            // Gọi phương thức GetPrefixAndMessage của DBController
-                            //var (prefix, message, amountValue) = _dbController.GetPrefixAndMessage(phone, currentTKC, minAccount, Guid.Parse(AccountId));
-                            //if (string.IsNullOrEmpty(prefix))
-                            //{
-                            //    UpdateComData(sp.PortName, dto =>
-                            //    {
-                            //        dto.PhoneNumber = phone;
-                            //        dto.TKChinh = currentTKC;
-                            //        dto.Message101 = mess2;
-                            //        dto.Message = $"Chờ lượt gửi SMS tiếp theo...";
-                            //        dto.IsFinish = true;
-                            //    }, "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish");
-                            //    Thread.Sleep(300000); // 5 phút
-                            //    // Gửi AT lấy số điện thoại và gửi SMS
-                            //    SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
-                            //}
-                            //else
-                            //{
-                            //SendATCommand(sp, $"AT+CMGS=\"{prefix}\"", 500);
-                            //SendATCommand(sp, $"{message}{(char)26}", 500);
-                            //var item = ComDataGrid.FirstOrDefault(dto => dto.COM == sp.PortName);
-                            //var smsId = _dbController.InsertSMSHistory(item.ICCID, phone, prefix, message, amountValue, Guid.Parse(AccountId));
-                            UpdateComData(sp.PortName, dto =>
-                            {
-                                dto.PhoneNumber = phone;
-                                dto.TKChinh = currentTKC;
-                                dto.Message101 = phoneStr;
-                                dto.Message = "Gửi SMS ...";
-                                dto.IsFinish = false;
-                                //dto.SmsId = smsId;
-                            }, "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish");
-                            //}
+                            // TODO: Thông tin file
+                            string filename = "HỖ-TRỢ-1-KỲ-19S.amr";
+                            string filePath = $"D:\\Freelancer\\LuckTools\\LuckTest\\{filename}";
+                            //
+                            byte[] data = File.ReadAllBytes(filePath);
+                            FileToCOMs.TryAdd(sp.PortName, new FileToCom() { data = data });
+                            //
+                            sp.DiscardInBuffer();
+                            SendATCommand(sp, $"AT+QFOPEN=\"RAM:content.amr\",0,{data.Length}");
+
+                            //SendATCommand(sp, "AT+QFDEL=\"RAM:record.amr\"", 1000);
+                            //SendATCommand(sp, "AT+CFUN=1,1", 10000);
+
+                            //SendATCommand(sp, $"ATD{"18001091"};", 1000);
+                            //Thread.Sleep(15000);
+
+                            // Kết thúc cuộc gọi
+                            //SendATCommand(sp, "ATH", 2000);
+                            // Dừng ghi âm
+                            //SendATCommand(sp, "AT+QAUDRD=0", 1000);
                         }
+
+                        //if (prefixSmsRes.type == PrefixNumberType.CALL)
+                        //{
+                        //    UpdateComData(sp.PortName, dto =>
+                        //    {
+                        //        dto.Message = "Burning ..."; dto.IsFinish = false; dto.SmsId = prefixSmsRes.history_id;
+                        //    }, "Message", "IsFinish", "SmsId");
+                        //}
+                        // Gọi phương thức GetPrefixAndMessage của DBController
+                        //var (prefix, message, amountValue) = _dbController.GetPrefixAndMessage(phone, currentTKC, minAccount, Guid.Parse(AccountId));
+                        //if (string.IsNullOrEmpty(prefix))
+                        //{
+                        //    UpdateComData(sp.PortName, dto =>
+                        //    {
+                        //        dto.PhoneNumber = phone;
+                        //        dto.TKChinh = currentTKC;
+                        //        dto.Message101 = mess2;
+                        //        dto.Message = $"Chờ lượt gửi SMS tiếp theo...";
+                        //        dto.IsFinish = true;
+                        //    }, "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish");
+                        //    Thread.Sleep(300000); // 5 phút
+                        //    // Gửi AT lấy số điện thoại và gửi SMS
+                        //    SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
+                        //}
+                        //else
+                        //{
+                        //SendATCommand(sp, $"AT+CMGS=\"{prefix}\"", 500);
+                        //SendATCommand(sp, $"{message}{(char)26}", 500);
+                        //var item = ComDataGrid.FirstOrDefault(dto => dto.COM == sp.PortName);
+                        //var smsId = _dbController.InsertSMSHistory(item.ICCID, phone, prefix, message, amountValue, Guid.Parse(AccountId));
+
+                        //}
                     }
                 }
             }
             catch (Exception ex)
             {
-                logger.Error($"Lấy số điện thoại và gửi SMS thất bại: {ex.Message}");
-                UpdateComData(sp.PortName, dto => dto.Message = "Lấy số điện thoại và gửi SMS thất bại", "Message");
+                logger.Error($"Burn thất bại: {ex.Message}");
+                UpdateComData(sp.PortName, dto => { dto.Message = $"Stop burn"; dto.IsFinish = true; }, "Message", "IsFinish");
+            }
+        }
+
+        private void UploadFileToDevice(SerialPort sp)
+        {
+            var count = 0;
+            while (count < 2)
+            {
+                try
+                {
+
+                }
+                catch (Exception)
+                {
+                    count += 1;
+                }
+            }
+            if (count >= 2)
+            {
+                SendATCommand(sp, "AT+CFUN=1,1", 10000);
+                UploadFileToDevice(sp);
+            }
+        }
+
+        private void ListenEventUploadAmrFileToDevice(SerialPort sp)
+        {
+            try
+            {
+                if (MessageCOMs[sp.PortName].Contains("+QFOPEN:") && MessageCOMs[sp.PortName].Contains("\nOK"))
+                {
+                    var mess = MessageCOMs[sp.PortName];
+                    MessageCOMs[sp.PortName] = string.Empty;
+
+                    string[] parts = mess.AT_Command("+QFOPEN").Split(':');
+                    int fd = int.Parse(parts[2].Trim());
+                    var fileToCOM = FileToCOMs[sp.PortName];
+                    fileToCOM.fd = fd;
+                    SendATCommand(sp, $"AT+QFWRITE={fd},{fileToCOM.data.Length},20\r\n");
+                }
+                else if (MessageCOMs[sp.PortName].Contains("+CME ERROR:") && MessageCOMs[sp.PortName].Contains("AT+QFOPEN="))
+                {
+                    var mess = MessageCOMs[sp.PortName];
+                    MessageCOMs[sp.PortName] = string.Empty;
+                    SendATCommand(sp, "AT+CFUN=1,1", 10000);
+                    var fileToCOM = FileToCOMs[sp.PortName];
+                    sp.DiscardInBuffer();
+                    SendATCommand(sp, $"AT+QFOPEN=\"RAM:content.amr\",0,{fileToCOM.data.Length}");
+                }
+                else if (MessageCOMs[sp.PortName].Contains("CONNECT") && MessageCOMs[sp.PortName].Contains("+QFWRITE"))
+                {
+                    //var mess = MessageCOMs[sp.PortName];
+                    //MessageCOMs[sp.PortName] = string.Empty;
+                    var fileToCOM = FileToCOMs[sp.PortName];
+                    sp.Write(fileToCOM.data, 0, fileToCOM.data.Length);
+                }
+                else if (MessageCOMs[sp.PortName].Contains("CONNECT") && MessageCOMs[sp.PortName].Contains("+QFWRITE:") && MessageCOMs[sp.PortName].Contains("\nOK"))
+                {
+                    var mess = MessageCOMs[sp.PortName];
+                    MessageCOMs[sp.PortName] = string.Empty;
+                    var fileToCOM = FileToCOMs[sp.PortName];
+                    SendATCommand(sp, $"AT+QFCLOSE={fileToCOM.fd}",2000);
+                    FileToCOMs.TryRemove(sp.PortName, out _);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"Error ListenEventUploadAmrFileToDevice: {ex.Message}");
+            }
+        }
+
+        private void ListenEventCallPrefix(SerialPort sp)
+        {
+            try
+            {
+                if (MessageCOMs[sp.PortName].Contains("+CLCC:") && MessageCOMs[sp.PortName].Contains(",0,0,0,0,"))
+                {
+                    var mess = MessageCOMs[sp.PortName];
+                    MessageCOMs[sp.PortName] = string.Empty;
+                    if (RecordingPorts.Contains(sp.PortName)) return;
+                    RecordingPorts.Add(sp.PortName);
+                    // Mở mic ghi âm
+                    SendATCommand(sp, "AT+QAUDRD=1,\"RAM:record.amr\",3");
+                    // Chờ 12s để tổng đài nói
+                    Thread.Sleep(12000);
+                    // Bấm phím 9
+                    //SendATCommand(sp, "AT+VTS=9");
+                    // Phát file đã ghi âm trước đó ở cổng COM
+                    Thread.Sleep(20000);
+                    //
+                    SendATCommand(sp, "ATH", 2000);
+                }
+                else if (MessageCOMs[sp.PortName].Contains("+CLCC:") && MessageCOMs[sp.PortName].Contains(",0,6,0,0,"))
+                {
+                    StopRecording(sp);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"Error ListenEventCallPrefix: {ex.Message}");
             }
         }
 
@@ -478,7 +745,6 @@ namespace LuckBurnTK
                     int rowHandle = gvCOM.LocateByValue("COM", sp.PortName);
                     if (rowHandle < 0)
                     {
-                        MessageCOMs[sp.PortName] = string.Empty;
                         UpdateComData(sp.PortName, dto =>
                         {
                             dto.Message = "Gửi SMS thành công. Cổng COM lỗi không thể đồng bộ dữ liệu, kiểm tra lại cổng COM hoặc kết nối mạng. Tạm dừng Gửi SMS.";
@@ -509,23 +775,6 @@ namespace LuckBurnTK
             }
         }
 
-        private void ListenEventChangeIMEI(SerialPort sp)
-        {
-            try
-            {
-                if (!MessageCOMs[sp.PortName].Contains("AT+EGMR=") || !MessageCOMs[sp.PortName].Contains("\nOK")) return;
-                var mess = MessageCOMs[sp.PortName].AT_Command("AT+EGMR=");
-                MessageCOMs[sp.PortName] = string.Empty;
-                UpdateComData(sp.PortName, dto => dto.Message = "Thay đổi IMEI thành công.)", "Message");
-                Thread.Sleep(5000);
-                SendATCommand(sp, "AT+QSIMSTAT?");
-            }
-            catch (Exception)
-            {
-                UpdateComData(sp.PortName, dto => dto.ICCID = string.Empty, "ICCID");
-            }
-        }
-
         private void BtnUpdateMinAccountControl_Click(object sender, EventArgs e)
         {
             decimal minValue = Convert.ToDecimal(txtMinAccountControl.EditValue);
@@ -536,13 +785,23 @@ namespace LuckBurnTK
             {
                 var sp = SerialPorts.FirstOrDefault(dto => dto.PortName == port.COM);
                 if (sp == null) continue;
-                var thread = new Thread(() =>
+                _ = Task.Run(() =>
                 {
-                    UpdateComData(sp.PortName, dto => dto.Message = "Khởi động lại đốt TK Chính...", "Message");
-                    SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
-                })
-                { IsBackground = true };
-                thread.Start();
+                    _simCheckLimiter.Wait();
+                    try
+                    {
+                        UpdateComData(sp.PortName, dto => dto.Message = "Burning ...", "Message");
+                        SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
+                    }
+                    finally
+                    {
+                        _simCheckLimiter.Release();
+                    }
+                });
             }
             XtraMessageBox.Show("Đã cập nhật giá trị số tiền cần để lại trên TK Chính", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -602,6 +861,38 @@ namespace LuckBurnTK
                 gvCOM.RefreshData();
             }
         }
+        private void BtnChangeIMEI_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            if (XtraMessageBox.Show("Bạn có chắc chắn muốn thay đổi IMEI của tất cả cổng COM?", "Xác nhận",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                foreach (var sp in SerialPorts)
+                {
+                    _ = Task.Run(() =>
+                    {
+                        _simCheckLimiter.Wait();
+                        try
+                        {
+                            if (!sp.IsOpen) sp.Open();
+                            SendATCommand(sp, "AT+EGMR=1,7,\"" + Common.GenerateIMEI() + "\"\r\n");
+                            UpdateComData(sp.PortName, dto =>
+                            {
+                                dto.Message101 = "Đổi IMEI cổng COM..."; dto.Message = "";
+                            }, "Message101", "Message");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
+                        }
+                        finally
+                        {
+                            _simCheckLimiter.Release();
+                        }
+                    });
+                }
+                gvCOM.RefreshData();
+            }
+        }
 
         private void BtnResetCom_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -610,8 +901,9 @@ namespace LuckBurnTK
             {
                 foreach (var sp in SerialPorts)
                 {
-                    Thread thread1 = new Thread(delegate ()
+                    _ = Task.Run(() =>
                     {
+                        _simCheckLimiter.Wait();
                         try
                         {
                             if (!sp.IsOpen) sp.Open();
@@ -637,13 +929,13 @@ namespace LuckBurnTK
                         }
                         catch (Exception ex)
                         {
-                            logger.Error($"[{sp.PortName}] reset com error: {ex.Message}");
+                            Console.WriteLine($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
                         }
-                    })
-                    {
-                        IsBackground = true
-                    };
-                    thread1.Start();
+                        finally
+                        {
+                            _simCheckLimiter.Release();
+                        }
+                    });
                 }
             }
         }
@@ -655,33 +947,41 @@ namespace LuckBurnTK
             {
                 foreach (var sp in SerialPorts)
                 {
-                    Thread thread1 = new Thread(delegate ()
+                    _ = Task.Run(() =>
                     {
-                        if (!sp.IsOpen) sp.Open();
-                        UpdateComData(sp.PortName, dto =>
+                        _simCheckLimiter.Wait();
+                        try
                         {
-                            dto.ICCID = string.Empty;
-                            dto.PhoneNumber = string.Empty;
-                            dto.TKChinh = 0;
-                            dto.Message = "Khôi phục cài đặt gốc cổng COM";
-                        }, "ICCID", "PhoneNumber", "TKChinh", "Message");
-                        SendATCommand(sp, "AT&F", 60000);
-                        //
-                        SendATCommand(sp, "AT+QURCCFG=\"urcport\",\"uart1\"");
-                        // Module được thiết lập để sử dụng chế độ "Auto Baud Rate Detection" (Tự động nhận diện tốc độ truyền).
-                        SendATCommand(sp, "AT+IPR=0");
-                        // Kích hoạt chế độ thông báo sự kiện SIM
-                        SendATCommand(sp, "AT+QSIMSTAT=0");
-                        // Bật hoặc tắt chức năng Phát hiện thẻ SIM
-                        SendATCommand(sp, "AT+QSIMDET=1,0,1");
-                        // Lưu thay đổi
-                        SendATCommand(sp, "AT&W");
-                        InitializeModem(sp);
-                    })
-                    {
-                        IsBackground = true
-                    };
-                    thread1.Start();
+                            if (!sp.IsOpen) sp.Open();
+                            UpdateComData(sp.PortName, dto =>
+                            {
+                                dto.ICCID = string.Empty;
+                                dto.PhoneNumber = string.Empty;
+                                dto.TKChinh = 0;
+                                dto.Message = "Khôi phục cài đặt gốc cổng COM";
+                            }, "ICCID", "PhoneNumber", "TKChinh", "Message");
+                            SendATCommand(sp, "AT&F", 60000);
+                            //
+                            SendATCommand(sp, "AT+QURCCFG=\"urcport\",\"uart1\"");
+                            // Module được thiết lập để sử dụng chế độ "Auto Baud Rate Detection" (Tự động nhận diện tốc độ truyền).
+                            SendATCommand(sp, "AT+IPR=0");
+                            // Kích hoạt chế độ thông báo sự kiện SIM
+                            SendATCommand(sp, "AT+QSIMSTAT=0");
+                            // Bật hoặc tắt chức năng Phát hiện thẻ SIM
+                            SendATCommand(sp, "AT+QSIMDET=1,0,1");
+                            // Lưu thay đổi
+                            SendATCommand(sp, "AT&W");
+                            InitializeModem(sp);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
+                        }
+                        finally
+                        {
+                            _simCheckLimiter.Release();
+                        }
+                    });
                 }
             }
         }
@@ -694,7 +994,7 @@ namespace LuckBurnTK
 
         private void TimerCheckSim_Tick(object sender, EventArgs e)
         {
-            var data = ComDataGrid.Where(item => string.IsNullOrEmpty(item.PhoneNumber) || item.PhoneNumber == "PHONE NOT FOUND").ToList();
+            var data = ComDataGrid.Where(item => string.IsNullOrEmpty(item.PhoneNumber) || item.PhoneNumber == "Phone Unknow").ToList();
             if (data.Count <= 0) return;
             foreach (var item in data)
             {
@@ -716,13 +1016,6 @@ namespace LuckBurnTK
                         _simCheckLimiter.Release();
                     }
                 });
-                //Task.Run(() =>SendATCommand(com, "AT+QSIMSTAT?"));
-                //Thread thread = new Thread(() =>
-                //{
-                //    SendATCommand(com, "AT+QSIMSTAT?");
-                //})
-                //{ IsBackground = true };
-                //thread.Start();
             }
         }
 
@@ -773,24 +1066,18 @@ namespace LuckBurnTK
         private void GvCOM_RowCellStyle(object sender, RowCellStyleEventArgs e)
         {
             GridView view = sender as GridView;
-            if (e.Column.FieldName == "PhoneNumber")
+            if (e.Column.FieldName == "Message")
             {
-                var isFinish = bool.Parse(gvCOM.GetRowCellValue(e.RowHandle, "IsFinish")?.ToString());
-                if (isFinish)
+                var isFinish = gvCOM.GetRowCellValue(e.RowHandle, "Message").ToString();
+                if (isFinish == "Stop burn")
                 {
                     if (!view.IsRowSelected(e.RowHandle))
-                    {
-                        e.Appearance.ForeColor = Color.White;
-                        e.Appearance.BackColor = Color.OrangeRed;
-                    }
+                        e.Appearance.ForeColor = Color.Red;
                 }
                 else
                 {
                     if (!view.IsRowSelected(e.RowHandle))
-                    {
-                        e.Appearance.ForeColor = Color.Black;
-                        e.Appearance.BackColor = Color.White;
-                    }
+                        e.Appearance.ForeColor = Color.Green;
                 }
             }
         }

@@ -29,21 +29,22 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            DevExpress.Utils.SuperToolTip superToolTip5 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem5 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip6 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem6 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip7 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem7 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip8 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem8 = new DevExpress.Utils.ToolTipItem();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BurnTKForm));
+            DevExpress.Utils.SuperToolTip superToolTip1 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem1 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip2 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem2 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip3 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem3 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip4 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem4 = new DevExpress.Utils.ToolTipItem();
             this.barManager = new DevExpress.XtraBars.BarManager(this.components);
             this.mainToolBar = new DevExpress.XtraBars.Bar();
             this.btnUpdateComPort = new DevExpress.XtraBars.BarButtonItem();
             this.BtnDoanhThu = new DevExpress.XtraBars.BarButtonItem();
             this.btnComSettingDropDown = new DevExpress.XtraBars.BarSubItem();
             this.btnResetComPort = new DevExpress.XtraBars.BarButtonItem();
+            this.btnChangeIMEI = new DevExpress.XtraBars.BarButtonItem();
             this.btnResetCom = new DevExpress.XtraBars.BarButtonItem();
             this.btnRestoreSettings = new DevExpress.XtraBars.BarButtonItem();
             this.barBtnRule = new DevExpress.XtraBars.BarButtonItem();
@@ -62,7 +63,6 @@
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.gcCOM = new DevExpress.XtraGrid.GridControl();
             this.gvCOM = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.IMEI = new DevExpress.XtraGrid.Columns.GridColumn();
             this.COM = new DevExpress.XtraGrid.Columns.GridColumn();
             this.STT = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemComboBox1 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
@@ -71,10 +71,11 @@
             this.TKChinh = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Message101 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Message = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.IMEI = new DevExpress.XtraGrid.Columns.GridColumn();
             this.SmsId = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.Telecom = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemTextEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.TimerCheckSim = new System.Windows.Forms.Timer(this.components);
-            this.Telecom = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).BeginInit();
@@ -104,8 +105,9 @@
             this.btnResetCom,
             this.btnRestoreSettings,
             this.BtnDoanhThu,
-            this.barBtnRule});
-            this.barManager.MaxItemId = 11;
+            this.barBtnRule,
+            this.btnChangeIMEI});
+            this.barManager.MaxItemId = 12;
             this.barManager.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemTextEdit1});
             // 
@@ -129,9 +131,9 @@
             this.btnUpdateComPort.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdateComPort.ImageOptions.Image")));
             this.btnUpdateComPort.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnUpdateComPort.ImageOptions.LargeImage")));
             this.btnUpdateComPort.Name = "btnUpdateComPort";
-            toolTipItem5.Text = "Cập nhật lại số thứ tự cổng COM";
-            superToolTip5.Items.Add(toolTipItem5);
-            this.btnUpdateComPort.SuperTip = superToolTip5;
+            toolTipItem1.Text = "Cập nhật lại số thứ tự cổng COM";
+            superToolTip1.Items.Add(toolTipItem1);
+            this.btnUpdateComPort.SuperTip = superToolTip1;
             this.btnUpdateComPort.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnUpdateComPort_ItemClick);
             // 
             // BtnDoanhThu
@@ -153,6 +155,7 @@
             this.btnComSettingDropDown.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnComSettingDropDown.ImageOptions.LargeImage")));
             this.btnComSettingDropDown.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnResetComPort, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnChangeIMEI, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnResetCom, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnRestoreSettings, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.btnComSettingDropDown.Name = "btnComSettingDropDown";
@@ -164,10 +167,19 @@
             this.btnResetComPort.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnResetComPort.ImageOptions.Image")));
             this.btnResetComPort.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnResetComPort.ImageOptions.LargeImage")));
             this.btnResetComPort.Name = "btnResetComPort";
-            toolTipItem6.Text = "Đặt lại số thứ tự cổng COM";
-            superToolTip6.Items.Add(toolTipItem6);
-            this.btnResetComPort.SuperTip = superToolTip6;
+            toolTipItem2.Text = "Đặt lại số thứ tự cổng COM";
+            superToolTip2.Items.Add(toolTipItem2);
+            this.btnResetComPort.SuperTip = superToolTip2;
             this.btnResetComPort.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnResetComPort_ItemClick);
+            // 
+            // btnChangeIMEI
+            // 
+            this.btnChangeIMEI.Caption = "Thay đổi IMEI cổng COM";
+            this.btnChangeIMEI.Id = 11;
+            this.btnChangeIMEI.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnChangeIMEI.ImageOptions.Image")));
+            this.btnChangeIMEI.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnChangeIMEI.ImageOptions.LargeImage")));
+            this.btnChangeIMEI.Name = "btnChangeIMEI";
+            this.btnChangeIMEI.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnChangeIMEI_ItemClick);
             // 
             // btnResetCom
             // 
@@ -176,9 +188,9 @@
             this.btnResetCom.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnResetCom.ImageOptions.Image")));
             this.btnResetCom.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnResetCom.ImageOptions.LargeImage")));
             this.btnResetCom.Name = "btnResetCom";
-            toolTipItem7.Text = "Reset lại cổng COM";
-            superToolTip7.Items.Add(toolTipItem7);
-            this.btnResetCom.SuperTip = superToolTip7;
+            toolTipItem3.Text = "Reset lại cổng COM";
+            superToolTip3.Items.Add(toolTipItem3);
+            this.btnResetCom.SuperTip = superToolTip3;
             this.btnResetCom.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnResetCom_ItemClick);
             // 
             // btnRestoreSettings
@@ -188,9 +200,9 @@
             this.btnRestoreSettings.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnRestoreSettings.ImageOptions.Image")));
             this.btnRestoreSettings.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnRestoreSettings.ImageOptions.LargeImage")));
             this.btnRestoreSettings.Name = "btnRestoreSettings";
-            toolTipItem8.Text = "Khôi phục lại cài đặt mặc định";
-            superToolTip8.Items.Add(toolTipItem8);
-            this.btnRestoreSettings.SuperTip = superToolTip8;
+            toolTipItem4.Text = "Khôi phục lại cài đặt mặc định";
+            superToolTip4.Items.Add(toolTipItem4);
+            this.btnRestoreSettings.SuperTip = superToolTip4;
             this.btnRestoreSettings.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnRestoreSettings_ItemClick);
             // 
             // barBtnRule
@@ -384,21 +396,6 @@
             this.gvCOM.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CellSelect;
             this.gvCOM.OptionsView.ShowGroupPanel = false;
             this.gvCOM.RowCellStyle += new DevExpress.XtraGrid.Views.Grid.RowCellStyleEventHandler(this.GvCOM_RowCellStyle);
-            // 
-            // IMEI
-            // 
-            this.IMEI.AppearanceCell.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.IMEI.AppearanceCell.Options.UseFont = true;
-            this.IMEI.AppearanceCell.Options.UseTextOptions = true;
-            this.IMEI.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.IMEI.Caption = "IMEI";
-            this.IMEI.FieldName = "IMEI";
-            this.IMEI.Name = "IMEI";
-            this.IMEI.OptionsColumn.AllowEdit = false;
-            this.IMEI.OptionsColumn.AllowSize = false;
-            this.IMEI.OptionsColumn.FixedWidth = true;
-            this.IMEI.OptionsFilter.AllowAutoFilter = false;
-            this.IMEI.Width = 120;
             // 
             // COM
             // 
@@ -1041,22 +1038,22 @@
             // 
             this.Message101.AppearanceCell.Options.UseTextOptions = true;
             this.Message101.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.Message101.Caption = "*101#";
+            this.Message101.Caption = "Tin nhắn";
             this.Message101.FieldName = "Message101";
             this.Message101.Name = "Message101";
             this.Message101.Visible = true;
             this.Message101.VisibleIndex = 5;
-            this.Message101.Width = 603;
+            this.Message101.Width = 693;
             // 
             // Message
             // 
-            this.Message.AppearanceCell.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Message.AppearanceCell.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Message.AppearanceCell.Options.UseFont = true;
             this.Message.AppearanceCell.Options.UseTextOptions = true;
             this.Message.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
             this.Message.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
             this.Message.AppearanceHeader.FontStyleDelta = System.Drawing.FontStyle.Bold;
-            this.Message.Caption = "Thông báo";
+            this.Message.Caption = "Trạng Thái";
             this.Message.FieldName = "Message";
             this.Message.MinWidth = 23;
             this.Message.Name = "Message";
@@ -1067,7 +1064,22 @@
             this.Message.OptionsFilter.AllowFilter = false;
             this.Message.Visible = true;
             this.Message.VisibleIndex = 6;
-            this.Message.Width = 300;
+            this.Message.Width = 110;
+            // 
+            // IMEI
+            // 
+            this.IMEI.AppearanceCell.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.IMEI.AppearanceCell.Options.UseFont = true;
+            this.IMEI.AppearanceCell.Options.UseTextOptions = true;
+            this.IMEI.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.IMEI.Caption = "IMEI";
+            this.IMEI.FieldName = "IMEI";
+            this.IMEI.Name = "IMEI";
+            this.IMEI.OptionsColumn.AllowEdit = false;
+            this.IMEI.OptionsColumn.AllowSize = false;
+            this.IMEI.OptionsColumn.FixedWidth = true;
+            this.IMEI.OptionsFilter.AllowAutoFilter = false;
+            this.IMEI.Width = 120;
             // 
             // SmsId
             // 
@@ -1078,6 +1090,12 @@
             this.SmsId.Caption = "SmsId";
             this.SmsId.FieldName = "SmsId";
             this.SmsId.Name = "SmsId";
+            // 
+            // Telecom
+            // 
+            this.Telecom.Caption = "Telecom";
+            this.Telecom.FieldName = "Telecom";
+            this.Telecom.Name = "Telecom";
             // 
             // repositoryItemTextEdit2
             // 
@@ -1090,12 +1108,6 @@
             this.TimerCheckSim.Enabled = true;
             this.TimerCheckSim.Interval = 10000;
             this.TimerCheckSim.Tick += new System.EventHandler(this.TimerCheckSim_Tick);
-            // 
-            // Telecom
-            // 
-            this.Telecom.Caption = "Telecom";
-            this.Telecom.FieldName = "Telecom";
-            this.Telecom.Name = "Telecom";
             // 
             // BurnTKForm
             // 
@@ -1169,5 +1181,6 @@
         private DevExpress.XtraGrid.Columns.GridColumn Message101;
         private DevExpress.XtraBars.BarButtonItem barBtnRule;
         private DevExpress.XtraGrid.Columns.GridColumn Telecom;
+        private DevExpress.XtraBars.BarButtonItem btnChangeIMEI;
     }
 }

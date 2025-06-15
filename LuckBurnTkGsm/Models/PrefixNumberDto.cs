@@ -1,4 +1,6 @@
-﻿namespace LuckBurnTK.Models
+﻿using System;
+
+namespace LuckBurnTK.Models
 {
     public class PrefixNumberDto
     {
@@ -28,7 +30,7 @@
             public double amount { get; set; }
             public int priority { get; set; }
             public int quantity { get; set; }
-            public string history_id { get; set; }
+            public Guid history_id { get; set; }
         }
 
         public enum PrefixNumberType

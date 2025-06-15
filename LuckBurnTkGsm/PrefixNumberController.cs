@@ -15,17 +15,18 @@ namespace LuckBurnTK
         {
             _httpClient = new HttpClient
             {
-                BaseAddress = new Uri("https://luckburn.mobi/"),
+                BaseAddress = new Uri("https://luckburn.mobi/api/"),
                 Timeout = TimeSpan.FromSeconds(30)
             };
         }
 
-        public async Task<GetPrefixSmsRes> GetPrefixNumber(GetPrefixSmsReq req)
+        public async Task<GetPrefixSmsRes> GetPrefixNumber(GetPrefixSmsReq req, string apikey)
         {
             try
             {
                 string jsonData = JsonConvert.SerializeObject(req);
                 var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                content.Headers.Add("x-api-key", apikey);
                 HttpResponseMessage response = await _httpClient.PostAsync("sms-call-center/get-prefix-number", content);
                 if (response.IsSuccessStatusCode)
                 {
@@ -33,7 +34,8 @@ namespace LuckBurnTK
                     GetPrefixSmsRes result = JsonConvert.DeserializeObject<GetPrefixSmsRes>(responseBody);
                     return result;
                 }
-                return null;
+                if (response.StatusCode == System.Net.HttpStatusCode.Conflict) return null;
+                throw new Exception("Không có dịch vụ tương ứng");
             }
             catch (Exception ex)
             {

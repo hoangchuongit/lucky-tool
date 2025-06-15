@@ -146,5 +146,18 @@ namespace LuckBurnTK.Utils
             }
             return null;
         }
+
+        public static byte[] RemoveConnectHeader(byte[] buffer)
+        {
+            string header = "\r\nCONNECT\r\n";
+            string bufferAsString = Encoding.ASCII.GetString(buffer);
+            int headerIndex = bufferAsString.IndexOf(header);
+            if (headerIndex == -1)return buffer;
+            int byteOffset = Encoding.ASCII.GetByteCount(bufferAsString.Substring(0, headerIndex + header.Length));
+            int remainingLength = buffer.Length - byteOffset;
+            byte[] newBuffer = new byte[remainingLength];
+            Buffer.BlockCopy(buffer, byteOffset, newBuffer, 0, remainingLength);
+            return newBuffer;
+        }
     }
 }
