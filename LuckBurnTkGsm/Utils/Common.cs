@@ -10,6 +10,8 @@ namespace LuckBurnTK.Utils
 {
     public class Common
     {
+        private static readonly Random _random = new Random();
+
         public static IEnumerable<Dictionary<string, string>> GetFullPortNames()
         {
             using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Caption LIKE '%(COM%'"))
@@ -146,18 +148,28 @@ namespace LuckBurnTK.Utils
             }
             return null;
         }
-
         public static byte[] RemoveConnectHeader(byte[] buffer)
         {
             string header = "\r\nCONNECT\r\n";
             string bufferAsString = Encoding.ASCII.GetString(buffer);
             int headerIndex = bufferAsString.IndexOf(header);
-            if (headerIndex == -1)return buffer;
+            if (headerIndex == -1) return buffer;
             int byteOffset = Encoding.ASCII.GetByteCount(bufferAsString.Substring(0, headerIndex + header.Length));
             int remainingLength = buffer.Length - byteOffset;
             byte[] newBuffer = new byte[remainingLength];
             Buffer.BlockCopy(buffer, byteOffset, newBuffer, 0, remainingLength);
             return newBuffer;
         }
+
+        public static int GenerateRandomCallDuration()
+        {
+            // Chọn ngẫu nhiên 1 trong 2 khoảng
+            bool useFirstRange = _random.Next(2) == 0;
+            if (useFirstRange)
+                return _random.Next(10000, 26000); // 26 không bao gồm, nên là 10-25
+            else
+                return _random.Next(45000, 61000); // 61 không bao gồm, nên là 45-60
+        }
+
     }
 }

@@ -15,9 +15,10 @@ namespace LuckBurnTK.Models
         public class ReleaseSlotReq
         {
             public string request_id { get; set; }
-            public string history_id { get; set; }
+            public Guid history_id { get; set; }
             public string prefix { get; set; }
             public string prefix_unit { get; set; }
+            public int duration { get; set; }
         }
 
         public class GetPrefixSmsRes
@@ -27,9 +28,6 @@ namespace LuckBurnTK.Models
             public string prefix_unit { get; set; }
             public PrefixNumberType type { get; set; }
             public string message { get; set; }
-            public double amount { get; set; }
-            public int priority { get; set; }
-            public int quantity { get; set; }
             public Guid history_id { get; set; }
         }
 

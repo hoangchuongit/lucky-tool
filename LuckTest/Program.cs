@@ -12,7 +12,7 @@ namespace LuckTest
 
         static void Main(string[] args)
         {
-            string portName = "COM10"; // ⚠️ Đổi COM port đúng với thiết bị
+            string portName = "COM16"; // ⚠️ Đổi COM port đúng với thiết bị
             string phoneNumber = "0349751746"; // ⚠️ Đổi số điện thoại gọi đến
             string filename = "HỖ-TRỢ-1-KỲ-19S.amr"; // ⚠️ Tên file âm thanh
             string filePath = $"D:\\Freelancer\\LuckTools\\LuckTest\\{filename}";
@@ -27,6 +27,9 @@ namespace LuckTest
             {
                 serialPort.Open();
                 byte[] data = File.ReadAllBytes(filePath);
+
+                serialPort.WriteLine("AT+QFDWL=\"RAM:record.amr\"");
+                Thread.Sleep(1000);
 
                 Console.WriteLine("🔄 Reset modem...");
                 serialPort.Write("AT+CFUN=1,1\r\n");
