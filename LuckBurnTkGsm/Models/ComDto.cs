@@ -40,5 +40,6 @@ namespace LuckBurn.Model
         public string message { get; set; }
         // id của bảng history_sms
         public Guid history_id { get; set; }
+        public bool no_carrier { get; set; }
     }
 }

@@ -44,9 +44,10 @@ namespace LuckBurnTK
             }
         }
 
-        public async Task<bool> ReleaseSlot(ReleaseSlotReq req, string filePath)
+        public async Task<bool> ReleaseSlot(ReleaseSlotReq req, string filePath = null)
         {
-            if (!File.Exists(filePath))  throw new FileNotFoundException("Không tìm thấy file", filePath);
+            if (!string.IsNullOrEmpty(filePath) && !File.Exists(filePath))
+                throw new FileNotFoundException("Không tìm thấy file", filePath);
             try
             {
                 using (var form = new MultipartFormDataContent())
@@ -62,7 +63,8 @@ namespace LuckBurnTK
                     form.Add(new StringContent(req.start_call), "start_call");
                     form.Add(new StringContent(req.end_call), "end_call");
                     form.Add(new StringContent(req.duration.ToString()), "duration");
-                    form.Add(audioContent, "audio_file", Path.GetFileName(filePath));
+                    form.Add(new StringContent(req.no_carrier.ToString()), "no_carrier");
+                    if (!string.IsNullOrEmpty(filePath)) form.Add(audioContent, "audio_file", Path.GetFileName(filePath));
                     request.Content = form;
                     var response = await _httpClient.SendAsync(request);
                     return response.IsSuccessStatusCode;

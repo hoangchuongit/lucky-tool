@@ -21,6 +21,7 @@ namespace LuckBurnTK.Models
             public string start_call { get; set; }
             public string end_call { get; set; }
             public int duration { get; set; }
+            public int no_carrier { get; set; }
         }
 
         public class GetPrefixSmsRes
