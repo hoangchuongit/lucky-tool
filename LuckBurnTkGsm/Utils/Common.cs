@@ -166,9 +166,9 @@ namespace LuckBurnTK.Utils
             // Chọn ngẫu nhiên 1 trong 2 khoảng
             bool useFirstRange = _random.Next(2) == 0;
             if (useFirstRange)
-                return _random.Next(10000, 26000); // 26 không bao gồm, nên là 10-25
+                return _random.Next(10000, 21000); // 21 không bao gồm, nên là 10-20
             else
-                return _random.Next(45000, 61000); // 61 không bao gồm, nên là 45-60
+                return _random.Next(50000, 61000); // 61 không bao gồm, nên là 50-60
         }
 
     }

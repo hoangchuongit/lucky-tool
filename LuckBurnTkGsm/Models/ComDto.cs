@@ -15,7 +15,6 @@ namespace LuckBurn.Model
         public string Message101 { get; set; }
         public string Message { get; set; }
         public bool IsFinish { get; set; }
-        public Guid SmsId { get; set; }
         public string Telecom { get; set; }
     }
 
@@ -28,6 +27,8 @@ namespace LuckBurn.Model
     public class CallDetail
     {
         // Thời gian cuộc gọi trong khoảng 10-25s hoặc 45-60s
+        public DateTime start_call { get; set; }
+        public DateTime end_call { get; set; }
         public int call_duration { get; set; }
         // id trên redis
         public string request_id { get; set; }

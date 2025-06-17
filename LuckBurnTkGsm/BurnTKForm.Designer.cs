@@ -72,7 +72,6 @@
             this.Message101 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Message = new DevExpress.XtraGrid.Columns.GridColumn();
             this.IMEI = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.SmsId = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Telecom = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemTextEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.TimerCheckSim = new System.Windows.Forms.Timer(this.components);
@@ -388,7 +387,6 @@
             this.Message101,
             this.Message,
             this.IMEI,
-            this.SmsId,
             this.Telecom});
             this.gvCOM.GridControl = this.gcCOM;
             this.gvCOM.Name = "gvCOM";
@@ -1081,16 +1079,6 @@
             this.IMEI.OptionsFilter.AllowAutoFilter = false;
             this.IMEI.Width = 120;
             // 
-            // SmsId
-            // 
-            this.SmsId.AppearanceCell.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SmsId.AppearanceCell.Options.UseFont = true;
-            this.SmsId.AppearanceCell.Options.UseTextOptions = true;
-            this.SmsId.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.SmsId.Caption = "SmsId";
-            this.SmsId.FieldName = "SmsId";
-            this.SmsId.Name = "SmsId";
-            // 
             // Telecom
             // 
             this.Telecom.Caption = "Telecom";
@@ -1176,7 +1164,6 @@
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit repositoryItemTextEdit2;
         private DevExpress.XtraGrid.Columns.GridColumn TKChinh;
         private System.Windows.Forms.Timer TimerCheckSim;
-        private DevExpress.XtraGrid.Columns.GridColumn SmsId;
         private DevExpress.XtraBars.BarButtonItem BtnDoanhThu;
         private DevExpress.XtraGrid.Columns.GridColumn Message101;
         private DevExpress.XtraBars.BarButtonItem barBtnRule;

@@ -15,9 +15,11 @@ namespace LuckBurnTK.Models
         public class ReleaseSlotReq
         {
             public string request_id { get; set; }
-            public Guid history_id { get; set; }
+            public string history_id { get; set; }
             public string prefix { get; set; }
             public string prefix_unit { get; set; }
+            public string start_call { get; set; }
+            public string end_call { get; set; }
             public int duration { get; set; }
         }
 
