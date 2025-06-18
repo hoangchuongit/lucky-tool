@@ -20,6 +20,8 @@ namespace LuckBurnTK.Models
             public string prefix_unit { get; set; }
             public string start_call { get; set; }
             public string end_call { get; set; }
+            public string start_record { get; set; }
+            public string end_record { get; set; }
             public int duration { get; set; }
             public int no_carrier { get; set; }
         }

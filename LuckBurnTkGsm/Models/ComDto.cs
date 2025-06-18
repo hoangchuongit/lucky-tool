@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using static LuckBurnTK.Models.PrefixNumberDto;
 
 namespace LuckBurn.Model
@@ -26,10 +27,6 @@ namespace LuckBurn.Model
 
     public class CallDetail
     {
-        // Thời gian cuộc gọi trong khoảng 10-25s hoặc 45-60s
-        public DateTime start_call { get; set; }
-        public DateTime end_call { get; set; }
-        public int call_duration { get; set; }
         // id trên redis
         public string request_id { get; set; }
         // đầu số gửi SMS hoặc Call
@@ -40,6 +37,11 @@ namespace LuckBurn.Model
         public string message { get; set; }
         // id của bảng history_sms
         public Guid history_id { get; set; }
+        public DateTime start_call { get; set; }
+        public DateTime start_record { get; set; }
+        public DateTime end_record { get; set; }
+        // Thời gian cuộc gọi trong khoảng 10-25s hoặc 45-60s
+        public int call_duration { get; set; }
         public bool no_carrier { get; set; }
     }
 }

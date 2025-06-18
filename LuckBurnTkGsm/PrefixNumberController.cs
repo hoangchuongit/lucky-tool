@@ -62,6 +62,8 @@ namespace LuckBurnTK
                     form.Add(new StringContent(req.prefix_unit), "prefix_unit");
                     form.Add(new StringContent(req.start_call), "start_call");
                     form.Add(new StringContent(req.end_call), "end_call");
+                    form.Add(new StringContent(req.start_record), "start_record");
+                    form.Add(new StringContent(req.end_record), "end_record");
                     form.Add(new StringContent(req.duration.ToString()), "duration");
                     form.Add(new StringContent(req.no_carrier.ToString()), "no_carrier");
                     if (!string.IsNullOrEmpty(filePath)) form.Add(audioContent, "audio_file", Path.GetFileName(filePath));

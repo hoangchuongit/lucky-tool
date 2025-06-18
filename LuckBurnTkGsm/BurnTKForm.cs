@@ -248,17 +248,24 @@ namespace LuckBurnTK
             // Trigger: Trạng thái SIM đã bị tháo
             if (MessageCOMs[sp.PortName].Contains("+CPIN: NOT READY"))
             {
-                MessageCOMs[sp.PortName] = string.Empty;
-                // Cập nhật gridview
-                UpdateComData(sp.PortName, dto =>
+                try
                 {
-                    dto.ICCID = string.Empty;
-                    dto.PhoneNumber = string.Empty;
-                    dto.TKChinh = 0;
-                    dto.Message101 = string.Empty;
-                    dto.Message = string.Empty;
-                    dto.IsFinish = false;
-                }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message", "Tele");
+                    MessageCOMs[sp.PortName] = string.Empty;
+                    // Cập nhật gridview
+                    UpdateComData(sp.PortName, dto =>
+                    {
+                        dto.ICCID = string.Empty;
+                        dto.PhoneNumber = string.Empty;
+                        dto.TKChinh = 0;
+                        dto.Message101 = string.Empty;
+                        dto.Message = string.Empty;
+                        dto.IsFinish = false;
+                    }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message", "Tele");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error($"Tháo SIM thất bại: {ex.Message}");
+                }
             }
 
             // Trigger: Trạng thái SIM đã cắm
@@ -275,7 +282,10 @@ namespace LuckBurnTK
             SerialPort sp = (SerialPort)sender;
             logger.Error($"Error on port {sp.PortName}: {e.EventType}");
             MessageCOMs[sp.PortName] = string.Empty;
-            UpdateComData(sp.PortName, dto => dto.PhoneNumber = "Phone Unknow", "PhoneNumber");
+            UpdateComData(sp.PortName, dto =>
+            {
+                dto.PhoneNumber = "Phone Unknow"; dto.TKChinh = 0; dto.Message101 = ""; dto.Message = ""; dto.IsFinish = true;
+            }, "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish");
         }
 
         /// <summary>
@@ -401,7 +411,7 @@ namespace LuckBurnTK
                 else if (mess.Contains("vinaphone")) provider = "Vinaphone";
                 else provider = "Other";
                 UpdateComData(sp.PortName, dto => dto.Telecom = provider, "Telecom");
-                // Gửi AT lấy số điện thoại và gửi SMS
+                // Gửi AT lấy số điện thoại và thông tin tài khoản chính
                 SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
             }
             catch (Exception)
@@ -499,7 +509,7 @@ namespace LuckBurnTK
                         SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                         return;
                     }
-                    if (sp.PortName != "COM9") return;
+                    if (sp.PortName != "COM39") return;
                     UpdateComData(sp.PortName, dto => { dto.Message = "Burning ..."; dto.IsFinish = false; }, "Message", "IsFinish");
                     if (RecordingPorts.ContainsKey(sp.PortName)) return;
                     RecordingPorts.TryAdd(sp.PortName, new CallDetail()
@@ -510,6 +520,7 @@ namespace LuckBurnTK
                         request_id = prefixSmsRes.request_id,
                         history_id = prefixSmsRes.history_id,
                         message = prefixSmsRes.message,
+                        start_call = DateTime.Now,
                     });
                     if (prefixSmsRes.type == PrefixNumberType.CALL)
                     {
@@ -554,6 +565,8 @@ namespace LuckBurnTK
                         prefix = callDetail.prefix,
                         prefix_unit = callDetail.prefix_unit,
                         request_id = callDetail.request_id,
+                        start_call = callDetail.start_call.ToString("yyyy-MM-dd HH:mm:ss"),
+                        end_call = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                         no_carrier = 0,
                     };
                     await _prefixController.ReleaseSlot(releaseSlotReq);
@@ -562,8 +575,8 @@ namespace LuckBurnTK
                     // tạm dừng
                     int delay = new Random(Guid.NewGuid().GetHashCode()).Next(5000, 10001);
                     Thread.Sleep(delay);
-                    // Gửi AT lấy số điện thoại và gửi SMS
-                    SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
+                    // Gửi AT lấy số điện thoại và thông tin tài khoản chính
+                    //SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                 }
             }
             catch (Exception)
@@ -660,10 +673,9 @@ namespace LuckBurnTK
                     var mess = MessageCOMs[sp.PortName];
                     MessageCOMs[sp.PortName] = string.Empty;
                     var callDetail = RecordingPorts[sp.PortName];
-                    Console.WriteLine($"callDetail.call_duration: {callDetail.call_duration}");
                     // Mở mic ghi âm
                     SendATCommand(sp, "AT+QAUDRD=1,\"RAM:record.amr\",3");
-                    callDetail.start_call = DateTime.Now.ToUniversalTime();
+                    callDetail.start_record = DateTime.Now;
                     // Chờ 20s để tổng đài nói
                     //Thread.Sleep(20000);
                     // TODO: Bấm phím 9
@@ -702,7 +714,7 @@ namespace LuckBurnTK
                 // Dừng ghi âm
                 SendATCommand(sp, "AT+QAUDRD=0", 1000);
                 // Cập nhật thời gian dừng
-                callDetail.end_call = DateTime.Now.ToUniversalTime();
+                callDetail.end_record = DateTime.Now;
                 // Tải xuống file âm thanh record.amr từ RAM của module.
                 sp.WriteLine("AT+QFDWL=\"RAM:record.amr\"");
                 Thread.Sleep(1000);
@@ -750,7 +762,9 @@ namespace LuckBurnTK
                     prefix_unit = callDetail.prefix_unit,
                     request_id = callDetail.request_id,
                     start_call = callDetail.start_call.ToString("yyyy-MM-dd HH:mm:ss"),
-                    end_call = callDetail.end_call.ToString("yyyy-MM-dd HH:mm:ss"),
+                    end_call = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    start_record = callDetail.start_record.ToString("yyyy-MM-dd HH:mm:ss"),
+                    end_record = callDetail.end_record.ToString("yyyy-MM-dd HH:mm:ss"),
                     duration = (int)Math.Round(callDetail.call_duration / 1000.0),
                     no_carrier = callDetail.no_carrier ? 1 : 0,
                 };
@@ -761,6 +775,9 @@ namespace LuckBurnTK
                 // Xóa khỏi danh sách cổng COM đang ghi âm
                 if (RecordingPorts.ContainsKey(sp.PortName)) RecordingPorts.TryRemove(sp.PortName, out _);
                 MessageCOMs[sp.PortName] = string.Empty;
+                // Gửi AT lấy số điện thoại và thông tin tài khoản chính
+                if (!callDetail.no_carrier)
+                    SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
             }
             catch (Exception ex)
             {
