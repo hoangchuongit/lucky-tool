@@ -40,21 +40,27 @@
             DevExpress.Utils.ToolTipItem toolTipItem4 = new DevExpress.Utils.ToolTipItem();
             this.barManager = new DevExpress.XtraBars.BarManager(this.components);
             this.mainToolBar = new DevExpress.XtraBars.Bar();
-            this.btnUpdateComPort = new DevExpress.XtraBars.BarButtonItem();
+            this.barSubItem1 = new DevExpress.XtraBars.BarSubItem();
+            this.btnDoiMatKhau = new DevExpress.XtraBars.BarButtonItem();
+            this.btnUserInfor = new DevExpress.XtraBars.BarButtonItem();
+            this.barBtnRule = new DevExpress.XtraBars.BarButtonItem();
+            this.BtnTotalRevenue = new DevExpress.XtraBars.BarButtonItem();
             this.BtnDoanhThu = new DevExpress.XtraBars.BarButtonItem();
             this.btnComSettingDropDown = new DevExpress.XtraBars.BarSubItem();
+            this.btnUpdateComPort = new DevExpress.XtraBars.BarButtonItem();
             this.btnResetComPort = new DevExpress.XtraBars.BarButtonItem();
             this.btnChangeIMEI = new DevExpress.XtraBars.BarButtonItem();
             this.btnResetCom = new DevExpress.XtraBars.BarButtonItem();
             this.btnRestoreSettings = new DevExpress.XtraBars.BarButtonItem();
-            this.barBtnRule = new DevExpress.XtraBars.BarButtonItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
-            this.txtMinAccount = new DevExpress.XtraBars.BarEditItem();
-            this.repositoryItemTextEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.btnStartStop = new DevExpress.XtraBars.BarButtonItem();
+            this.PopupResetCom = new DevExpress.XtraBars.BarButtonItem();
+            this.PopupChangeIMEI = new DevExpress.XtraBars.BarButtonItem();
+            this.PopupBurn = new DevExpress.XtraBars.BarButtonItem();
+            this.repositoryItemTextEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.panelControl1 = new DevExpress.XtraEditors.PanelControl();
             this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
@@ -75,6 +81,7 @@
             this.Telecom = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemTextEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.TimerCheckSim = new System.Windows.Forms.Timer(this.components);
+            this.popupMenu1 = new DevExpress.XtraBars.PopupMenu(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).BeginInit();
@@ -84,6 +91,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.gvCOM)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.popupMenu1)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager
@@ -94,9 +102,9 @@
             this.barManager.DockControls.Add(this.barDockControlBottom);
             this.barManager.DockControls.Add(this.barDockControlLeft);
             this.barManager.DockControls.Add(this.barDockControlRight);
+            this.barManager.DockWindowTabFont = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.barManager.Form = this;
             this.barManager.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
-            this.txtMinAccount,
             this.btnStartStop,
             this.btnComSettingDropDown,
             this.btnUpdateComPort,
@@ -105,8 +113,15 @@
             this.btnRestoreSettings,
             this.BtnDoanhThu,
             this.barBtnRule,
-            this.btnChangeIMEI});
-            this.barManager.MaxItemId = 12;
+            this.btnChangeIMEI,
+            this.BtnTotalRevenue,
+            this.PopupResetCom,
+            this.PopupChangeIMEI,
+            this.PopupBurn,
+            this.barSubItem1,
+            this.btnDoiMatKhau,
+            this.btnUserInfor});
+            this.barManager.MaxItemId = 19;
             this.barManager.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemTextEdit1});
             // 
@@ -117,30 +132,94 @@
             this.mainToolBar.DockRow = 0;
             this.mainToolBar.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.mainToolBar.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnUpdateComPort, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem1),
+            new DevExpress.XtraBars.LinkPersistInfo(this.barBtnRule),
+            new DevExpress.XtraBars.LinkPersistInfo(this.BtnTotalRevenue),
             new DevExpress.XtraBars.LinkPersistInfo(this.BtnDoanhThu),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnComSettingDropDown, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barBtnRule)});
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnComSettingDropDown, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
+            this.mainToolBar.OptionsBar.AllowQuickCustomization = false;
+            this.mainToolBar.OptionsBar.DisableClose = true;
+            this.mainToolBar.OptionsBar.DisableCustomization = true;
+            this.mainToolBar.OptionsBar.DrawBorder = false;
+            this.mainToolBar.OptionsBar.DrawDragBorder = false;
             this.mainToolBar.Text = "Main Toolbar";
             // 
-            // btnUpdateComPort
+            // barSubItem1
             // 
-            this.btnUpdateComPort.Caption = "Cập nhật STT cổng COM";
-            this.btnUpdateComPort.Id = 3;
-            this.btnUpdateComPort.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdateComPort.ImageOptions.Image")));
-            this.btnUpdateComPort.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnUpdateComPort.ImageOptions.LargeImage")));
-            this.btnUpdateComPort.Name = "btnUpdateComPort";
-            toolTipItem1.Text = "Cập nhật lại số thứ tự cổng COM";
-            superToolTip1.Items.Add(toolTipItem1);
-            this.btnUpdateComPort.SuperTip = superToolTip1;
-            this.btnUpdateComPort.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnUpdateComPort_ItemClick);
+            this.barSubItem1.Caption = "Tài khoản";
+            this.barSubItem1.Id = 16;
+            this.barSubItem1.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barSubItem1.ImageOptions.Image")));
+            this.barSubItem1.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barSubItem1.ImageOptions.LargeImage")));
+            this.barSubItem1.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barSubItem1.ItemAppearance.Normal.Options.UseFont = true;
+            this.barSubItem1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(this.btnDoiMatKhau),
+            new DevExpress.XtraBars.LinkPersistInfo(this.btnUserInfor)});
+            this.barSubItem1.MenuAppearance.AppearanceMenu.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barSubItem1.MenuAppearance.AppearanceMenu.Normal.Options.UseFont = true;
+            this.barSubItem1.MenuAppearance.HeaderItemAppearance.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barSubItem1.MenuAppearance.HeaderItemAppearance.Options.UseFont = true;
+            this.barSubItem1.MenuAppearance.MenuBar.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barSubItem1.MenuAppearance.MenuBar.Options.UseFont = true;
+            this.barSubItem1.MenuAppearance.MenuCaption.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barSubItem1.MenuAppearance.MenuCaption.Options.UseFont = true;
+            this.barSubItem1.Name = "barSubItem1";
+            this.barSubItem1.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph;
+            // 
+            // btnDoiMatKhau
+            // 
+            this.btnDoiMatKhau.Caption = "Đổi mật khẩu";
+            this.btnDoiMatKhau.Id = 17;
+            this.btnDoiMatKhau.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnDoiMatKhau.ImageOptions.Image")));
+            this.btnDoiMatKhau.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnDoiMatKhau.ImageOptions.LargeImage")));
+            this.btnDoiMatKhau.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDoiMatKhau.ItemAppearance.Normal.Options.UseFont = true;
+            this.btnDoiMatKhau.Name = "btnDoiMatKhau";
+            this.btnDoiMatKhau.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnDoiMatKhau_ItemClick);
+            // 
+            // btnUserInfor
+            // 
+            this.btnUserInfor.Caption = "Thông tin người dùng";
+            this.btnUserInfor.Id = 18;
+            this.btnUserInfor.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnUserInfor.ImageOptions.Image")));
+            this.btnUserInfor.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnUserInfor.ImageOptions.LargeImage")));
+            this.btnUserInfor.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnUserInfor.ItemAppearance.Normal.Options.UseFont = true;
+            this.btnUserInfor.Name = "btnUserInfor";
+            this.btnUserInfor.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnUserInfor_ItemClick);
+            // 
+            // barBtnRule
+            // 
+            this.barBtnRule.Caption = "Điều khoản dịch vụ";
+            this.barBtnRule.Id = 10;
+            this.barBtnRule.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barBtnRule.ImageOptions.Image")));
+            this.barBtnRule.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barBtnRule.ImageOptions.LargeImage")));
+            this.barBtnRule.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barBtnRule.ItemAppearance.Normal.Options.UseFont = true;
+            this.barBtnRule.Name = "barBtnRule";
+            this.barBtnRule.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph;
+            this.barBtnRule.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BarBtnRule_ItemClick);
+            // 
+            // BtnTotalRevenue
+            // 
+            this.BtnTotalRevenue.Caption = "Doanh thu tổng";
+            this.BtnTotalRevenue.Id = 12;
+            this.BtnTotalRevenue.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("BtnTotalRevenue.ImageOptions.Image")));
+            this.BtnTotalRevenue.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("BtnTotalRevenue.ImageOptions.LargeImage")));
+            this.BtnTotalRevenue.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnTotalRevenue.ItemAppearance.Normal.Options.UseFont = true;
+            this.BtnTotalRevenue.Name = "BtnTotalRevenue";
+            this.BtnTotalRevenue.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph;
+            this.BtnTotalRevenue.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnTotalRevenue_ItemClick);
             // 
             // BtnDoanhThu
             // 
-            this.BtnDoanhThu.Caption = "Thống kê";
+            this.BtnDoanhThu.Caption = "Doanh thu ngày";
             this.BtnDoanhThu.Id = 9;
             this.BtnDoanhThu.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("BtnDoanhThu.ImageOptions.Image")));
             this.BtnDoanhThu.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("BtnDoanhThu.ImageOptions.LargeImage")));
+            this.BtnDoanhThu.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnDoanhThu.ItemAppearance.Normal.Options.UseFont = true;
             this.BtnDoanhThu.Name = "BtnDoanhThu";
             this.BtnDoanhThu.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph;
             this.BtnDoanhThu.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnDoanhThu_ItemClick);
@@ -152,19 +231,46 @@
             this.btnComSettingDropDown.Id = 2;
             this.btnComSettingDropDown.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnComSettingDropDown.ImageOptions.Image")));
             this.btnComSettingDropDown.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnComSettingDropDown.ImageOptions.LargeImage")));
+            this.btnComSettingDropDown.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnComSettingDropDown.ItemAppearance.Normal.Options.UseFont = true;
             this.btnComSettingDropDown.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnUpdateComPort, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnResetComPort, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnChangeIMEI, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnResetCom, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnRestoreSettings, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
+            this.btnComSettingDropDown.MenuAppearance.AppearanceMenu.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnComSettingDropDown.MenuAppearance.AppearanceMenu.Normal.Options.UseFont = true;
+            this.btnComSettingDropDown.MenuAppearance.HeaderItemAppearance.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnComSettingDropDown.MenuAppearance.HeaderItemAppearance.Options.UseFont = true;
+            this.btnComSettingDropDown.MenuAppearance.MenuBar.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnComSettingDropDown.MenuAppearance.MenuBar.Options.UseFont = true;
+            this.btnComSettingDropDown.MenuAppearance.MenuCaption.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnComSettingDropDown.MenuAppearance.MenuCaption.Options.UseFont = true;
             this.btnComSettingDropDown.Name = "btnComSettingDropDown";
+            // 
+            // btnUpdateComPort
+            // 
+            this.btnUpdateComPort.Caption = "Cập nhật STT (Số thứ tự) các cổng COM";
+            this.btnUpdateComPort.Id = 3;
+            this.btnUpdateComPort.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdateComPort.ImageOptions.Image")));
+            this.btnUpdateComPort.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnUpdateComPort.ImageOptions.LargeImage")));
+            this.btnUpdateComPort.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnUpdateComPort.ItemAppearance.Normal.Options.UseFont = true;
+            this.btnUpdateComPort.Name = "btnUpdateComPort";
+            toolTipItem1.Text = "Cập nhật lại số thứ tự cổng COM";
+            superToolTip1.Items.Add(toolTipItem1);
+            this.btnUpdateComPort.SuperTip = superToolTip1;
+            this.btnUpdateComPort.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnUpdateComPort_ItemClick);
             // 
             // btnResetComPort
             // 
-            this.btnResetComPort.Caption = "Đặt lại STT cổng COM";
+            this.btnResetComPort.Caption = "Đặt lại STT (Số thứ tự) các cổng COM";
             this.btnResetComPort.Id = 4;
             this.btnResetComPort.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnResetComPort.ImageOptions.Image")));
             this.btnResetComPort.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnResetComPort.ImageOptions.LargeImage")));
+            this.btnResetComPort.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnResetComPort.ItemAppearance.Normal.Options.UseFont = true;
             this.btnResetComPort.Name = "btnResetComPort";
             toolTipItem2.Text = "Đặt lại số thứ tự cổng COM";
             superToolTip2.Items.Add(toolTipItem2);
@@ -173,19 +279,23 @@
             // 
             // btnChangeIMEI
             // 
-            this.btnChangeIMEI.Caption = "Thay đổi IMEI cổng COM";
+            this.btnChangeIMEI.Caption = "Thay đổi IMEI các cổng COM";
             this.btnChangeIMEI.Id = 11;
             this.btnChangeIMEI.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnChangeIMEI.ImageOptions.Image")));
             this.btnChangeIMEI.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnChangeIMEI.ImageOptions.LargeImage")));
+            this.btnChangeIMEI.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnChangeIMEI.ItemAppearance.Normal.Options.UseFont = true;
             this.btnChangeIMEI.Name = "btnChangeIMEI";
             this.btnChangeIMEI.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnChangeIMEI_ItemClick);
             // 
             // btnResetCom
             // 
-            this.btnResetCom.Caption = "Reset cổng COM";
+            this.btnResetCom.Caption = "Reset các cổng COM";
             this.btnResetCom.Id = 5;
             this.btnResetCom.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnResetCom.ImageOptions.Image")));
             this.btnResetCom.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnResetCom.ImageOptions.LargeImage")));
+            this.btnResetCom.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnResetCom.ItemAppearance.Normal.Options.UseFont = true;
             this.btnResetCom.Name = "btnResetCom";
             toolTipItem3.Text = "Reset lại cổng COM";
             superToolTip3.Items.Add(toolTipItem3);
@@ -194,25 +304,17 @@
             // 
             // btnRestoreSettings
             // 
-            this.btnRestoreSettings.Caption = "Khôi phục cài đặt gốc";
+            this.btnRestoreSettings.Caption = "Khôi phục cài đặt gốc các cổng COM";
             this.btnRestoreSettings.Id = 6;
             this.btnRestoreSettings.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnRestoreSettings.ImageOptions.Image")));
             this.btnRestoreSettings.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnRestoreSettings.ImageOptions.LargeImage")));
+            this.btnRestoreSettings.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRestoreSettings.ItemAppearance.Normal.Options.UseFont = true;
             this.btnRestoreSettings.Name = "btnRestoreSettings";
             toolTipItem4.Text = "Khôi phục lại cài đặt mặc định";
             superToolTip4.Items.Add(toolTipItem4);
             this.btnRestoreSettings.SuperTip = superToolTip4;
             this.btnRestoreSettings.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnRestoreSettings_ItemClick);
-            // 
-            // barBtnRule
-            // 
-            this.barBtnRule.Caption = "Điều khoản dịch vụ";
-            this.barBtnRule.Id = 10;
-            this.barBtnRule.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barBtnRule.ImageOptions.Image")));
-            this.barBtnRule.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barBtnRule.ImageOptions.LargeImage")));
-            this.barBtnRule.Name = "barBtnRule";
-            this.barBtnRule.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph;
-            this.barBtnRule.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BarBtnRule_ItemClick);
             // 
             // barDockControlTop
             // 
@@ -246,13 +348,43 @@
             this.barDockControlRight.Manager = this.barManager;
             this.barDockControlRight.Size = new System.Drawing.Size(0, 661);
             // 
-            // txtMinAccount
+            // btnStartStop
             // 
-            this.txtMinAccount.Caption = "Min tài khoản:";
-            this.txtMinAccount.Edit = this.repositoryItemTextEdit1;
-            this.txtMinAccount.EditWidth = 120;
-            this.txtMinAccount.Id = 0;
-            this.txtMinAccount.Name = "txtMinAccount";
+            this.btnStartStop.Id = 8;
+            this.btnStartStop.Name = "btnStartStop";
+            // 
+            // PopupResetCom
+            // 
+            this.PopupResetCom.Caption = "Reset COM";
+            this.PopupResetCom.Id = 13;
+            this.PopupResetCom.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("PopupResetCom.ImageOptions.Image")));
+            this.PopupResetCom.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("PopupResetCom.ImageOptions.LargeImage")));
+            this.PopupResetCom.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PopupResetCom.ItemAppearance.Normal.Options.UseFont = true;
+            this.PopupResetCom.Name = "PopupResetCom";
+            this.PopupResetCom.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.PopupResetCom_ItemClick);
+            // 
+            // PopupChangeIMEI
+            // 
+            this.PopupChangeIMEI.Caption = "Thay đổi IMEI COM";
+            this.PopupChangeIMEI.Id = 14;
+            this.PopupChangeIMEI.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("PopupChangeIMEI.ImageOptions.Image")));
+            this.PopupChangeIMEI.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("PopupChangeIMEI.ImageOptions.LargeImage")));
+            this.PopupChangeIMEI.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PopupChangeIMEI.ItemAppearance.Normal.Options.UseFont = true;
+            this.PopupChangeIMEI.Name = "PopupChangeIMEI";
+            this.PopupChangeIMEI.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.PopupChangeIMEI_ItemClick);
+            // 
+            // PopupBurn
+            // 
+            this.PopupBurn.Caption = "Khởi động Burn";
+            this.PopupBurn.Id = 15;
+            this.PopupBurn.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("PopupBurn.ImageOptions.Image")));
+            this.PopupBurn.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("PopupBurn.ImageOptions.LargeImage")));
+            this.PopupBurn.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PopupBurn.ItemAppearance.Normal.Options.UseFont = true;
+            this.PopupBurn.Name = "PopupBurn";
+            this.PopupBurn.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.PopupBurn_ItemClick);
             // 
             // repositoryItemTextEdit1
             // 
@@ -261,11 +393,6 @@
             this.repositoryItemTextEdit1.Mask.MaskType = DevExpress.XtraEditors.Mask.MaskType.Numeric;
             this.repositoryItemTextEdit1.Mask.UseMaskAsDisplayFormat = true;
             this.repositoryItemTextEdit1.Name = "repositoryItemTextEdit1";
-            // 
-            // btnStartStop
-            // 
-            this.btnStartStop.Id = 8;
-            this.btnStartStop.Name = "btnStartStop";
             // 
             // panelControl1
             // 
@@ -285,29 +412,31 @@
             // 
             // labelControl3
             // 
-            this.labelControl3.Appearance.Font = new System.Drawing.Font("Tahoma", 20F, System.Drawing.FontStyle.Bold);
+            this.labelControl3.Appearance.Font = new System.Drawing.Font("Verdana", 18F, System.Drawing.FontStyle.Bold);
             this.labelControl3.Appearance.Options.UseFont = true;
-            this.labelControl3.Location = new System.Drawing.Point(255, 9);
+            this.labelControl3.Location = new System.Drawing.Point(299, 11);
             this.labelControl3.Name = "labelControl3";
-            this.labelControl3.Size = new System.Drawing.Size(203, 33);
+            this.labelControl3.Size = new System.Drawing.Size(298, 29);
             this.labelControl3.TabIndex = 5;
-            this.labelControl3.Text = "trong TK Chính";
+            this.labelControl3.Text = "trong Tài Khoản Chính";
             // 
             // labelControl2
             // 
-            this.labelControl2.Appearance.Font = new System.Drawing.Font("Tahoma", 20F, System.Drawing.FontStyle.Bold);
+            this.labelControl2.Appearance.Font = new System.Drawing.Font("Verdana", 18F, System.Drawing.FontStyle.Bold);
             this.labelControl2.Appearance.ForeColor = System.Drawing.Color.Red;
             this.labelControl2.Appearance.Options.UseFont = true;
             this.labelControl2.Appearance.Options.UseForeColor = true;
-            this.labelControl2.Location = new System.Drawing.Point(189, 9);
+            this.labelControl2.Location = new System.Drawing.Point(235, 11);
             this.labelControl2.Name = "labelControl2";
-            this.labelControl2.Size = new System.Drawing.Size(60, 33);
+            this.labelControl2.Size = new System.Drawing.Size(58, 29);
             this.labelControl2.TabIndex = 4;
             this.labelControl2.Text = "VNĐ";
             // 
             // btnUpdateMinAccountControl
             // 
-            this.btnUpdateMinAccountControl.Appearance.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.btnUpdateMinAccountControl.Appearance.BackColor = System.Drawing.Color.MintCream;
+            this.btnUpdateMinAccountControl.Appearance.Font = new System.Drawing.Font("Verdana", 16F, System.Drawing.FontStyle.Bold);
+            this.btnUpdateMinAccountControl.Appearance.Options.UseBackColor = true;
             this.btnUpdateMinAccountControl.Appearance.Options.UseFont = true;
             this.btnUpdateMinAccountControl.Appearance.Options.UseTextOptions = true;
             this.btnUpdateMinAccountControl.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
@@ -318,20 +447,20 @@
             this.btnUpdateMinAccountControl.ImageOptions.AllowGlyphSkinning = DevExpress.Utils.DefaultBoolean.False;
             this.btnUpdateMinAccountControl.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdateMinAccountControl.ImageOptions.Image")));
             this.btnUpdateMinAccountControl.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
-            this.btnUpdateMinAccountControl.Location = new System.Drawing.Point(479, 6);
+            this.btnUpdateMinAccountControl.Location = new System.Drawing.Point(603, 8);
             this.btnUpdateMinAccountControl.Name = "btnUpdateMinAccountControl";
             this.btnUpdateMinAccountControl.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.btnUpdateMinAccountControl.Size = new System.Drawing.Size(130, 40);
+            this.btnUpdateMinAccountControl.Size = new System.Drawing.Size(90, 36);
             this.btnUpdateMinAccountControl.TabIndex = 2;
-            this.btnUpdateMinAccountControl.Text = "Xác nhận";
+            this.btnUpdateMinAccountControl.Text = "OK";
             this.btnUpdateMinAccountControl.Click += new System.EventHandler(this.BtnUpdateMinAccountControl_Click);
             // 
             // txtMinAccountControl
             // 
             this.txtMinAccountControl.EditValue = "";
-            this.txtMinAccountControl.Location = new System.Drawing.Point(57, 6);
+            this.txtMinAccountControl.Location = new System.Drawing.Point(103, 8);
             this.txtMinAccountControl.Name = "txtMinAccountControl";
-            this.txtMinAccountControl.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 20F, System.Drawing.FontStyle.Bold);
+            this.txtMinAccountControl.Properties.Appearance.Font = new System.Drawing.Font("Verdana", 18F, System.Drawing.FontStyle.Bold);
             this.txtMinAccountControl.Properties.Appearance.ForeColor = System.Drawing.Color.Red;
             this.txtMinAccountControl.Properties.Appearance.Options.UseFont = true;
             this.txtMinAccountControl.Properties.Appearance.Options.UseForeColor = true;
@@ -345,18 +474,18 @@
             this.txtMinAccountControl.Properties.Mask.UseMaskAsDisplayFormat = true;
             this.txtMinAccountControl.Properties.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
             this.txtMinAccountControl.Properties.MaskSettings.Set("mask", "n0");
-            this.txtMinAccountControl.Size = new System.Drawing.Size(126, 40);
+            this.txtMinAccountControl.Size = new System.Drawing.Size(126, 36);
             this.txtMinAccountControl.TabIndex = 1;
             // 
             // labelControl1
             // 
-            this.labelControl1.Appearance.Font = new System.Drawing.Font("Tahoma", 20F, System.Drawing.FontStyle.Bold);
+            this.labelControl1.Appearance.Font = new System.Drawing.Font("Verdana", 18F, System.Drawing.FontStyle.Bold);
             this.labelControl1.Appearance.Options.UseFont = true;
-            this.labelControl1.Location = new System.Drawing.Point(14, 9);
+            this.labelControl1.Location = new System.Drawing.Point(12, 11);
             this.labelControl1.Name = "labelControl1";
-            this.labelControl1.Size = new System.Drawing.Size(37, 33);
+            this.labelControl1.Size = new System.Drawing.Size(85, 29);
             this.labelControl1.TabIndex = 3;
-            this.labelControl1.Text = "Để";
+            this.labelControl1.Text = "Giữ lại";
             // 
             // gcCOM
             // 
@@ -391,18 +520,20 @@
             this.gvCOM.GridControl = this.gcCOM;
             this.gvCOM.Name = "gvCOM";
             this.gvCOM.OptionsSelection.MultiSelect = true;
-            this.gvCOM.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CellSelect;
             this.gvCOM.OptionsView.ShowGroupPanel = false;
             this.gvCOM.RowCellStyle += new DevExpress.XtraGrid.Views.Grid.RowCellStyleEventHandler(this.GvCOM_RowCellStyle);
+            this.gvCOM.MouseDown += new System.Windows.Forms.MouseEventHandler(this.gvCOM_MouseDown);
             // 
             // COM
             // 
-            this.COM.AppearanceCell.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.COM.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.COM.AppearanceCell.Options.UseFont = true;
             this.COM.AppearanceCell.Options.UseTextOptions = true;
             this.COM.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
             this.COM.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.COM.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.COM.AppearanceHeader.FontStyleDelta = System.Drawing.FontStyle.Bold;
+            this.COM.AppearanceHeader.Options.UseFont = true;
             this.COM.AppearanceHeader.Options.UseTextOptions = true;
             this.COM.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.COM.Caption = "COM";
@@ -422,12 +553,14 @@
             // 
             // STT
             // 
-            this.STT.AppearanceCell.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.STT.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.STT.AppearanceCell.Options.UseFont = true;
             this.STT.AppearanceCell.Options.UseTextOptions = true;
             this.STT.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.STT.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.STT.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.STT.AppearanceHeader.FontStyleDelta = System.Drawing.FontStyle.Bold;
+            this.STT.AppearanceHeader.Options.UseFont = true;
             this.STT.AppearanceHeader.Options.UseTextOptions = true;
             this.STT.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.STT.Caption = "No";
@@ -960,12 +1093,14 @@
             // 
             // ICCID
             // 
-            this.ICCID.AppearanceCell.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ICCID.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ICCID.AppearanceCell.Options.UseFont = true;
             this.ICCID.AppearanceCell.Options.UseTextOptions = true;
             this.ICCID.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.ICCID.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.ICCID.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ICCID.AppearanceHeader.FontStyleDelta = System.Drawing.FontStyle.Bold;
+            this.ICCID.AppearanceHeader.Options.UseFont = true;
             this.ICCID.AppearanceHeader.Options.UseTextOptions = true;
             this.ICCID.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.ICCID.Caption = "ICCID";
@@ -984,12 +1119,14 @@
             // 
             // PhoneNumber
             // 
-            this.PhoneNumber.AppearanceCell.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PhoneNumber.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.PhoneNumber.AppearanceCell.Options.UseFont = true;
             this.PhoneNumber.AppearanceCell.Options.UseTextOptions = true;
             this.PhoneNumber.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.PhoneNumber.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.PhoneNumber.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.PhoneNumber.AppearanceHeader.FontStyleDelta = System.Drawing.FontStyle.Bold;
+            this.PhoneNumber.AppearanceHeader.Options.UseFont = true;
             this.PhoneNumber.AppearanceHeader.Options.UseTextOptions = true;
             this.PhoneNumber.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.PhoneNumber.Caption = "Số điện thoại";
@@ -1009,12 +1146,14 @@
             // 
             // TKChinh
             // 
-            this.TKChinh.AppearanceCell.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TKChinh.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TKChinh.AppearanceCell.Options.UseFont = true;
             this.TKChinh.AppearanceCell.Options.UseTextOptions = true;
             this.TKChinh.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.TKChinh.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.TKChinh.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TKChinh.AppearanceHeader.FontStyleDelta = System.Drawing.FontStyle.Bold;
+            this.TKChinh.AppearanceHeader.Options.UseFont = true;
             this.TKChinh.AppearanceHeader.Options.UseTextOptions = true;
             this.TKChinh.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.TKChinh.Caption = "TK Chính";
@@ -1034,23 +1173,30 @@
             // 
             // Message101
             // 
+            this.Message101.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Message101.AppearanceCell.Options.UseFont = true;
             this.Message101.AppearanceCell.Options.UseTextOptions = true;
             this.Message101.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.Message101.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Message101.AppearanceHeader.Options.UseFont = true;
             this.Message101.Caption = "Tin nhắn";
             this.Message101.FieldName = "Message101";
             this.Message101.Name = "Message101";
+            this.Message101.OptionsColumn.AllowEdit = false;
             this.Message101.Visible = true;
             this.Message101.VisibleIndex = 5;
-            this.Message101.Width = 693;
+            this.Message101.Width = 707;
             // 
             // Message
             // 
-            this.Message.AppearanceCell.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Message.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Message.AppearanceCell.Options.UseFont = true;
             this.Message.AppearanceCell.Options.UseTextOptions = true;
             this.Message.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
             this.Message.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
+            this.Message.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Message.AppearanceHeader.FontStyleDelta = System.Drawing.FontStyle.Bold;
+            this.Message.AppearanceHeader.Options.UseFont = true;
             this.Message.Caption = "Trạng Thái";
             this.Message.FieldName = "Message";
             this.Message.MinWidth = 23;
@@ -1062,7 +1208,7 @@
             this.Message.OptionsFilter.AllowFilter = false;
             this.Message.Visible = true;
             this.Message.VisibleIndex = 6;
-            this.Message.Width = 110;
+            this.Message.Width = 96;
             // 
             // IMEI
             // 
@@ -1097,6 +1243,15 @@
             this.TimerCheckSim.Interval = 10000;
             this.TimerCheckSim.Tick += new System.EventHandler(this.TimerCheckSim_Tick);
             // 
+            // popupMenu1
+            // 
+            this.popupMenu1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(this.PopupBurn),
+            new DevExpress.XtraBars.LinkPersistInfo(this.PopupResetCom),
+            new DevExpress.XtraBars.LinkPersistInfo(this.PopupChangeIMEI)});
+            this.popupMenu1.Manager = this.barManager;
+            this.popupMenu1.Name = "popupMenu1";
+            // 
             // BurnTKForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1108,7 +1263,7 @@
             this.Controls.Add(this.barDockControlRight);
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
-            this.IconOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("BurnTKForm.IconOptions.SvgImage")));
+            this.IconOptions.Image = ((System.Drawing.Image)(resources.GetObject("BurnTKForm.IconOptions.Image")));
             this.LookAndFeel.SkinName = "Office 2019 Colorful";
             this.LookAndFeel.UseDefaultLookAndFeel = false;
             this.Name = "BurnTKForm";
@@ -1125,6 +1280,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.gvCOM)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.popupMenu1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1138,7 +1294,6 @@
         private DevExpress.XtraBars.BarDockControl barDockControlBottom;
         private DevExpress.XtraBars.BarDockControl barDockControlLeft;
         private DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraBars.BarEditItem txtMinAccount;
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit repositoryItemTextEdit1;
         private DevExpress.XtraBars.BarButtonItem btnStartStop;
         private DevExpress.XtraBars.BarSubItem btnComSettingDropDown;
@@ -1169,5 +1324,13 @@
         private DevExpress.XtraBars.BarButtonItem barBtnRule;
         private DevExpress.XtraGrid.Columns.GridColumn Telecom;
         private DevExpress.XtraBars.BarButtonItem btnChangeIMEI;
+        private DevExpress.XtraBars.BarButtonItem BtnTotalRevenue;
+        private DevExpress.XtraBars.PopupMenu popupMenu1;
+        private DevExpress.XtraBars.BarButtonItem PopupResetCom;
+        private DevExpress.XtraBars.BarButtonItem PopupChangeIMEI;
+        private DevExpress.XtraBars.BarButtonItem PopupBurn;
+        private DevExpress.XtraBars.BarSubItem barSubItem1;
+        private DevExpress.XtraBars.BarButtonItem btnDoiMatKhau;
+        private DevExpress.XtraBars.BarButtonItem btnUserInfor;
     }
 }

@@ -4,6 +4,13 @@ namespace LuckBurnTK.Models
 {
     public class PrefixNumberDto
     {
+        public class GetUserInfor
+        {
+            public string fullname { get; set; }
+            public string ngan_hang { get; set; }
+            public string so_tai_khoan { get; set; }
+            public string chu_tai_khoan { get; set; }
+        }
         public class GetPrefixSmsReq
         {
             public string phone_number { get; set; }
@@ -22,7 +29,7 @@ namespace LuckBurnTK.Models
             public string end_call { get; set; }
             public string start_record { get; set; }
             public string end_record { get; set; }
-            public int duration { get; set; }
+            public int? duration { get; set; }
             public int no_carrier { get; set; }
         }
 
@@ -36,10 +43,34 @@ namespace LuckBurnTK.Models
             public Guid history_id { get; set; }
         }
 
+        public class GetRevenueTotalRes
+        {
+            public string status { get; set; }
+            public int count_status { get; set; }
+            public float sum_status { get; set; }
+        }
+
+        public class GetRevenueDetailRes
+        {
+            public string created_at { get; set; }
+            public string phone_number { get; set; }
+            public float amount { get; set; }
+            public string status { get; set; }
+        }
+
         public enum PrefixNumberType
         {
             SMS,
             CALL
+        }
+
+        public enum StatusEnum
+        {
+            WAITING,
+            PENDING,
+            SUCCESS,
+            FAIL,
+            DONE
         }
     }
 }

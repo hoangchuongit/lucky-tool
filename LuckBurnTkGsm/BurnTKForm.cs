@@ -1,19 +1,18 @@
-﻿using DevExpress.ClipboardSource.SpreadsheetML;
-using DevExpress.Data.Extensions;
+﻿using DevExpress.Data.Extensions;
 using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using LuckBurn.Model;
-using LuckBurnTK.Controllers;
 using LuckBurnTK.Utils;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Drawing;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -44,6 +43,10 @@ namespace LuckBurnTK
         /// Nội dung ghi âm của từng cổng COM
         private readonly ConcurrentDictionary<string, byte[]> RecordingCOMs = new ConcurrentDictionary<string, byte[]>();
 
+        /// Lưu CancellationTokenSource để dừng ghi âm sớm nếu có NO CARRIER
+        private readonly ConcurrentDictionary<string, CancellationTokenSource> RecordingTokens
+            = new ConcurrentDictionary<string, CancellationTokenSource>();
+
         /// Danh sách các cổng COM đang upload file đến thiết bị
         private readonly ConcurrentDictionary<string, FileToCom> FileToCOMs = new ConcurrentDictionary<string, FileToCom>();
 
@@ -51,10 +54,13 @@ namespace LuckBurnTK
 
         private readonly string AccountId;
 
+        private readonly string ApiKey;
+
         public BurnTKForm(string accountId, string apikey)
         {
             InitializeComponent();
             AccountId = accountId;
+            ApiKey=apikey;
             _prefixController = new PrefixNumberController(apikey);
             InitializeControls();
         }
@@ -82,7 +88,7 @@ namespace LuckBurnTK
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"{port.PortName} - LoadCOMForm Error: {ex.Message}");
+                        logger.Error($"{port.PortName} - LoadCOMForm Error: {ex.Message}");
                     }
                     finally
                     {
@@ -173,7 +179,7 @@ namespace LuckBurnTK
             }
 
             MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
-            Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
+            //Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
 
             if (MessageCOMs[sp.PortName].Contains("RING"))
             {
@@ -214,7 +220,8 @@ namespace LuckBurnTK
             // Kiểm tra nếu cổng COM nằm trong danh sách ghi âm và kết thúc cuộc gọi thì lưu lại file .amr
             if (MessageCOMs[sp.PortName].Contains("+QFDWL:") && MessageCOMs[sp.PortName].Contains("\r\nCONNECT\r\n"))
             {
-                if (RecordingPorts.ContainsKey(sp.PortName)) SaveRecord(sp);
+                if (RecordingPorts.ContainsKey(sp.PortName) && RecordingCOMs.ContainsKey(sp.PortName))
+                    SaveRecord(sp);
                 RecordingCOMs.TryRemove(sp.PortName, out byte[] _);
             }
 
@@ -299,7 +306,6 @@ namespace LuckBurnTK
                 if (!MessageCOMs[sp.PortName].Contains("AT+EGMR=") || !MessageCOMs[sp.PortName].Contains("\nOK")) return;
                 var mess = MessageCOMs[sp.PortName].AT_Command("AT+EGMR=");
                 MessageCOMs[sp.PortName] = string.Empty;
-                Console.WriteLine($"mess: {mess}");
                 UpdateComData(sp.PortName, dto => dto.IMEI = mess, "IMEI");
                 Thread.Sleep(5000);
                 SendATCommand(sp, "AT+QSIMSTAT?");
@@ -509,9 +515,13 @@ namespace LuckBurnTK
                         SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                         return;
                     }
-                    if (sp.PortName != "COM39") return;
+                    //if (sp.PortName != "COM39") return;
                     UpdateComData(sp.PortName, dto => { dto.Message = "Burning ..."; dto.IsFinish = false; }, "Message", "IsFinish");
-                    if (RecordingPorts.ContainsKey(sp.PortName)) return;
+                    if (RecordingPorts.ContainsKey(sp.PortName))
+                    {
+                        RecordingPorts.TryRemove(sp.PortName, out _);
+                        RecordingCOMs.TryRemove(sp.PortName, out _);
+                    }
                     RecordingPorts.TryAdd(sp.PortName, new CallDetail()
                     {
                         call_duration = Common.GenerateRandomCallDuration() + 15000, // 15000 là 15s giới thiệu của tổng đài
@@ -576,12 +586,12 @@ namespace LuckBurnTK
                     int delay = new Random(Guid.NewGuid().GetHashCode()).Next(5000, 10001);
                     Thread.Sleep(delay);
                     // Gửi AT lấy số điện thoại và thông tin tài khoản chính
-                    //SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
+                    SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                 }
             }
             catch (Exception)
             {
-                UpdateComData(sp.PortName, dto => dto.ICCID = string.Empty, "ICCID");
+                UpdateComData(sp.PortName, dto => { dto.Message = $"Stop burn"; dto.IsFinish = true; }, "Message", "IsFinish");
             }
         }
 
@@ -673,22 +683,44 @@ namespace LuckBurnTK
                     var mess = MessageCOMs[sp.PortName];
                     MessageCOMs[sp.PortName] = string.Empty;
                     var callDetail = RecordingPorts[sp.PortName];
+
                     // Mở mic ghi âm
                     SendATCommand(sp, "AT+QAUDRD=1,\"RAM:record.amr\",3");
                     callDetail.start_record = DateTime.Now;
-                    // Chờ 20s để tổng đài nói
-                    //Thread.Sleep(20000);
+
                     // TODO: Bấm phím 9
                     //SendATCommand(sp, "AT+VTS=9");
+
                     // TODO: Phát file đã ghi âm trước đó ở cổng COM
+
                     // Nghe nhạc chờ thêm một khoảng thời gian
-                    Thread.Sleep(callDetail.call_duration);
-                    // kết thúc cuộc gọi và record
-                    StopRecording(sp, false);
+                    // Tạo CancellationToken để có thể dừng khi có NO CARRIER
+                    var cts = new CancellationTokenSource();
+                    RecordingTokens[sp.PortName] = cts;
+                    _ = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await Task.Delay(callDetail.call_duration, cts.Token);
+                            StopRecording(sp, false); // Chủ động ngắt
+                        }
+                        catch (TaskCanceledException)
+                        {
+                            logger.Info($"[{sp.PortName}] - Tổng đài ngắt kết nối (NO CARRIER).");
+                        }
+                    });
                 }
                 else if (MessageCOMs[sp.PortName].Contains("NO CARRIER") || MessageCOMs[sp.PortName].Contains("HANG UP"))
                 {
+                    MessageCOMs[sp.PortName] = string.Empty;
+                    // Bị ngắt chủ động từ tổng đài
                     StopRecording(sp, true);
+                    // Hủy delay nếu đang chờ
+                    if (RecordingTokens.TryRemove(sp.PortName, out var token))
+                    {
+                        token.Cancel();
+                        token.Dispose();
+                    }
                 }
             }
             catch (Exception ex)
@@ -709,6 +741,12 @@ namespace LuckBurnTK
                 if (!RecordingPorts.ContainsKey(sp.PortName)) return;
                 var callDetail = RecordingPorts[sp.PortName];
                 callDetail.no_carrier = noCarrier;
+                // Hủy token nếu có
+                if (RecordingTokens.TryRemove(sp.PortName, out var token))
+                {
+                    token.Cancel();
+                    token.Dispose();
+                }
                 // kết thúc cuộc gọi
                 SendATCommand(sp, "ATH", 2000);
                 // Dừng ghi âm
@@ -736,7 +774,7 @@ namespace LuckBurnTK
                 // Kiểm tra key trong dictionary RecordingCOMs
                 if (!RecordingCOMs.ContainsKey(sp.PortName))
                 {
-                    logger.Error($"Error Voice to Text: RecordingCOMs does not contain the key: {sp.PortName}");
+                    logger.Info($"Save Record: RecordingCOMs does not contain the key: {sp.PortName}");
                     // Xóa file ghi âm trên RAM
                     SendATCommand(sp, "AT+QFDEL=\"RAM:record.amr\"", 1000);
                     // Xóa khỏi danh sách cổng COM đang ghi âm
@@ -746,6 +784,7 @@ namespace LuckBurnTK
                 }
                 var callDetail = RecordingPorts[sp.PortName];
 
+                // save file record vào folder
                 string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
                 string recordDirectory = Path.Combine(baseDirectory, "record");
                 Directory.CreateDirectory(recordDirectory);
@@ -776,8 +815,10 @@ namespace LuckBurnTK
                 if (RecordingPorts.ContainsKey(sp.PortName)) RecordingPorts.TryRemove(sp.PortName, out _);
                 MessageCOMs[sp.PortName] = string.Empty;
                 // Gửi AT lấy số điện thoại và thông tin tài khoản chính
-                if (!callDetail.no_carrier)
-                    SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
+                //if (!callDetail.no_carrier)
+                //    SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
+                //else
+                //    UpdateComData(sp.PortName, dto => { dto.Message = $"Stop burn"; dto.IsFinish = true; }, "Message", "IsFinish");
             }
             catch (Exception ex)
             {
@@ -805,7 +846,7 @@ namespace LuckBurnTK
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
+                        logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
                     }
                     finally
                     {
@@ -893,7 +934,7 @@ namespace LuckBurnTK
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
+                            logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
                         }
                         finally
                         {
@@ -941,7 +982,7 @@ namespace LuckBurnTK
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
+                            logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
                         }
                         finally
                         {
@@ -988,7 +1029,7 @@ namespace LuckBurnTK
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
+                            logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
                         }
                         finally
                         {
@@ -1001,7 +1042,7 @@ namespace LuckBurnTK
 
         private void BtnDoanhThu_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            var report = new Report(Guid.Parse(AccountId));
+            var report = new Report(ApiKey);
             report.Show();
         }
 
@@ -1022,7 +1063,7 @@ namespace LuckBurnTK
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Lỗi khi gửi lệnh tới {com.PortName}: {ex.Message}");
+                        logger.Error($"Lỗi khi gửi lệnh tới {com.PortName}: {ex.Message}");
                     }
                     finally
                     {
@@ -1104,6 +1145,154 @@ namespace LuckBurnTK
         {
             var termForm = new TermForm();
             termForm.ShowDialog();
+        }
+
+        private void gvCOM_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                GridView view = sender as GridView;
+                GridHitInfo hitInfo = view.CalcHitInfo(e.Location);
+                if (hitInfo.InRow || hitInfo.InRowCell)
+                {
+                    view.FocusedRowHandle = hitInfo.RowHandle;
+                    popupMenu1.ShowPopup(MousePosition);
+                }
+            }
+        }
+
+        private void PopupResetCom_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            int[] selectedHandles = gvCOM.GetSelectedRows();
+            foreach (int handle in selectedHandles)
+            {
+                if (gvCOM.GetRow(handle) is ComDto row)
+                {
+                    var sp = SerialPorts.FirstOrDefault(x => x.PortName == row.COM);
+                    if (sp == null) continue;
+                    _ = Task.Run(() =>
+                    {
+                        _simCheckLimiter.Wait();
+                        try
+                        {
+                            if (!sp.IsOpen) sp.Open();
+                            UpdateComData(sp.PortName, dto =>
+                            {
+                                dto.ICCID = string.Empty;
+                                dto.PhoneNumber = string.Empty;
+                                dto.TKChinh = 0;
+                                dto.Message101 = "Reset cổng COM";
+                                dto.Message = "";
+                            }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message");
+                            SendATCommand(sp, "AT+QURCCFG=\"urcport\",\"uart1\"");
+                            // Module được thiết lập để sử dụng chế độ "Auto Baud Rate Detection" (Tự động nhận diện tốc độ truyền).
+                            SendATCommand(sp, "AT+IPR=0");
+                            // Kích hoạt chế độ thông báo sự kiện SIM
+                            SendATCommand(sp, "AT+QSIMSTAT=0");
+                            // Bật hoặc tắt chức năng Phát hiện thẻ SIM
+                            SendATCommand(sp, "AT+QSIMDET=1,0,1");
+                            // Lưu thay đổi
+                            SendATCommand(sp, "AT&W");
+                            // Reset COM
+                            SendATCommand(sp, "AT+CFUN=1,1", 10000);
+                            InitializeModem(sp);
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
+                        }
+                        finally
+                        {
+                            _simCheckLimiter.Release();
+                        }
+                    });
+                }
+            }
+        }
+
+        private void PopupChangeIMEI_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            int[] selectedHandles = gvCOM.GetSelectedRows();
+            foreach (int handle in selectedHandles)
+            {
+                if (gvCOM.GetRow(handle) is ComDto row)
+                {
+                    var sp = SerialPorts.FirstOrDefault(x => x.PortName == row.COM);
+                    if (sp == null) continue;
+                    _ = Task.Run(() =>
+                    {
+                        _simCheckLimiter.Wait();
+                        try
+                        {
+                            if (!sp.IsOpen) sp.Open();
+                            UpdateComData(sp.PortName, dto =>
+                            {
+                                dto.Message101 = "Đổi IMEI cổng COM..."; dto.Message = "";
+                            }, "Message101", "Message");
+                            SendATCommand(sp, "AT+EGMR=1,7,\"" + Common.GenerateIMEI() + "\"\r\n");
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
+                        }
+                        finally
+                        {
+                            _simCheckLimiter.Release();
+                        }
+                    });
+                }
+            }
+        }
+
+        private void PopupBurn_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            int[] selectedHandles = gvCOM.GetSelectedRows();
+            foreach (int handle in selectedHandles)
+            {
+                if (gvCOM.GetRow(handle) is ComDto row)
+                {
+                    var sp = SerialPorts.FirstOrDefault(x => x.PortName == row.COM);
+                    if (sp == null) continue;
+                    _ = Task.Run(() =>
+                    {
+                        _simCheckLimiter.Wait();
+                        try
+                        {
+                            UpdateComData(sp.PortName, dto =>
+                            {
+                                dto.TKChinh = 0; dto.Message101 = ""; dto.Message = "Burning ...";
+                            }, "TKChinh", "Message101", "Message");
+                            SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
+                        }
+                        finally
+                        {
+                            _simCheckLimiter.Release();
+                        }
+                    });
+                }
+            }
+        }
+
+        private void BtnTotalRevenue_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            var report = new ReportTotal(ApiKey);
+            report.Show();
+        }
+
+        private void BtnDoiMatKhau_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            var form = new ChangePassForm(ApiKey);
+            form.ShowDialog();
+        }
+
+        private void BtnUserInfor_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            var form = new UserInforForm(ApiKey);
+            form.ShowDialog();
         }
     }
 }

@@ -31,27 +31,24 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TermForm));
             this.behaviorManager1 = new DevExpress.Utils.Behaviors.BehaviorManager(this.components);
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.pdfViewer1 = new DevExpress.XtraPdfViewer.PdfViewer();
             ((System.ComponentModel.ISupportInitialize)(this.behaviorManager1)).BeginInit();
             this.SuspendLayout();
             // 
-            // richTextBox1
+            // pdfViewer1
             // 
-            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox1.Location = new System.Drawing.Point(0, 0);
-            this.richTextBox1.Margin = new System.Windows.Forms.Padding(10);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(798, 568);
-            this.richTextBox1.TabIndex = 0;
-            this.richTextBox1.Text = "";
+            this.pdfViewer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pdfViewer1.Location = new System.Drawing.Point(0, 0);
+            this.pdfViewer1.Name = "pdfViewer1";
+            this.pdfViewer1.Size = new System.Drawing.Size(1278, 688);
+            this.pdfViewer1.TabIndex = 0;
             // 
             // TermForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(798, 568);
-            this.Controls.Add(this.richTextBox1);
+            this.ClientSize = new System.Drawing.Size(1278, 688);
+            this.Controls.Add(this.pdfViewer1);
             this.IconOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("TermForm.IconOptions.LargeImage")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -65,6 +62,6 @@
 
         #endregion
         private DevExpress.Utils.Behaviors.BehaviorManager behaviorManager1;
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private DevExpress.XtraPdfViewer.PdfViewer pdfViewer1;
     }
 }

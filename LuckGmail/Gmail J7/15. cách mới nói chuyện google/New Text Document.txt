@@ -1,7 +1,0 @@
-tọa độ nút xem thêm: x: 734, y: 1761
-                     x: 981, y: 1829
-nhấn lần 1 là nút xem thêm
-
-sẽ ra nút bật
-
-tọa độ nút bật x: 780, y: 1752

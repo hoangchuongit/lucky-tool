@@ -6,8 +6,8 @@ namespace LuckBurnTK
         public TermForm()
         {
             InitializeComponent();
-            richTextBox1.LoadFile("terms.rtf");
-            richTextBox1.ReadOnly = true;
+            pdfViewer1.LoadDocument("terms.pdf");
+            pdfViewer1.ReadOnly = true;
         }
     }
 }

@@ -11,6 +11,7 @@ namespace LuckBurnTK
 {
     public class PrefixNumberController
     {
+        private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private readonly HttpClient _httpClient;
 
         public PrefixNumberController(string apiKey)
@@ -40,41 +41,86 @@ namespace LuckBurnTK
             }
             catch (Exception ex)
             {
+                logger.Error($"GetPrefixNumber ERROR: {ex.Message}");
                 throw ex;
             }
         }
 
         public async Task<bool> ReleaseSlot(ReleaseSlotReq req, string filePath = null)
         {
-            if (!string.IsNullOrEmpty(filePath) && !File.Exists(filePath))
-                throw new FileNotFoundException("Không tìm thấy file", filePath);
             try
             {
                 using (var form = new MultipartFormDataContent())
-                using (var stream = File.OpenRead(filePath))
-                using (var audioContent = new StreamContent(stream))
-                using (var request = new HttpRequestMessage(HttpMethod.Post, "sms-call-center/release-slot"))
                 {
-                    audioContent.Headers.ContentType = new MediaTypeHeaderValue("audio/amr");
+                    // Add required fields
                     form.Add(new StringContent(req.request_id), "request_id");
                     form.Add(new StringContent(req.history_id), "history_id");
                     form.Add(new StringContent(req.prefix), "prefix");
                     form.Add(new StringContent(req.prefix_unit), "prefix_unit");
                     form.Add(new StringContent(req.start_call), "start_call");
                     form.Add(new StringContent(req.end_call), "end_call");
-                    form.Add(new StringContent(req.start_record), "start_record");
-                    form.Add(new StringContent(req.end_record), "end_record");
-                    form.Add(new StringContent(req.duration.ToString()), "duration");
+                    if (!string.IsNullOrEmpty(req.start_record)) form.Add(new StringContent(req.start_record), "start_record");
+                    if (!string.IsNullOrEmpty(req.end_record)) form.Add(new StringContent(req.end_record), "end_record");
+                    if (req.duration != null) form.Add(new StringContent(req.duration.ToString()), "duration");
                     form.Add(new StringContent(req.no_carrier.ToString()), "no_carrier");
-                    if (!string.IsNullOrEmpty(filePath)) form.Add(audioContent, "audio_file", Path.GetFileName(filePath));
-                    request.Content = form;
+                    // Nếu có file audio, thêm vào form
+                    if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
+                    {
+                        var stream = File.OpenRead(filePath);
+                        var audioContent = new StreamContent(stream);
+                        audioContent.Headers.ContentType = new MediaTypeHeaderValue("audio/amr");
+                        form.Add(audioContent, "audio_file", Path.GetFileName(filePath));
+                    }
+                    // Gửi request
+                    var request = new HttpRequestMessage(HttpMethod.Post, "sms-call-center/release-slot")
+                    {
+                        Content = form
+                    };
                     var response = await _httpClient.SendAsync(request);
                     return response.IsSuccessStatusCode;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                logger.Error($"ReleaseSlot ERROR: {ex.Message}");
                 throw;
+            }
+        }
+
+        public async Task<GetRevenueTotalRes[]> GetRevenueTotal(string fromdate, string todate)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"sms-call-center/get-revenue-total?from_date={fromdate}&to_date={todate}");
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<GetRevenueTotalRes[]>(responseBody);
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"GetRevenueTotal ERROR: {ex.Message}");
+                throw ex;
+            }
+        }
+        public async Task<GetRevenueDetailRes[]> GetRevenueDetail(string fromdate, string todate)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"sms-call-center/get-revenue-detail?from_date={fromdate}&to_date={todate}");
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<GetRevenueDetailRes[]>(responseBody);
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"GetRevenueDetail ERROR: {ex.Message}");
+                throw ex;
             }
         }
     }

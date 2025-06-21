@@ -1,8 +1,0 @@
-1. Tọa độ nút tạo địa chỉ gmail của riêng bạn
-x: 90, y: 1102
-x: 116, y: 1114
-
-2. Tọa độ nút tiếp theo
-x: 689, y: 1750
-x: 995, y: 1823
-

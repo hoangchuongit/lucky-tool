@@ -1,7 +1,0 @@
-nhập gmail xong thì click vào tọa độ ngẫu nhiên trên màn hình để ra nút tiếp theo
-tọa độ ngẫu nhiên trên màn hình x: 160, y: 136
-                                x: 890,  y:601
-
-
-tọa độ nút tiếp theo  x: 693, y: 1748
-                      x: 993, y: 1819
