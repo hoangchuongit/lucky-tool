@@ -815,10 +815,10 @@ namespace LuckBurnTK
                 if (RecordingPorts.ContainsKey(sp.PortName)) RecordingPorts.TryRemove(sp.PortName, out _);
                 MessageCOMs[sp.PortName] = string.Empty;
                 // Gửi AT lấy số điện thoại và thông tin tài khoản chính
-                //if (!callDetail.no_carrier)
-                //    SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
-                //else
-                //    UpdateComData(sp.PortName, dto => { dto.Message = $"Stop burn"; dto.IsFinish = true; }, "Message", "IsFinish");
+                if (!callDetail.no_carrier)
+                    SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
+                else
+                    UpdateComData(sp.PortName, dto => { dto.Message = $"Stop burn"; dto.IsFinish = true; }, "Message", "IsFinish");
             }
             catch (Exception ex)
             {
