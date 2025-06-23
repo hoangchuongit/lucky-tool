@@ -508,7 +508,7 @@ namespace LuckBurnTK
                     if (prefixSmsRes == null)
                     {
                         // Nếu null nghĩa là dịch vụ đang full các đầu số, chờ 2 phút sau thử lại
-                        UpdateComData(sp.PortName, dto => { dto.Message = $"Burning ..."; dto.IsFinish = true; }, "Message", "IsFinish");
+                        UpdateComData(sp.PortName, dto => { dto.Message = $"Burning ..."; dto.IsFinish = false; }, "Message", "IsFinish");
                         // Thử lại sau 2 phút
                         Thread.Sleep(120000);
                         // Gửi AT lấy số điện thoại và thông tin tài khoản chính
@@ -549,7 +549,7 @@ namespace LuckBurnTK
             }
             catch (Exception ex)
             {
-                logger.Error($"Burn thất bại: {ex.Message}");
+                logger.Error($"Burn thất bại: {ex.Message} {ex.StackTrace}");
                 UpdateComData(sp.PortName, dto => { dto.Message = $"Stop burn"; dto.IsFinish = true; }, "Message", "IsFinish");
             }
         }
