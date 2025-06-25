@@ -58,7 +58,6 @@ namespace LuckBurnTK
                 //fail
                 var fail = dataTable.FirstOrDefault(x => x.status == StatusEnum.FAIL.ToString());
                 lbFailTotal.Text = fail != null ? fail.count_status.ToString() : "0";
-                lbFailAmount.Text = fail != null ? $"{fail.sum_status:n0} VNĐ" : $"0 VNĐ";
             }
             catch (Exception ex)
             {

@@ -29,15 +29,15 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            DevExpress.Utils.SuperToolTip superToolTip5 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem5 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip6 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem6 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip7 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem7 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip8 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem8 = new DevExpress.Utils.ToolTipItem();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BurnTKForm));
-            DevExpress.Utils.SuperToolTip superToolTip1 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem1 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip2 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem2 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip3 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem3 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip4 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem4 = new DevExpress.Utils.ToolTipItem();
             this.barManager = new DevExpress.XtraBars.BarManager(this.components);
             this.mainToolBar = new DevExpress.XtraBars.Bar();
             this.barSubItem1 = new DevExpress.XtraBars.BarSubItem();
@@ -258,9 +258,9 @@
             this.btnUpdateComPort.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnUpdateComPort.ItemAppearance.Normal.Options.UseFont = true;
             this.btnUpdateComPort.Name = "btnUpdateComPort";
-            toolTipItem1.Text = "Cập nhật lại số thứ tự cổng COM";
-            superToolTip1.Items.Add(toolTipItem1);
-            this.btnUpdateComPort.SuperTip = superToolTip1;
+            toolTipItem5.Text = "Cập nhật lại số thứ tự cổng COM";
+            superToolTip5.Items.Add(toolTipItem5);
+            this.btnUpdateComPort.SuperTip = superToolTip5;
             this.btnUpdateComPort.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnUpdateComPort_ItemClick);
             // 
             // btnResetComPort
@@ -272,9 +272,9 @@
             this.btnResetComPort.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnResetComPort.ItemAppearance.Normal.Options.UseFont = true;
             this.btnResetComPort.Name = "btnResetComPort";
-            toolTipItem2.Text = "Đặt lại số thứ tự cổng COM";
-            superToolTip2.Items.Add(toolTipItem2);
-            this.btnResetComPort.SuperTip = superToolTip2;
+            toolTipItem6.Text = "Đặt lại số thứ tự cổng COM";
+            superToolTip6.Items.Add(toolTipItem6);
+            this.btnResetComPort.SuperTip = superToolTip6;
             this.btnResetComPort.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnResetComPort_ItemClick);
             // 
             // btnChangeIMEI
@@ -297,9 +297,9 @@
             this.btnResetCom.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnResetCom.ItemAppearance.Normal.Options.UseFont = true;
             this.btnResetCom.Name = "btnResetCom";
-            toolTipItem3.Text = "Reset lại cổng COM";
-            superToolTip3.Items.Add(toolTipItem3);
-            this.btnResetCom.SuperTip = superToolTip3;
+            toolTipItem7.Text = "Reset lại cổng COM";
+            superToolTip7.Items.Add(toolTipItem7);
+            this.btnResetCom.SuperTip = superToolTip7;
             this.btnResetCom.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnResetCom_ItemClick);
             // 
             // btnRestoreSettings
@@ -311,9 +311,9 @@
             this.btnRestoreSettings.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnRestoreSettings.ItemAppearance.Normal.Options.UseFont = true;
             this.btnRestoreSettings.Name = "btnRestoreSettings";
-            toolTipItem4.Text = "Khôi phục lại cài đặt mặc định";
-            superToolTip4.Items.Add(toolTipItem4);
-            this.btnRestoreSettings.SuperTip = superToolTip4;
+            toolTipItem8.Text = "Khôi phục lại cài đặt mặc định";
+            superToolTip8.Items.Add(toolTipItem8);
+            this.btnRestoreSettings.SuperTip = superToolTip8;
             this.btnRestoreSettings.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnRestoreSettings_ItemClick);
             // 
             // barDockControlTop
@@ -441,18 +441,19 @@
             this.btnUpdateMinAccountControl.Appearance.Options.UseTextOptions = true;
             this.btnUpdateMinAccountControl.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.btnUpdateMinAccountControl.Appearance.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.btnUpdateMinAccountControl.AppearanceHovered.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.btnUpdateMinAccountControl.AppearanceHovered.Font = new System.Drawing.Font("Verdana", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnUpdateMinAccountControl.AppearanceHovered.Options.UseFont = true;
             this.btnUpdateMinAccountControl.ButtonStyle = DevExpress.XtraEditors.Controls.BorderStyles.HotFlat;
             this.btnUpdateMinAccountControl.ImageOptions.AllowGlyphSkinning = DevExpress.Utils.DefaultBoolean.False;
             this.btnUpdateMinAccountControl.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdateMinAccountControl.ImageOptions.Image")));
             this.btnUpdateMinAccountControl.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
-            this.btnUpdateMinAccountControl.Location = new System.Drawing.Point(603, 8);
+            this.btnUpdateMinAccountControl.Location = new System.Drawing.Point(616, 8);
             this.btnUpdateMinAccountControl.Name = "btnUpdateMinAccountControl";
             this.btnUpdateMinAccountControl.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.btnUpdateMinAccountControl.Size = new System.Drawing.Size(90, 36);
+            this.btnUpdateMinAccountControl.Size = new System.Drawing.Size(122, 36);
             this.btnUpdateMinAccountControl.TabIndex = 2;
-            this.btnUpdateMinAccountControl.Text = "OK";
+            this.btnUpdateMinAccountControl.Text = "BURN";
+            this.btnUpdateMinAccountControl.ToolTip = "Khởi động lại burn cho các cổng COM đang dừng";
             this.btnUpdateMinAccountControl.Click += new System.EventHandler(this.BtnUpdateMinAccountControl_Click);
             // 
             // txtMinAccountControl
@@ -520,18 +521,19 @@
             this.gvCOM.GridControl = this.gcCOM;
             this.gvCOM.Name = "gvCOM";
             this.gvCOM.OptionsSelection.MultiSelect = true;
+            this.gvCOM.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CellSelect;
             this.gvCOM.OptionsView.ShowGroupPanel = false;
             this.gvCOM.RowCellStyle += new DevExpress.XtraGrid.Views.Grid.RowCellStyleEventHandler(this.GvCOM_RowCellStyle);
             this.gvCOM.MouseDown += new System.Windows.Forms.MouseEventHandler(this.gvCOM_MouseDown);
             // 
             // COM
             // 
-            this.COM.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.COM.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
             this.COM.AppearanceCell.Options.UseFont = true;
             this.COM.AppearanceCell.Options.UseTextOptions = true;
             this.COM.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
             this.COM.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.COM.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.COM.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold);
             this.COM.AppearanceHeader.FontStyleDelta = System.Drawing.FontStyle.Bold;
             this.COM.AppearanceHeader.Options.UseFont = true;
             this.COM.AppearanceHeader.Options.UseTextOptions = true;
@@ -553,12 +555,12 @@
             // 
             // STT
             // 
-            this.STT.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.STT.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
             this.STT.AppearanceCell.Options.UseFont = true;
             this.STT.AppearanceCell.Options.UseTextOptions = true;
             this.STT.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.STT.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.STT.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.STT.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold);
             this.STT.AppearanceHeader.FontStyleDelta = System.Drawing.FontStyle.Bold;
             this.STT.AppearanceHeader.Options.UseFont = true;
             this.STT.AppearanceHeader.Options.UseTextOptions = true;
@@ -1093,12 +1095,12 @@
             // 
             // ICCID
             // 
-            this.ICCID.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ICCID.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
             this.ICCID.AppearanceCell.Options.UseFont = true;
             this.ICCID.AppearanceCell.Options.UseTextOptions = true;
             this.ICCID.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.ICCID.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.ICCID.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ICCID.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold);
             this.ICCID.AppearanceHeader.FontStyleDelta = System.Drawing.FontStyle.Bold;
             this.ICCID.AppearanceHeader.Options.UseFont = true;
             this.ICCID.AppearanceHeader.Options.UseTextOptions = true;
@@ -1119,12 +1121,12 @@
             // 
             // PhoneNumber
             // 
-            this.PhoneNumber.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PhoneNumber.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
             this.PhoneNumber.AppearanceCell.Options.UseFont = true;
             this.PhoneNumber.AppearanceCell.Options.UseTextOptions = true;
             this.PhoneNumber.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.PhoneNumber.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.PhoneNumber.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PhoneNumber.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold);
             this.PhoneNumber.AppearanceHeader.FontStyleDelta = System.Drawing.FontStyle.Bold;
             this.PhoneNumber.AppearanceHeader.Options.UseFont = true;
             this.PhoneNumber.AppearanceHeader.Options.UseTextOptions = true;
@@ -1146,12 +1148,12 @@
             // 
             // TKChinh
             // 
-            this.TKChinh.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TKChinh.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
             this.TKChinh.AppearanceCell.Options.UseFont = true;
             this.TKChinh.AppearanceCell.Options.UseTextOptions = true;
             this.TKChinh.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.TKChinh.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.TKChinh.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TKChinh.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold);
             this.TKChinh.AppearanceHeader.FontStyleDelta = System.Drawing.FontStyle.Bold;
             this.TKChinh.AppearanceHeader.Options.UseFont = true;
             this.TKChinh.AppearanceHeader.Options.UseTextOptions = true;
@@ -1173,11 +1175,11 @@
             // 
             // Message101
             // 
-            this.Message101.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Message101.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
             this.Message101.AppearanceCell.Options.UseFont = true;
             this.Message101.AppearanceCell.Options.UseTextOptions = true;
             this.Message101.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.Message101.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Message101.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold);
             this.Message101.AppearanceHeader.Options.UseFont = true;
             this.Message101.Caption = "Tin nhắn";
             this.Message101.FieldName = "Message101";
@@ -1189,12 +1191,12 @@
             // 
             // Message
             // 
-            this.Message.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Message.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
             this.Message.AppearanceCell.Options.UseFont = true;
             this.Message.AppearanceCell.Options.UseTextOptions = true;
             this.Message.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
             this.Message.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.Message.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Message.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold);
             this.Message.AppearanceHeader.FontStyleDelta = System.Drawing.FontStyle.Bold;
             this.Message.AppearanceHeader.Options.UseFont = true;
             this.Message.Caption = "Trạng Thái";

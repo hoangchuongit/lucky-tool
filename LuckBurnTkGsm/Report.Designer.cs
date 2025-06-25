@@ -38,9 +38,6 @@ namespace LuckBurnTK
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.panelControl2 = new DevExpress.XtraEditors.PanelControl();
             this.panelControl11 = new DevExpress.XtraEditors.PanelControl();
-            this.panelControl12 = new DevExpress.XtraEditors.PanelControl();
-            this.lbFailAmount = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
             this.panelControl13 = new DevExpress.XtraEditors.PanelControl();
             this.lbFailTotal = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
@@ -80,8 +77,6 @@ namespace LuckBurnTK
             this.panelControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl11)).BeginInit();
             this.panelControl11.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.panelControl12)).BeginInit();
-            this.panelControl12.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl13)).BeginInit();
             this.panelControl13.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl14)).BeginInit();
@@ -202,52 +197,18 @@ namespace LuckBurnTK
             this.panelControl2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelControl2.Location = new System.Drawing.Point(0, 34);
             this.panelControl2.Name = "panelControl2";
-            this.panelControl2.Size = new System.Drawing.Size(519, 257);
+            this.panelControl2.Size = new System.Drawing.Size(519, 216);
             this.panelControl2.TabIndex = 11;
             // 
             // panelControl11
             // 
-            this.panelControl11.Controls.Add(this.panelControl12);
             this.panelControl11.Controls.Add(this.panelControl13);
             this.panelControl11.Controls.Add(this.panelControl14);
             this.panelControl11.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelControl11.Location = new System.Drawing.Point(2, 170);
             this.panelControl11.Name = "panelControl11";
-            this.panelControl11.Size = new System.Drawing.Size(515, 84);
+            this.panelControl11.Size = new System.Drawing.Size(515, 44);
             this.panelControl11.TabIndex = 3;
-            // 
-            // panelControl12
-            // 
-            this.panelControl12.Controls.Add(this.lbFailAmount);
-            this.panelControl12.Controls.Add(this.label12);
-            this.panelControl12.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelControl12.Location = new System.Drawing.Point(122, 42);
-            this.panelControl12.Name = "panelControl12";
-            this.panelControl12.Size = new System.Drawing.Size(391, 40);
-            this.panelControl12.TabIndex = 2;
-            // 
-            // lbFailAmount
-            // 
-            this.lbFailAmount.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbFailAmount.Font = new System.Drawing.Font("Verdana", 16F, System.Drawing.FontStyle.Bold);
-            this.lbFailAmount.ForeColor = System.Drawing.Color.Red;
-            this.lbFailAmount.Location = new System.Drawing.Point(112, 2);
-            this.lbFailAmount.Name = "lbFailAmount";
-            this.lbFailAmount.Size = new System.Drawing.Size(277, 36);
-            this.lbFailAmount.TabIndex = 5;
-            this.lbFailAmount.Text = "0 VNĐ";
-            this.lbFailAmount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label12
-            // 
-            this.label12.Dock = System.Windows.Forms.DockStyle.Left;
-            this.label12.Font = new System.Drawing.Font("Verdana", 8F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))));
-            this.label12.Location = new System.Drawing.Point(2, 2);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(110, 36);
-            this.label12.TabIndex = 4;
-            this.label12.Text = "Tổng tiền:";
-            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // panelControl13
             // 
@@ -278,7 +239,7 @@ namespace LuckBurnTK
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(110, 36);
             this.label14.TabIndex = 3;
-            this.label14.Text = "Số lượng burn:";
+            this.label14.Text = "Số lượng:";
             this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // panelControl14
@@ -287,7 +248,7 @@ namespace LuckBurnTK
             this.panelControl14.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelControl14.Location = new System.Drawing.Point(2, 2);
             this.panelControl14.Name = "panelControl14";
-            this.panelControl14.Size = new System.Drawing.Size(120, 80);
+            this.panelControl14.Size = new System.Drawing.Size(120, 40);
             this.panelControl14.TabIndex = 0;
             // 
             // label15
@@ -297,7 +258,7 @@ namespace LuckBurnTK
             this.label15.ForeColor = System.Drawing.Color.Red;
             this.label15.Location = new System.Drawing.Point(2, 2);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(116, 76);
+            this.label15.Size = new System.Drawing.Size(116, 36);
             this.label15.TabIndex = 1;
             this.label15.Text = "THẤT BẠI";
             this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -343,7 +304,7 @@ namespace LuckBurnTK
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(110, 36);
             this.label2.TabIndex = 4;
-            this.label2.Text = "Tổng tiền:";
+            this.label2.Text = "Tổng tiền chờ:";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // panelControl5
@@ -375,7 +336,7 @@ namespace LuckBurnTK
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(110, 36);
             this.label4.TabIndex = 3;
-            this.label4.Text = "Số lượng burn:";
+            this.label4.Text = "Số lượng:";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // panelControl10
@@ -472,7 +433,7 @@ namespace LuckBurnTK
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(110, 36);
             this.label8.TabIndex = 3;
-            this.label8.Text = "Số lượng burn:";
+            this.label8.Text = "Số lượng:";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // panelControl7
@@ -500,14 +461,14 @@ namespace LuckBurnTK
             // 
             this.gcReport.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gcReport.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.gcReport.Location = new System.Drawing.Point(0, 291);
+            this.gcReport.Location = new System.Drawing.Point(0, 250);
             this.gcReport.MainView = this.gvReport;
             this.gcReport.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.gcReport.Name = "gcReport";
             this.gcReport.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemComboBox1,
             this.repositoryItemTextEdit2});
-            this.gcReport.Size = new System.Drawing.Size(519, 445);
+            this.gcReport.Size = new System.Drawing.Size(519, 486);
             this.gcReport.TabIndex = 12;
             this.gcReport.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gvReport});
@@ -1135,8 +1096,6 @@ namespace LuckBurnTK
             this.panelControl2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.panelControl11)).EndInit();
             this.panelControl11.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.panelControl12)).EndInit();
-            this.panelControl12.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.panelControl13)).EndInit();
             this.panelControl13.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.panelControl14)).EndInit();
@@ -1174,12 +1133,8 @@ namespace LuckBurnTK
         private DevExpress.XtraEditors.DateEdit txtFromDate;
         private DevExpress.XtraEditors.PanelControl panelControl2;
         private DevExpress.XtraEditors.PanelControl panelControl11;
-        private DevExpress.XtraEditors.PanelControl panelControl12;
-        private System.Windows.Forms.Label lbFailAmount;
-        private System.Windows.Forms.Label label12;
         private DevExpress.XtraEditors.PanelControl panelControl13;
         private System.Windows.Forms.Label lbFailTotal;
-        private System.Windows.Forms.Label label14;
         private DevExpress.XtraEditors.PanelControl panelControl14;
         private System.Windows.Forms.Label label15;
         private DevExpress.XtraEditors.PanelControl panelControl3;
@@ -1208,5 +1163,6 @@ namespace LuckBurnTK
         private DevExpress.XtraGrid.Columns.GridColumn status;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repositoryItemComboBox1;
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit repositoryItemTextEdit2;
+        private System.Windows.Forms.Label label14;
     }
 }
