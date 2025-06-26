@@ -26,8 +26,6 @@ namespace LuckBurnTK
     {
         private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private readonly SemaphoreSlim _simCheckLimiter = new SemaphoreSlim(96);
-
         /// Danh sách cổng COM
         private readonly List<SerialPort> SerialPorts = new List<SerialPort>();
 
@@ -62,7 +60,7 @@ namespace LuckBurnTK
             InitializeControls();
         }
 
-        private void InitializeControls()
+        private async void InitializeControls()
         {
             txtMinAccountControl.EditValue = Properties.Settings.Default.MinAccount;
             LoadCOMForm();
@@ -78,7 +76,6 @@ namespace LuckBurnTK
             {
                 _ = Task.Run(() =>
                 {
-                    _simCheckLimiter.Wait();
                     try
                     {
                         InitializeModem(port);
@@ -86,10 +83,6 @@ namespace LuckBurnTK
                     catch (Exception ex)
                     {
                         logger.Error($"{port.PortName} - LoadCOMForm Error: {ex.Message}");
-                    }
-                    finally
-                    {
-                        _simCheckLimiter.Release();
                     }
                 });
             }
@@ -304,13 +297,14 @@ namespace LuckBurnTK
                 if (!MessageCOMs[sp.PortName].Contains("AT+EGMR=") || !MessageCOMs[sp.PortName].Contains("\nOK")) return;
                 var mess = MessageCOMs[sp.PortName].AT_Command("AT+EGMR=");
                 MessageCOMs[sp.PortName] = string.Empty;
-                UpdateComData(sp.PortName, dto => dto.IMEI = mess, "IMEI");
                 Thread.Sleep(5000);
                 SendATCommand(sp, "AT+QSIMSTAT?");
             }
             catch (Exception)
             {
-                UpdateComData(sp.PortName, dto => dto.ICCID = string.Empty, "ICCID");
+                UpdateComData(sp.PortName, dto => dto.Message101 = "Thay đổi IMEI thất bại. thử lại sau 10s.", "Message101");
+                Thread.Sleep(10000);
+                SendATCommand(sp, "AT+EGMR=1,7,\"" + Common.GenerateIMEI() + "\"\r\n");
             }
         }
 
@@ -329,10 +323,23 @@ namespace LuckBurnTK
                     var messSplit = mess.Replace("+QSIMSTAT: ", string.Empty).Split(',');
                     if (messSplit.Length < 2 || messSplit[1] != "1") return;
                     MessageCOMs[sp.PortName] = string.Empty;
+                    // đánh số thứ tự COM nếu SIM chưa được đặt
+                    var currentRow = ComDataGrid.FirstOrDefault(x => x.COM == sp.PortName);
+                    if (currentRow.STT == "-1")
+                    {
+                        var dataCOms = Properties.Settings.Default.COMs.Trim().Split(',').Where(x => !string.IsNullOrEmpty(x)).ToList();
+                        //currentRow.Stt = (dataCOms.Count + 1).ToString();
+                        var stt = (dataCOms.Count + 1).ToString();
+                        // Cập nhật Properties.Settings
+                        dataCOms.Add(currentRow.DeviceID);
+                        Properties.Settings.Default.COMs = string.Join(",", dataCOms);
+                        Properties.Settings.Default.Save();
+                        // Làm mới GridView (cập nhật dòng cụ thể)
+                        UpdateComData(sp.PortName, dto => dto.STT = stt, "STT");
+                    }
                     SendATCommand(sp, "AT+CPIN?");
                 }
-                else
-                    MessageCOMs[sp.PortName] = string.Empty;
+                else MessageCOMs[sp.PortName] = string.Empty;
             }
             catch (Exception)
             {
@@ -350,20 +357,6 @@ namespace LuckBurnTK
             {
                 if (!MessageCOMs[sp.PortName].Contains("+CPIN:") || !MessageCOMs[sp.PortName].Contains("\nOK")) return;
                 var mess = MessageCOMs[sp.PortName].AT_Command();
-                // đánh số thứ tự COM nếu SIM chưa được đặt
-                var currentRow = ComDataGrid.FirstOrDefault(x => x.COM == sp.PortName);
-                if (currentRow.STT == "-1")
-                {
-                    var dataCOms = Properties.Settings.Default.COMs.Trim().Split(',').Where(x => !string.IsNullOrEmpty(x)).ToList();
-                    //currentRow.Stt = (dataCOms.Count + 1).ToString();
-                    var stt = (dataCOms.Count + 1).ToString();
-                    // Cập nhật Properties.Settings
-                    dataCOms.Add(currentRow.DeviceID);
-                    Properties.Settings.Default.COMs = string.Join(",", dataCOms);
-                    Properties.Settings.Default.Save();
-                    // Làm mới GridView (cập nhật dòng cụ thể)
-                    UpdateComData(sp.PortName, dto => dto.STT = stt, "STT");
-                }
                 if (mess.Contains("+CPIN: READY"))
                 {
                     MessageCOMs[sp.PortName] = string.Empty;
@@ -525,7 +518,7 @@ namespace LuckBurnTK
                     }
                     RecordingPorts.TryAdd(sp.PortName, new CallDetail()
                     {
-                        call_duration = Common.GenerateRandomCallDuration() + 15000, // 15000 là 15s giới thiệu của tổng đài
+                        call_duration = prefixSmsRes.duration, // 15000 là 15s giới thiệu của tổng đài
                         prefix = prefixSmsRes.prefix,
                         prefix_unit = prefixSmsRes.prefix_unit,
                         request_id = prefixSmsRes.request_id,
@@ -702,7 +695,7 @@ namespace LuckBurnTK
                     {
                         try
                         {
-                            await Task.Delay(callDetail.call_duration, cts.Token);
+                            await Task.Delay(callDetail.call_duration * 1000, cts.Token);
                             StopRecording(sp, false); // Chủ động ngắt
                         }
                         catch (TaskCanceledException)
@@ -805,7 +798,7 @@ namespace LuckBurnTK
                     end_call = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                     start_record = callDetail.start_record.ToString("yyyy-MM-dd HH:mm:ss"),
                     end_record = callDetail.end_record.ToString("yyyy-MM-dd HH:mm:ss"),
-                    duration = (int)Math.Round(callDetail.call_duration / 1000.0),
+                    duration = callDetail.call_duration,
                     no_carrier = callDetail.no_carrier ? 1 : 0,
                 };
                 await _prefixController.ReleaseSlot(releaseSlotReq, filePath);
@@ -839,7 +832,6 @@ namespace LuckBurnTK
                 if (sp == null) continue;
                 _ = Task.Run(() =>
                 {
-                    _simCheckLimiter.Wait();
                     try
                     {
                         UpdateComData(sp.PortName, dto => dto.Message = "Burning ...", "Message");
@@ -848,10 +840,6 @@ namespace LuckBurnTK
                     catch (Exception ex)
                     {
                         logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
-                    }
-                    finally
-                    {
-                        _simCheckLimiter.Release();
                     }
                 });
             }
@@ -923,7 +911,6 @@ namespace LuckBurnTK
                 {
                     _ = Task.Run(() =>
                     {
-                        _simCheckLimiter.Wait();
                         try
                         {
                             if (!sp.IsOpen) sp.Open();
@@ -936,10 +923,6 @@ namespace LuckBurnTK
                         catch (Exception ex)
                         {
                             logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
-                        }
-                        finally
-                        {
-                            _simCheckLimiter.Release();
                         }
                     });
                 }
@@ -956,7 +939,6 @@ namespace LuckBurnTK
                 {
                     _ = Task.Run(() =>
                     {
-                        _simCheckLimiter.Wait();
                         try
                         {
                             if (!sp.IsOpen) sp.Open();
@@ -985,10 +967,6 @@ namespace LuckBurnTK
                         {
                             logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
                         }
-                        finally
-                        {
-                            _simCheckLimiter.Release();
-                        }
                     });
                 }
             }
@@ -1003,7 +981,6 @@ namespace LuckBurnTK
                 {
                     _ = Task.Run(() =>
                     {
-                        _simCheckLimiter.Wait();
                         try
                         {
                             if (!sp.IsOpen) sp.Open();
@@ -1032,10 +1009,6 @@ namespace LuckBurnTK
                         {
                             logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
                         }
-                        finally
-                        {
-                            _simCheckLimiter.Release();
-                        }
                     });
                 }
             }
@@ -1057,7 +1030,6 @@ namespace LuckBurnTK
                 if (com == null) continue;
                 _ = Task.Run(() =>
                 {
-                    _simCheckLimiter.Wait();
                     try
                     {
                         SendATCommand(com, "AT+QSIMSTAT?");
@@ -1065,10 +1037,6 @@ namespace LuckBurnTK
                     catch (Exception ex)
                     {
                         logger.Error($"Lỗi khi gửi lệnh tới {com.PortName}: {ex.Message}");
-                    }
-                    finally
-                    {
-                        _simCheckLimiter.Release();
                     }
                 });
             }
@@ -1173,7 +1141,6 @@ namespace LuckBurnTK
                     if (sp == null) continue;
                     _ = Task.Run(() =>
                     {
-                        _simCheckLimiter.Wait();
                         try
                         {
                             if (!sp.IsOpen) sp.Open();
@@ -1202,10 +1169,6 @@ namespace LuckBurnTK
                         {
                             logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
                         }
-                        finally
-                        {
-                            _simCheckLimiter.Release();
-                        }
                     });
                 }
             }
@@ -1222,7 +1185,6 @@ namespace LuckBurnTK
                     if (sp == null) continue;
                     _ = Task.Run(() =>
                     {
-                        _simCheckLimiter.Wait();
                         try
                         {
                             if (!sp.IsOpen) sp.Open();
@@ -1235,10 +1197,6 @@ namespace LuckBurnTK
                         catch (Exception ex)
                         {
                             logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
-                        }
-                        finally
-                        {
-                            _simCheckLimiter.Release();
                         }
                     });
                 }
@@ -1256,7 +1214,6 @@ namespace LuckBurnTK
                     if (sp == null) continue;
                     _ = Task.Run(() =>
                     {
-                        _simCheckLimiter.Wait();
                         try
                         {
                             UpdateComData(sp.PortName, dto =>
@@ -1268,10 +1225,6 @@ namespace LuckBurnTK
                         catch (Exception ex)
                         {
                             logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
-                        }
-                        finally
-                        {
-                            _simCheckLimiter.Release();
                         }
                     });
                 }
@@ -1294,6 +1247,12 @@ namespace LuckBurnTK
         {
             var form = new UserInforForm(ApiKey);
             form.ShowDialog();
+        }
+
+        private async void TimerNotification_Tick(object sender, EventArgs e)
+        {
+            var notificaton = await _prefixController.GetNotification();
+            TxtNotification.Caption = notificaton;
         }
     }
 }

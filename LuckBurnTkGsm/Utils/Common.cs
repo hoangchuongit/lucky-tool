@@ -170,6 +170,5 @@ namespace LuckBurnTK.Utils
             else
                 return _random.Next(50000, 61000); // 61 không bao gồm, nên là 50-60
         }
-
     }
 }

@@ -123,5 +123,20 @@ namespace LuckBurnTK
                 throw ex;
             }
         }
+        public async Task<string> GetNotification()
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"config/notification");
+                if (response.IsSuccessStatusCode)
+                    return await response.Content.ReadAsStringAsync();
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"GetNotification ERROR: {ex.Message}");
+                throw ex;
+            }
+        }
     }
 }

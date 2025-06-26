@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            DevExpress.Utils.SuperToolTip superToolTip5 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem5 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip6 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem6 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip7 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem7 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip8 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem8 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip13 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem13 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip14 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem14 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip15 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem15 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip16 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem16 = new DevExpress.Utils.ToolTipItem();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BurnTKForm));
             this.barManager = new DevExpress.XtraBars.BarManager(this.components);
             this.mainToolBar = new DevExpress.XtraBars.Bar();
@@ -52,6 +52,8 @@
             this.btnChangeIMEI = new DevExpress.XtraBars.BarButtonItem();
             this.btnResetCom = new DevExpress.XtraBars.BarButtonItem();
             this.btnRestoreSettings = new DevExpress.XtraBars.BarButtonItem();
+            this.bar1 = new DevExpress.XtraBars.Bar();
+            this.TxtNotification = new DevExpress.XtraBars.BarStaticItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
@@ -82,6 +84,7 @@
             this.repositoryItemTextEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.TimerCheckSim = new System.Windows.Forms.Timer(this.components);
             this.popupMenu1 = new DevExpress.XtraBars.PopupMenu(this.components);
+            this.TimerNotification = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).BeginInit();
@@ -97,7 +100,8 @@
             // barManager
             // 
             this.barManager.Bars.AddRange(new DevExpress.XtraBars.Bar[] {
-            this.mainToolBar});
+            this.mainToolBar,
+            this.bar1});
             this.barManager.DockControls.Add(this.barDockControlTop);
             this.barManager.DockControls.Add(this.barDockControlBottom);
             this.barManager.DockControls.Add(this.barDockControlLeft);
@@ -120,10 +124,12 @@
             this.PopupBurn,
             this.barSubItem1,
             this.btnDoiMatKhau,
-            this.btnUserInfor});
-            this.barManager.MaxItemId = 19;
+            this.btnUserInfor,
+            this.TxtNotification});
+            this.barManager.MaxItemId = 20;
             this.barManager.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemTextEdit1});
+            this.barManager.StatusBar = this.bar1;
             // 
             // mainToolBar
             // 
@@ -258,9 +264,9 @@
             this.btnUpdateComPort.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnUpdateComPort.ItemAppearance.Normal.Options.UseFont = true;
             this.btnUpdateComPort.Name = "btnUpdateComPort";
-            toolTipItem5.Text = "Cập nhật lại số thứ tự cổng COM";
-            superToolTip5.Items.Add(toolTipItem5);
-            this.btnUpdateComPort.SuperTip = superToolTip5;
+            toolTipItem13.Text = "Cập nhật lại số thứ tự cổng COM";
+            superToolTip13.Items.Add(toolTipItem13);
+            this.btnUpdateComPort.SuperTip = superToolTip13;
             this.btnUpdateComPort.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnUpdateComPort_ItemClick);
             // 
             // btnResetComPort
@@ -272,9 +278,9 @@
             this.btnResetComPort.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnResetComPort.ItemAppearance.Normal.Options.UseFont = true;
             this.btnResetComPort.Name = "btnResetComPort";
-            toolTipItem6.Text = "Đặt lại số thứ tự cổng COM";
-            superToolTip6.Items.Add(toolTipItem6);
-            this.btnResetComPort.SuperTip = superToolTip6;
+            toolTipItem14.Text = "Đặt lại số thứ tự cổng COM";
+            superToolTip14.Items.Add(toolTipItem14);
+            this.btnResetComPort.SuperTip = superToolTip14;
             this.btnResetComPort.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnResetComPort_ItemClick);
             // 
             // btnChangeIMEI
@@ -297,9 +303,9 @@
             this.btnResetCom.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnResetCom.ItemAppearance.Normal.Options.UseFont = true;
             this.btnResetCom.Name = "btnResetCom";
-            toolTipItem7.Text = "Reset lại cổng COM";
-            superToolTip7.Items.Add(toolTipItem7);
-            this.btnResetCom.SuperTip = superToolTip7;
+            toolTipItem15.Text = "Reset lại cổng COM";
+            superToolTip15.Items.Add(toolTipItem15);
+            this.btnResetCom.SuperTip = superToolTip15;
             this.btnResetCom.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnResetCom_ItemClick);
             // 
             // btnRestoreSettings
@@ -311,10 +317,36 @@
             this.btnRestoreSettings.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnRestoreSettings.ItemAppearance.Normal.Options.UseFont = true;
             this.btnRestoreSettings.Name = "btnRestoreSettings";
-            toolTipItem8.Text = "Khôi phục lại cài đặt mặc định";
-            superToolTip8.Items.Add(toolTipItem8);
-            this.btnRestoreSettings.SuperTip = superToolTip8;
+            toolTipItem16.Text = "Khôi phục lại cài đặt mặc định";
+            superToolTip16.Items.Add(toolTipItem16);
+            this.btnRestoreSettings.SuperTip = superToolTip16;
             this.btnRestoreSettings.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnRestoreSettings_ItemClick);
+            // 
+            // bar1
+            // 
+            this.bar1.BarName = "Custom 3";
+            this.bar1.CanDockStyle = DevExpress.XtraBars.BarCanDockStyle.Bottom;
+            this.bar1.DockCol = 0;
+            this.bar1.DockRow = 0;
+            this.bar1.DockStyle = DevExpress.XtraBars.BarDockStyle.Bottom;
+            this.bar1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(this.TxtNotification)});
+            this.bar1.OptionsBar.AllowQuickCustomization = false;
+            this.bar1.OptionsBar.DrawDragBorder = false;
+            this.bar1.OptionsBar.UseWholeRow = true;
+            this.bar1.Text = "Custom 3";
+            // 
+            // TxtNotification
+            // 
+            this.TxtNotification.AutoSize = DevExpress.XtraBars.BarStaticItemSize.Spring;
+            this.TxtNotification.Caption = "Hệ thống thực hiện thống kê 4h/lần, chậm nhất sau 24h";
+            this.TxtNotification.Id = 19;
+            this.TxtNotification.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 14F, System.Drawing.FontStyle.Bold);
+            this.TxtNotification.ItemAppearance.Normal.ForeColor = System.Drawing.Color.Chocolate;
+            this.TxtNotification.ItemAppearance.Normal.Options.UseFont = true;
+            this.TxtNotification.ItemAppearance.Normal.Options.UseForeColor = true;
+            this.TxtNotification.Name = "TxtNotification";
+            this.TxtNotification.TextAlignment = System.Drawing.StringAlignment.Center;
             // 
             // barDockControlTop
             // 
@@ -328,9 +360,9 @@
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 688);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 657);
             this.barDockControlBottom.Manager = this.barManager;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1278, 0);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1278, 31);
             // 
             // barDockControlLeft
             // 
@@ -338,7 +370,7 @@
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 27);
             this.barDockControlLeft.Manager = this.barManager;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 661);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 630);
             // 
             // barDockControlRight
             // 
@@ -346,7 +378,7 @@
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.barDockControlRight.Location = new System.Drawing.Point(1278, 27);
             this.barDockControlRight.Manager = this.barManager;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 661);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 630);
             // 
             // btnStartStop
             // 
@@ -499,7 +531,7 @@
             this.gcCOM.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemComboBox1,
             this.repositoryItemTextEdit2});
-            this.gcCOM.Size = new System.Drawing.Size(1278, 609);
+            this.gcCOM.Size = new System.Drawing.Size(1278, 578);
             this.gcCOM.TabIndex = 0;
             this.gcCOM.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gvCOM});
@@ -1254,6 +1286,12 @@
             this.popupMenu1.Manager = this.barManager;
             this.popupMenu1.Name = "popupMenu1";
             // 
+            // TimerNotification
+            // 
+            this.TimerNotification.Enabled = true;
+            this.TimerNotification.Interval = 3600000;
+            this.TimerNotification.Tick += new System.EventHandler(this.TimerNotification_Tick);
+            // 
             // BurnTKForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1334,5 +1372,8 @@
         private DevExpress.XtraBars.BarSubItem barSubItem1;
         private DevExpress.XtraBars.BarButtonItem btnDoiMatKhau;
         private DevExpress.XtraBars.BarButtonItem btnUserInfor;
+        private DevExpress.XtraBars.Bar bar1;
+        private DevExpress.XtraBars.BarStaticItem TxtNotification;
+        private System.Windows.Forms.Timer TimerNotification;
     }
 }

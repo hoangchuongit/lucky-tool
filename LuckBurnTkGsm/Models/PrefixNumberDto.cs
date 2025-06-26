@@ -41,6 +41,7 @@ namespace LuckBurnTK.Models
             public PrefixNumberType type { get; set; }
             public string message { get; set; }
             public Guid history_id { get; set; }
+            public int duration { get; set; }
         }
 
         public class GetRevenueTotalRes
