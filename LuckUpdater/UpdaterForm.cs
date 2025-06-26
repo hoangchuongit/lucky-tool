@@ -56,9 +56,9 @@ namespace LuckUpdater
                 Process.Start(appPath);
                 Application.Exit();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                XtraMessageBox.Show("Cập nhật phiên bản mới thất bại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                XtraMessageBox.Show($"Cập nhật phiên bản mới thất bại: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
             }
         }

@@ -71,7 +71,7 @@ namespace LuckBurnTK
                     Properties.Settings.Default.RememberMe = chkRememberMe.Checked;
                     Properties.Settings.Default.Save();
                     Hide();
-                    var mainForm = new BurnTKForm(result.id.ToString(), result.api_key.ToString());
+                    var mainForm = new BurnTKForm(result.api_key.ToString());
                     mainForm.ShowDialog();
                     Close();
                 }

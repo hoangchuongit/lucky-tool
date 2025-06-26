@@ -26,7 +26,7 @@ namespace LuckBurnTK
     {
         private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private readonly SemaphoreSlim _simCheckLimiter = new SemaphoreSlim(16);
+        private readonly SemaphoreSlim _simCheckLimiter = new SemaphoreSlim(96);
 
         /// Danh sách cổng COM
         private readonly List<SerialPort> SerialPorts = new List<SerialPort>();
@@ -52,15 +52,12 @@ namespace LuckBurnTK
 
         private readonly PrefixNumberController _prefixController;
 
-        private readonly string AccountId;
-
         private readonly string ApiKey;
 
-        public BurnTKForm(string accountId, string apikey)
+        public BurnTKForm(string apikey)
         {
             InitializeComponent();
-            AccountId = accountId;
-            ApiKey=apikey;
+            ApiKey = apikey;
             _prefixController = new PrefixNumberController(apikey);
             InitializeControls();
         }
@@ -180,6 +177,7 @@ namespace LuckBurnTK
 
             MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
             //Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
+            //logger.Info(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
 
             if (MessageCOMs[sp.PortName].Contains("RING"))
             {
@@ -390,7 +388,7 @@ namespace LuckBurnTK
                 if (!MessageCOMs[sp.PortName].Contains("AT+QCCID") || !MessageCOMs[sp.PortName].Contains("\nOK")) return;
                 var mess = MessageCOMs[sp.PortName].AT_Command("AT+QCCID");
                 MessageCOMs[sp.PortName] = string.Empty;
-                UpdateComData(sp.PortName, dto => dto.ICCID = mess.Substring(0, 19), "ICCID");
+                UpdateComData(sp.PortName, dto => dto.ICCID = mess.Replace("+QCCID", ""), "ICCID");
                 // Gửi AT lấy thông tin nhà mạng
                 SendATCommand(sp, "AT+COPS?");
             }
@@ -412,9 +410,11 @@ namespace LuckBurnTK
                 var mess = MessageCOMs[sp.PortName].AT_Command("AT+COPS?").ToLower();
                 MessageCOMs[sp.PortName] = string.Empty;
                 string provider = "";
+                //logger.Info($"ListenEventTelecom: {mess}");
                 if (mess.Contains("viettel")) provider = "Viettel";
                 else if (mess.Contains("mobifone")) provider = "Mobifone";
                 else if (mess.Contains("vinaphone")) provider = "Vinaphone";
+                else if (mess.Contains("vietnamobile")) provider = "VietnamMobile";
                 else provider = "Other";
                 UpdateComData(sp.PortName, dto => dto.Telecom = provider, "Telecom");
                 // Gửi AT lấy số điện thoại và thông tin tài khoản chính
@@ -463,6 +463,7 @@ namespace LuckBurnTK
                 // Tin nhắn gửi về từ SMS
                 var mess = MessageCOMs[sp.PortName].AT_Command($"AT+CUSD=1,\"*101#\",15");
                 MessageCOMs[sp.PortName] = string.Empty;
+                //logger.Info($"mess [{sp.PortName}]: {mess}");
                 mess = mess.Substring(mess.IndexOf("+CUSD"));
                 if (mess.Split(',').Length <= 0) return;
                 var mess2 = mess.Split('\"')[1];
@@ -549,7 +550,7 @@ namespace LuckBurnTK
             }
             catch (Exception ex)
             {
-                logger.Error($"Burn thất bại: {ex.Message} {ex.StackTrace}");
+                logger.Error($"[{sp.PortName}]Burn thất bại: {ex.Message}");
                 UpdateComData(sp.PortName, dto => { dto.Message = $"Stop burn"; dto.IsFinish = true; }, "Message", "IsFinish");
             }
         }
@@ -706,7 +707,7 @@ namespace LuckBurnTK
                         }
                         catch (TaskCanceledException)
                         {
-                            logger.Info($"[{sp.PortName}] - Tổng đài ngắt kết nối (NO CARRIER).");
+                            logger.Info($"[{sp.PortName}] - Ngắt kết nối chủ động (NO CARRIER).");
                         }
                     });
                 }
