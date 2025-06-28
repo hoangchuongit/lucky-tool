@@ -148,6 +148,7 @@ namespace LuckBurnTK.Utils
             }
             return null;
         }
+
         public static byte[] RemoveConnectHeader(byte[] buffer)
         {
             string header = "\r\nCONNECT\r\n";

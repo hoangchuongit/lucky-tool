@@ -381,7 +381,7 @@ namespace LuckBurnTK
                 if (!MessageCOMs[sp.PortName].Contains("AT+QCCID") || !MessageCOMs[sp.PortName].Contains("\nOK")) return;
                 var mess = MessageCOMs[sp.PortName].AT_Command("AT+QCCID");
                 MessageCOMs[sp.PortName] = string.Empty;
-                UpdateComData(sp.PortName, dto => dto.ICCID = mess.Replace("+QCCID", ""), "ICCID");
+                UpdateComData(sp.PortName, dto => dto.ICCID = mess.Replace("+QCCID", "").Substring(0, 20), "ICCID");
                 // Gửi AT lấy thông tin nhà mạng
                 SendATCommand(sp, "AT+COPS?");
             }
@@ -600,7 +600,6 @@ namespace LuckBurnTK
             {
                 try
                 {
-
                 }
                 catch (Exception)
                 {

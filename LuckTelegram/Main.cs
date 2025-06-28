@@ -92,12 +92,10 @@ namespace LuckTelegram
 
         private void BtnExportExcel_Click(object sender, EventArgs e)
         {
-
         }
 
         private void BtnClearDBSim_Click(object sender, EventArgs e)
         {
-
         }
 
         private void BtnRunAll_Click(object sender, EventArgs e)
@@ -110,8 +108,7 @@ namespace LuckTelegram
                     {
                         if (!deviceSource.IsRunning)
                         {
-
-                            var deviceData = DeviceDatas.FirstOrDefault(d => d.Serial== deviceSource.Serial);
+                            var deviceData = DeviceDatas.FirstOrDefault(d => d.Serial == deviceSource.Serial);
                             StartDeviceAsTask(deviceData);
                         }
                     }
@@ -127,7 +124,6 @@ namespace LuckTelegram
 
         private void BtnStopAll_Click(object sender, EventArgs e)
         {
-
         }
 
         private async void CheckAdbStart()

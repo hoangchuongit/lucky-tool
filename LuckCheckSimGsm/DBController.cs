@@ -119,7 +119,6 @@ namespace LuckOTP.Model
                                         string status = row[1]?.ToString();
                                         if (!string.IsNullOrEmpty(phone) && (phone.StartsWith("84") || phone.StartsWith("0")))
                                         {
-
                                             command.Parameters["@Phone"].Value = Common.NormalizePhone(phone);
                                             command.Parameters["@Status"].Value = status;
                                             command.ExecuteNonQuery();

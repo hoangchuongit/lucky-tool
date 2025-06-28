@@ -3,20 +3,19 @@ using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Text;
-using System.Text.Json;
 using System.Windows.Forms;
 using static LuckBurnTK.Models.PrefixNumberDto;
 
 namespace LuckBurnTK
 {
-	public partial class UserInforForm : XtraForm
-	{
-		private readonly HttpClient _httpClient;
-		
-		public UserInforForm(string ApiKey)
+    public partial class UserInforForm : XtraForm
+    {
+        private readonly HttpClient _httpClient;
+
+        public UserInforForm(string ApiKey)
         {
             InitializeComponent();
-			_httpClient = new HttpClient
+            _httpClient = new HttpClient
             {
                 BaseAddress = new Uri("https://luckburn.mobi/"),
                 Timeout = TimeSpan.FromSeconds(30)
@@ -27,7 +26,6 @@ namespace LuckBurnTK
 
         private async void LoadForm()
         {
-
             try
             {
                 HttpResponseMessage response = await _httpClient.GetAsync("auth/get-info");

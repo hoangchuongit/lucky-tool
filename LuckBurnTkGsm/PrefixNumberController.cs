@@ -105,6 +105,7 @@ namespace LuckBurnTK
                 throw ex;
             }
         }
+
         public async Task<GetRevenueDetailRes[]> GetRevenueDetail(string fromdate, string todate)
         {
             try
@@ -123,6 +124,7 @@ namespace LuckBurnTK
                 throw ex;
             }
         }
+
         public async Task<string> GetNotification()
         {
             try

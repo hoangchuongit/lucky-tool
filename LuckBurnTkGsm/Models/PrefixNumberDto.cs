@@ -11,6 +11,7 @@ namespace LuckBurnTK.Models
             public string so_tai_khoan { get; set; }
             public string chu_tai_khoan { get; set; }
         }
+
         public class GetPrefixSmsReq
         {
             public string phone_number { get; set; }

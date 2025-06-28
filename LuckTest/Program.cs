@@ -8,9 +8,9 @@ namespace LuckTest
 {
     internal class Program
     {
-        static SerialPort serialPort;
+        private static SerialPort serialPort;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             string portName = "COM16"; // ⚠️ Đổi COM port đúng với thiết bị
             string phoneNumber = "0349751746"; // ⚠️ Đổi số điện thoại gọi đến
@@ -99,7 +99,7 @@ namespace LuckTest
             }
         }
 
-        static bool UploadAmrFileToRAM(string filename, byte[] data)
+        private static bool UploadAmrFileToRAM(string filename, byte[] data)
         {
             serialPort.DiscardInBuffer();
             serialPort.Write($"AT+QFOPEN=\"RAM:{filename}\",0,{data.Length + 1000}\r\n");
@@ -131,7 +131,7 @@ namespace LuckTest
             return closeResp.Contains("OK");
         }
 
-        static int ParseFd(string response)
+        private static int ParseFd(string response)
         {
             foreach (string line in response.Split('\n'))
             {
@@ -145,7 +145,7 @@ namespace LuckTest
             return -1;
         }
 
-        static string WaitForResponse(string keyword, int timeoutMs)
+        private static string WaitForResponse(string keyword, int timeoutMs)
         {
             StringBuilder sb = new StringBuilder();
             DateTime start = DateTime.Now;

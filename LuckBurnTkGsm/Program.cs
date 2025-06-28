@@ -1,5 +1,4 @@
 ﻿using AutoUpdaterDotNET;
-using LuckBurnTK.Utils;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -26,7 +25,7 @@ namespace LuckBurnTK
             Thread.CurrentThread.CurrentCulture = viVN;
             Thread.CurrentThread.CurrentUICulture = viVN;
 
-            #if !DEBUG
+#if !DEBUG
             AutoUpdater.Mandatory = true;
             AutoUpdater.UpdateMode = Mode.Forced;
             AutoUpdater.ShowRemindLaterButton = false;
@@ -35,7 +34,7 @@ namespace LuckBurnTK
             AutoUpdater.RunUpdateAsAdmin = true; // nếu ghi vào C:\Program Files
             AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
             AutoUpdater.Start("https://luckburn.mobi/update-app/update.xml");
-            #endif
+#endif
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

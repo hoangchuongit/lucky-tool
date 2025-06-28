@@ -19,6 +19,7 @@ namespace LuckUpdater
             this.zipPath = zipPath;
             this.appPath = appPath;
         }
+
         private async void UpdaterForm_Load(object sender, EventArgs e)
         {
             progressBar.Position = 0;

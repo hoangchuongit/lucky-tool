@@ -1132,6 +1132,5 @@ namespace LuckOTP
                 }
             }
         }
-
     }
 }

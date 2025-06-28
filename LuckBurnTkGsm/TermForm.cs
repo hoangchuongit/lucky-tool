@@ -1,4 +1,5 @@
 ﻿using DevExpress.XtraEditors;
+
 namespace LuckBurnTK
 {
     public partial class TermForm : XtraForm
