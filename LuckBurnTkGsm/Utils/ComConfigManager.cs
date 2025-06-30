@@ -10,7 +10,7 @@ namespace LuckBurnTK.Utils
 {
     public class ComConfig
     {
-        public string DeviceID { get; set; }
+        public string PortName { get; set; }
         public string STT { get; set; }
     }
 
@@ -31,16 +31,16 @@ namespace LuckBurnTK.Utils
             File.WriteAllText(ConfigPath, JsonSerializer.Serialize(list, new JsonSerializerOptions { WriteIndented = true }));
         }
 
-        public static string GetOrAssignSTT(string deviceID)
+        public static string GetOrAssignSTT(string PortName, bool isDefault = false)
         {
             var list = Load();
 
-            var existing = list.FirstOrDefault(x => x.DeviceID == deviceID);
+            var existing = list.FirstOrDefault(x => x.PortName == PortName);
             if (existing != null)
                 return existing.STT;
-
+            if(isDefault) return string.Empty;
             var stt = (list.Count + 1).ToString();
-            list.Add(new ComConfig { DeviceID = deviceID, STT = stt });
+            list.Add(new ComConfig { PortName = PortName, STT = stt });
             Save(list);
             return stt;
         }

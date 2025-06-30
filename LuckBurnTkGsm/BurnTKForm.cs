@@ -70,6 +70,7 @@ namespace LuckBurnTK
             LoadNotification();
             txtMinAccountControl.EditValue = Properties.Settings.Default.MinAccount;
             LoadCOMForm();
+            TimerCheckSim.Enabled = true;
         }
 
         private void LoadCOMForm()
@@ -97,7 +98,6 @@ namespace LuckBurnTK
 
         private void InitializeSerialPorts(string[] portNames, IEnumerable<Dictionary<string, string>> fullPortNames)
         {
-            var dataCOms = Properties.Settings.Default.COMs.Trim().Split(',');
             foreach (string port in portNames)
             {
                 //if (port != "COM14") return;
@@ -127,7 +127,7 @@ namespace LuckBurnTK
                 var data = new ComDto
                 {
                     COM = sp.PortName,
-                    STT = dataCOms.FindIndex(x => x == deviceID) > -1 ? (dataCOms.FindIndex(x => x == deviceID) + 1).ToString() : "-1",
+                    STT = ComConfigManager.GetOrAssignSTT(sp.PortName, true),
                     DeviceID = deviceID,
                     ICCID = string.Empty,
                     PhoneNumber = string.Empty,
@@ -138,7 +138,7 @@ namespace LuckBurnTK
                 };
                 ComDataGrid.Add(data);
             }
-            ComDataGrid = new BindingList<ComDto>(ComDataGrid.OrderBy(c => int.Parse(c.STT)).ToList());
+            ComDataGrid = new BindingList<ComDto>(ComDataGrid.OrderBy(c => !string.IsNullOrEmpty(c.STT) ? int.Parse(c.STT) : -1).ToList());
         }
 
         private void InitializeModem(SerialPort sp)
@@ -155,6 +155,8 @@ namespace LuckBurnTK
                 SendATCommand(sp, "AT+CMGF=1");
                 // Nhận tin nhắn dưới dạng văn bản
                 SendATCommand(sp, "AT+CNMI=2,2");
+                // lấy ICCID của sim
+                SendATCommand(sp, "AT+QCCID");
             }
             catch (Exception ex)
             {
@@ -180,22 +182,6 @@ namespace LuckBurnTK
             Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
             //logger.Info(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
 
-            if (MessageCOMs[sp.PortName].Contains("RING"))
-            {
-                SendATCommand(sp, "ATH");
-                MessageCOMs[sp.PortName] = string.Empty;
-            }
-
-            if (MessageCOMs[sp.PortName].Contains("CMS ERROR"))
-            {
-                UpdateComData(sp.PortName, dto =>
-                {
-                    dto.Message101 = "Cổng COM gặp lỗi. Rút SIM và chờ 20s sau đó lắp lại.";
-                    dto.Message = "";
-                    dto.IsFinish = true;
-                }, "Message101", "Message", "IsFinish");
-            }
-
             // Nếu cổng COM chưa nằm trong danh sách ghi âm thì bổ sung vào danh sách. Nếu đã có thì ghi nối tiếp dữ liệu
             if (!MessageCOMs[sp.PortName].Contains("+QFDWL:") && MessageCOMs[sp.PortName].Contains("\r\nCONNECT\r\n"))
             {
@@ -216,6 +202,7 @@ namespace LuckBurnTK
                     RecordingCOMs.TryAdd(sp.PortName, cleanBuffer);
                 }
             }
+
             // Kiểm tra nếu cổng COM nằm trong danh sách ghi âm và kết thúc cuộc gọi thì lưu lại file .amr
             if (MessageCOMs[sp.PortName].Contains("+QFDWL:") && MessageCOMs[sp.PortName].Contains("\r\nCONNECT\r\n"))
             {
@@ -224,11 +211,28 @@ namespace LuckBurnTK
                 RecordingCOMs.TryRemove(sp.PortName, out byte[] _);
             }
 
-            // Lắng nghe change IMEI thành công
-            ListenEventChangeIMEI(sp);
+            // Có cuộc gọi đến thì cancel
+            if (MessageCOMs[sp.PortName].Contains("RING"))
+            {
+                SendATCommand(sp, "ATH");
+                MessageCOMs[sp.PortName] = string.Empty;
+            }
 
-            // Lắng nghe xem SIM có được cắm vào cổng COM hay không
-            ListenEventSIMInsert(sp);
+            // Nếu cổng COM bị lỗi thì báo
+            if (MessageCOMs[sp.PortName].Contains("ERROR"))
+            {
+                sp.DiscardInBuffer();
+                UpdateComData(sp.PortName, dto =>
+                {
+                    dto.ICCID = string.Empty;
+                    dto.PhoneNumber = string.Empty;
+                    dto.TKChinh = 0;
+                    dto.Message101 = "UUSD lỗi, tự động thử lại sau 30s.";
+                    dto.Message = string.Empty;
+                    dto.IsFinish = true;
+                    dto.Telecom = string.Empty;
+                }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish", "Telecom");
+            }
 
             // Lắng nghe trạng thái sim đã sẵn sàng để làm việc chưa?
             ListenEventSIMStatus(sp);
@@ -236,11 +240,17 @@ namespace LuckBurnTK
             // Lắng nghe để lấy số serial SIM
             ListenEventICCID(sp);
 
+            // Lắng nghe xem SIM có được cắm vào cổng COM hay không
+            ListenEventSIMInsert(sp);
+
             // Lắng nghe để lấy thông tin nhà mạng
             ListenEventTelecom(sp);
 
             // Lắng nghe để lấy thông tin Số điện thoại
             ListenEventPhoneNumber(sp);
+
+            // Lắng nghe change IMEI thành công
+            ListenEventChangeIMEI(sp);
 
             // Lắng nghe cuộc gọi của thuê bao với tổng đài
             ListenEventCallPrefix(sp);
@@ -250,14 +260,35 @@ namespace LuckBurnTK
 
             // Lắng nghe xem sim gửi SMS thành công chưa
             ListenEventSendSms(sp);
+        }
 
-            // Trigger: Trạng thái SIM đã bị tháo
-            if (MessageCOMs[sp.PortName].Contains("+CPIN: NOT READY"))
+        private void SerialPort_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
+        {
+            SerialPort sp = (SerialPort)sender;
+            logger.Error($"[{sp.PortName}] Error: {e.EventType} - {MessageCOMs[sp.PortName]}");
+            MessageCOMs[sp.PortName] = string.Empty;
+            sp.DiscardInBuffer();
+            if (sp.IsOpen) sp.Close();
+            UpdateComData(sp.PortName, dto =>
             {
+                dto.PhoneNumber = string.Empty; dto.TKChinh = 0; dto.Message101 = ""; dto.Message = ""; dto.IsFinish = true;
+            }, "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish");
+        }
+
+        /// <summary>
+        /// Khi lấy được status của SIM
+        /// </summary>
+        /// <param name="sp"></param>
+        private void ListenEventSIMStatus(SerialPort sp)
+        {
+            var content = MessageCOMs[sp.PortName];
+            // Trạng thái SIM đã tháo
+            if (content.Contains("+CPIN: NOT READY"))
+            {
+                MessageCOMs[sp.PortName] = string.Empty;
+                sp.DiscardInBuffer();
                 try
                 {
-                    MessageCOMs[sp.PortName] = string.Empty;
-                    // Cập nhật gridview
                     UpdateComData(sp.PortName, dto =>
                     {
                         dto.ICCID = string.Empty;
@@ -272,27 +303,58 @@ namespace LuckBurnTK
                 catch (Exception ex)
                 {
                     logger.Error($"Tháo SIM thất bại: {ex.Message}");
+                    UpdateComData(sp.PortName, dto => dto.Message101 = "Tháo sim thất bại!", "Message101");
                 }
             }
 
-            // Trigger: Trạng thái SIM đã cắm
-            if (MessageCOMs[sp.PortName].Contains("Call Ready") && MessageCOMs[sp.PortName].Contains("+CPIN: READY"))
+            // Trạng thái SIM đã cắm
+            if (content.Contains("+CPIN: READY"))
             {
                 MessageCOMs[sp.PortName] = string.Empty;
-                //UpdateComData(sp.PortName, dto => dto.Message101 = $"SIM đã sẵn sàng.s", "Message101");
-                SendATCommand(sp, "AT+QSIMSTAT?");
+                try
+                {
+                    // đánh số thứ tự COM nếu SIM chưa được đặt
+                    var stt = ComConfigManager.GetOrAssignSTT(sp.PortName);
+                    UpdateComData(sp.PortName, dto => dto.STT = stt, "STT");
+                    // Tiếp tục nếu sim đã done
+                    //if (MessageCOMs[sp.PortName].Contains("Call Ready"))
+                    //{
+                    // lấy ICCID của sim
+                    SendATCommand(sp, "AT+QCCID");
+                    //}
+                }
+                catch (Exception ex)
+                {
+                    logger.Error($"Cắm SIM thất bại: {ex.Message}");
+                    UpdateComData(sp.PortName, dto => dto.Message101 = "Cắm sim thất bại!", "Message101");
+                }
             }
+
         }
 
-        private void SerialPort_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
+        /// <summary>
+        /// Khi lấy được thông tin của ICCID
+        /// </summary>
+        /// <param name="sp"></param>
+        private void ListenEventICCID(SerialPort sp)
         {
-            SerialPort sp = (SerialPort)sender;
-            logger.Error($"[{sp.PortName}] Error: {e.EventType} - {MessageCOMs[sp.PortName]}");
-            MessageCOMs[sp.PortName] = string.Empty;
-            UpdateComData(sp.PortName, dto =>
+            try
             {
-                dto.PhoneNumber = "Phone Unknow"; dto.TKChinh = 0; dto.Message101 = ""; dto.Message = ""; dto.IsFinish = true;
-            }, "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish");
+                var content = MessageCOMs[sp.PortName];
+                if (content.Contains("AT+QCCID") && content.Contains("\nOK"))
+                {
+                    var mess = MessageCOMs[sp.PortName].AT_Command("AT+QCCID");
+                    MessageCOMs[sp.PortName] = string.Empty;
+                    //Console.WriteLine($"[ {sp.PortName} ] SendATCommand: - {mess}");
+                    UpdateComData(sp.PortName, dto => dto.ICCID = mess.Substring(0, 20), "ICCID");
+                    //Console.WriteLine($"=------------------------------");
+                    SendATCommand(sp, "AT+QSIMSTAT?");
+                }
+            }
+            catch (Exception)
+            {
+                UpdateComData(sp.PortName, dto => dto.ICCID = string.Empty, "ICCID");
+            }
         }
 
         /// <summary>
@@ -303,12 +365,15 @@ namespace LuckBurnTK
         {
             try
             {
-                if (!MessageCOMs[sp.PortName].Contains("AT+EGMR=") || !MessageCOMs[sp.PortName].Contains("\nOK")) return;
-                var mess = MessageCOMs[sp.PortName].AT_Command("AT+EGMR=");
-                MessageCOMs[sp.PortName] = string.Empty;
-                UpdateComData(sp.PortName, dto => dto.Message101 = "Thay đổi IMEI cổng COM thành công. Chờ 5s.", "Message101");
-                Thread.Sleep(5000);
-                SendATCommand(sp, "AT+QSIMSTAT?");
+                var content = MessageCOMs[sp.PortName];
+                if (content.Contains("AT+EGMR=") && content.Contains("\nOK"))
+                {
+                    var mess = MessageCOMs[sp.PortName].AT_Command("AT+EGMR=");
+                    MessageCOMs[sp.PortName] = string.Empty;
+                    UpdateComData(sp.PortName, dto => dto.Message101 = "Thay đổi IMEI cổng COM thành công. Chờ 5s.", "Message101");
+                    Thread.Sleep(5000);
+                    SendATCommand(sp, "AT+QCCID");
+                }
             }
             catch (Exception)
             {
@@ -326,78 +391,23 @@ namespace LuckBurnTK
         {
             try
             {
-                if (!MessageCOMs[sp.PortName].Contains("+QSIMSTAT:") || !MessageCOMs[sp.PortName].Contains("\nOK")) return;
-                var mess = MessageCOMs[sp.PortName].AT_Command("AT+QSIMSTAT?");
-                if (mess.Contains("+QSIMSTAT: 0,1"))
+                var content = MessageCOMs[sp.PortName];
+                if (content.Contains("+QSIMSTAT:") && content.Contains("\nOK"))
                 {
-                    var messSplit = mess.Replace("+QSIMSTAT: ", string.Empty).Split(',');
-                    if (messSplit.Length < 2 || messSplit[1] != "1") return;
+                    var mess = MessageCOMs[sp.PortName].AT_Command("AT+QSIMSTAT?");
                     MessageCOMs[sp.PortName] = string.Empty;
-                    // đánh số thứ tự COM nếu SIM chưa được đặt
-                    var currentRow = ComDataGrid.FirstOrDefault(x => x.COM == sp.PortName);
-                    if (currentRow.STT == "-1")
+                    if (mess.Contains("+QSIMSTAT: 0,1"))
                     {
-                        var dataCOms = Properties.Settings.Default.COMs.Trim().Split(',').Where(x => !string.IsNullOrEmpty(x)).ToList();
-                        //currentRow.Stt = (dataCOms.Count + 1).ToString();
-                        var stt = (dataCOms.Count + 1).ToString();
-                        // Cập nhật Properties.Settings
-                        dataCOms.Add(currentRow.DeviceID);
-                        Properties.Settings.Default.COMs = string.Join(",", dataCOms);
-                        Properties.Settings.Default.Save();
-                        // Làm mới GridView (cập nhật dòng cụ thể)
-                        UpdateComData(sp.PortName, dto => dto.STT = stt, "STT");
+                        var messSplit = mess.Replace("+QSIMSTAT: ", string.Empty).Split(',');
+                        if (messSplit.Length < 2 || messSplit[1] != "1") return;
+                        // Gửi AT lấy thông tin nhà mạng
+                        SendATCommand(sp, "AT+COPS?");
                     }
-                    SendATCommand(sp, "AT+CPIN?");
-                }
-                else MessageCOMs[sp.PortName] = string.Empty;
-            }
-            catch (Exception)
-            {
-                UpdateComData(sp.PortName, dto => dto.PhoneNumber = "Phone Unknow", "PhoneNumber");
-            }
-        }
-
-        /// <summary>
-        /// Khi lấy được status của SIM
-        /// </summary>
-        /// <param name="sp"></param>
-        private void ListenEventSIMStatus(SerialPort sp)
-        {
-            try
-            {
-                if (!MessageCOMs[sp.PortName].Contains("+CPIN:") || !MessageCOMs[sp.PortName].Contains("\nOK")) return;
-                var mess = MessageCOMs[sp.PortName].AT_Command();
-                if (mess.Contains("+CPIN: READY"))
-                {
-                    MessageCOMs[sp.PortName] = string.Empty;
-                    UpdateComData(sp.PortName, dto => dto.Message101 = "SIM đã sẵn sàng.", "Message101");
-                    SendATCommand(sp, "AT+QCCID");
                 }
             }
             catch (Exception)
             {
-                UpdateComData(sp.PortName, dto => dto.Message101 = string.Empty, "Message101");
-            }
-        }
-
-        /// <summary>
-        /// Khi lấy được thông tin của ICCID
-        /// </summary>
-        /// <param name="sp"></param>
-        private void ListenEventICCID(SerialPort sp)
-        {
-            try
-            {
-                if (!MessageCOMs[sp.PortName].Contains("AT+QCCID") || !MessageCOMs[sp.PortName].Contains("\nOK")) return;
-                var mess = MessageCOMs[sp.PortName].AT_Command("AT+QCCID");
-                MessageCOMs[sp.PortName] = string.Empty;
-                UpdateComData(sp.PortName, dto => dto.ICCID = mess.Replace("+QCCID", "").Substring(0, 20), "ICCID");
-                // Gửi AT lấy thông tin nhà mạng
-                SendATCommand(sp, "AT+COPS?");
-            }
-            catch (Exception)
-            {
-                UpdateComData(sp.PortName, dto => dto.ICCID = string.Empty, "ICCID");
+                UpdateComData(sp.PortName, dto => dto.PhoneNumber = string.Empty, "PhoneNumber");
             }
         }
 
@@ -409,19 +419,22 @@ namespace LuckBurnTK
         {
             try
             {
-                if (!MessageCOMs[sp.PortName].Contains("+COPS:") || !MessageCOMs[sp.PortName].Contains("\nOK")) return;
-                var mess = MessageCOMs[sp.PortName].AT_Command("AT+COPS?").ToLower();
-                MessageCOMs[sp.PortName] = string.Empty;
-                string provider = "";
-                //logger.Info($"ListenEventTelecom: {mess}");
-                if (mess.Contains("viettel")) provider = "Viettel";
-                else if (mess.Contains("mobifone")) provider = "Mobifone";
-                else if (mess.Contains("vinaphone")) provider = "Vinaphone";
-                else if (mess.Contains("vietnamobile")) provider = "VietnamMobile";
-                else provider = "Other";
-                UpdateComData(sp.PortName, dto => dto.Telecom = provider, "Telecom");
-                // Gửi AT lấy số điện thoại và thông tin tài khoản chính
-                SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
+                var content = MessageCOMs[sp.PortName];
+                if (content.Contains("+COPS:") && content.Contains("\nOK"))
+                {
+                    var mess = MessageCOMs[sp.PortName].AT_Command("AT+COPS?").ToLower();
+                    MessageCOMs[sp.PortName] = string.Empty;
+                    string provider = "";
+                    //logger.Info($"ListenEventTelecom: {mess}");
+                    if (mess.Contains("viettel")) provider = "Viettel";
+                    else if (mess.Contains("mobifone")) provider = "Mobifone";
+                    else if (mess.Contains("vinaphone")) provider = "Vinaphone";
+                    else if (mess.Contains("vietnamobile")) provider = "VietnamMobile";
+                    else provider = "Other";
+                    UpdateComData(sp.PortName, dto => dto.Telecom = provider, "Telecom");
+                    // Gửi AT lấy số điện thoại và thông tin tài khoản chính
+                    SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15", 3000);
+                }
             }
             catch (Exception)
             {
@@ -437,13 +450,13 @@ namespace LuckBurnTK
         {
             try
             {
-                if (MessageCOMs[sp.PortName].Contains("+CUSD:") && MessageCOMs[sp.PortName].Contains("ERROR"))
+                var content = MessageCOMs[sp.PortName];
+                if (content.Contains("+CUSD:") && content.Contains("ERROR"))
                 {
                     MessageCOMs[sp.PortName] = string.Empty;
-                    UpdateComData(sp.PortName, dto => dto.PhoneNumber = "Phone Unknow", "PhoneNumber");
-                    gvCOM.RefreshRow(gvCOM.LocateByValue("COM", sp.PortName));
+                    UpdateComData(sp.PortName, dto => dto.PhoneNumber = string.Empty, "PhoneNumber");
                 }
-                else if (MessageCOMs[sp.PortName].Contains("+CUSD:") && MessageCOMs[sp.PortName].Contains("\nOK"))
+                else if (content.Contains("+CUSD:") && content.Contains("\nOK"))
                 {
                     _ = SmsOrCallWithPrefix(sp);
                 }
@@ -470,7 +483,7 @@ namespace LuckBurnTK
                 mess = mess.Substring(mess.IndexOf("+CUSD"));
                 if (mess.Split(',').Length <= 0) return;
                 var mess2 = mess.Split('\"')[1];
-                Console.WriteLine(mess2);
+                //Console.WriteLine(mess2);
                 UpdateComData(sp.PortName, dto => dto.Message101 = mess2, "Message101");
                 // Lấy số điện thoại từ tin nhắn gửi về
                 var phoneStr = mess2.Replace("\"", string.Empty);
@@ -495,11 +508,18 @@ namespace LuckBurnTK
                     var telecom = ComDataGrid.FirstOrDefault(x => x.COM == sp.PortName).Telecom;
                     if (telecom == null)
                     {
-                        UpdateComData(sp.PortName, dto =>
-                        {
-                            dto.PhoneNumber = "Phone Unknow"; dto.Message = $"Stop burn"; dto.IsFinish = true;
-                        }, "PhoneNumber", "Message", "IsFinish");
-                        return;
+                        //UpdateComData(sp.PortName, dto =>
+                        //{
+                        //    dto.ICCID = string.Empty;
+                        //    dto.PhoneNumber = string.Empty;
+                        //    dto.TKChinh = 0;
+                        //    dto.Message101 = string.Empty;
+                        //    dto.Message = string.Empty;
+                        //    dto.IsFinish = false;
+                        //    dto.Telecom = string.Empty;
+                        //}, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish", "Telecom");
+                        //return;
+                        telecom = "Other";
                     }
                     // Gọi API để lấy ra đầu số call hoặc sms và các thông tin cần để xử lý
                     var prefixSmsReq = new GetPrefixSmsReq()
@@ -664,7 +684,7 @@ namespace LuckBurnTK
                     var mess = MessageCOMs[sp.PortName];
                     MessageCOMs[sp.PortName] = string.Empty;
                     var fileToCOM = FileToCOMs[sp.PortName];
-                    SendATCommand(sp, $"AT+QFCLOSE={fileToCOM.fd}", 2000);
+                    SendATCommand(sp, $"AT+QFCLOSE={fileToCOM.fd}");
                     FileToCOMs.TryRemove(sp.PortName, out _);
                 }
             }
@@ -752,7 +772,7 @@ namespace LuckBurnTK
                     token.Dispose();
                 }
                 // kết thúc cuộc gọi
-                SendATCommand(sp, "ATH", 2000);
+                SendATCommand(sp, "ATH");
                 // Dừng ghi âm
                 SendATCommand(sp, "AT+QAUDRD=0", 1000);
                 // Cập nhật thời gian dừng
@@ -869,7 +889,7 @@ namespace LuckBurnTK
                 foreach (var item in dataSource)
                 {
                     var duplicateStt = dataSource.Where(x => x != item && x.STT == item.STT).FirstOrDefault();
-                    if (duplicateStt != null && duplicateStt.STT != "-1")
+                    if (duplicateStt != null && duplicateStt.STT != "")
                     {
                         status = false;
                         MessageBox.Show($"Cảnh báo: STT {item.STT} bị trùng!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -879,13 +899,13 @@ namespace LuckBurnTK
                 }
                 if (status)
                 {
-                    var sortedData = new BindingList<ComDto>(newDataSource.OrderBy(x => int.Parse(x.STT)).ToList());
+                    var sortedData = new BindingList<ComDto>(newDataSource.OrderBy(x => !string.IsNullOrEmpty(x.STT) ? int.Parse(x.STT) : -1).ToList());
                     ComDataGrid.Clear();
                     List<string> deviceIDs = new List<string>();
                     foreach (var item in sortedData)
                     {
                         ComDataGrid.Add(item);
-                        if (item.STT == "-1") continue;
+                        if (item.STT == "") continue;
                         deviceIDs.Add(item.DeviceID);
                     }
                     var COMs = string.Join(",", deviceIDs);
@@ -905,11 +925,13 @@ namespace LuckBurnTK
             if (XtraMessageBox.Show("Bạn có chắc chắn muốn đặt lại STT cổng COM?", "Xác nhận",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                Properties.Settings.Default.COMs = string.Empty;
-                Properties.Settings.Default.Save();
+                // Xoá file config nếu tồn tại
+                var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "com_settings.json");
+                if (File.Exists(configPath))
+                    File.Delete(configPath);
                 foreach (var item in ComDataGrid)
                 {
-                    item.STT = "-1";
+                    item.STT = "";
                 }
                 gvCOM.RefreshData();
             }
@@ -1044,30 +1066,26 @@ namespace LuckBurnTK
                 {
                     try
                     {
-                        if (sp.IsOpen == true)
+                        if (!sp.IsOpen) sp.Open();
+                        if (string.IsNullOrEmpty(item.PhoneNumber))
                         {
-                            if (string.IsNullOrEmpty(item.PhoneNumber) || item.PhoneNumber == "Phone Unknow")
-                            {
-                                SendATCommand(sp, "AT+QSIMSTAT?");
-                            }
-                        }
-                        else
-                        {
-                            UpdateComData(sp.PortName, dto =>
-                            {
-                                dto.ICCID = "COM ERROR";
-                                dto.PhoneNumber = "COM ERROR";
-                                dto.TKChinh = 0;
-                                dto.Message101 = "COM ERROR. Đảm bảo các cổng COM không có dấu chấm than. This PC > Manager > Device Manager > Ports (COM & LPT)";
-                                dto.Message = "COM ERROR";
-                                dto.IsFinish = false;
-                                dto.Telecom = "COM ERROR";
-                            }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish", "Telecom");
+                            sp.DiscardInBuffer();
+                            SendATCommand(sp, "AT+QCCID");
                         }
                     }
                     catch (Exception ex)
                     {
                         logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
+                        UpdateComData(sp.PortName, dto =>
+                        {
+                            dto.ICCID = "COM ERROR";
+                            dto.PhoneNumber = "COM ERROR";
+                            dto.TKChinh = 0;
+                            dto.Message101 = "COM ERROR. Đảm bảo các cổng COM không có dấu chấm than. This PC > Manager > Device Manager > Ports (COM & LPT)";
+                            dto.Message = "COM ERROR";
+                            dto.IsFinish = true;
+                            dto.Telecom = "COM ERROR";
+                        }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish", "Telecom");
                     }
                 });
             }
@@ -1306,7 +1324,7 @@ namespace LuckBurnTK
             }
             catch (Exception ex)
             {
-                logger.Error($"SendATCommand: {ex.Message}");
+                logger.Error($"[{sp.PortName}] SendATCommand: {ex.Message}");
             }
         }
 

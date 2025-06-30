@@ -29,15 +29,15 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            DevExpress.Utils.SuperToolTip superToolTip5 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem5 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip6 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem6 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip7 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem7 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip8 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem8 = new DevExpress.Utils.ToolTipItem();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BurnTKForm));
+            DevExpress.Utils.SuperToolTip superToolTip29 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem29 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip30 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem30 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip31 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem31 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip32 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem32 = new DevExpress.Utils.ToolTipItem();
             this.barManager = new DevExpress.XtraBars.BarManager(this.components);
             this.mainToolBar = new DevExpress.XtraBars.Bar();
             this.barSubItem1 = new DevExpress.XtraBars.BarSubItem();
@@ -273,9 +273,9 @@
             this.btnUpdateComPort.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnUpdateComPort.ItemAppearance.Normal.Options.UseFont = true;
             this.btnUpdateComPort.Name = "btnUpdateComPort";
-            toolTipItem5.Text = "Cập nhật lại số thứ tự cổng COM";
-            superToolTip5.Items.Add(toolTipItem5);
-            this.btnUpdateComPort.SuperTip = superToolTip5;
+            toolTipItem29.Text = "Cập nhật lại số thứ tự cổng COM";
+            superToolTip29.Items.Add(toolTipItem29);
+            this.btnUpdateComPort.SuperTip = superToolTip29;
             this.btnUpdateComPort.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnUpdateComPort_ItemClick);
             // 
             // btnResetComPort
@@ -287,9 +287,9 @@
             this.btnResetComPort.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnResetComPort.ItemAppearance.Normal.Options.UseFont = true;
             this.btnResetComPort.Name = "btnResetComPort";
-            toolTipItem6.Text = "Đặt lại số thứ tự cổng COM";
-            superToolTip6.Items.Add(toolTipItem6);
-            this.btnResetComPort.SuperTip = superToolTip6;
+            toolTipItem30.Text = "Đặt lại số thứ tự cổng COM";
+            superToolTip30.Items.Add(toolTipItem30);
+            this.btnResetComPort.SuperTip = superToolTip30;
             this.btnResetComPort.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnResetComPort_ItemClick);
             // 
             // btnChangeIMEI
@@ -312,9 +312,9 @@
             this.btnResetCom.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnResetCom.ItemAppearance.Normal.Options.UseFont = true;
             this.btnResetCom.Name = "btnResetCom";
-            toolTipItem7.Text = "Reset lại cổng COM";
-            superToolTip7.Items.Add(toolTipItem7);
-            this.btnResetCom.SuperTip = superToolTip7;
+            toolTipItem31.Text = "Reset lại cổng COM";
+            superToolTip31.Items.Add(toolTipItem31);
+            this.btnResetCom.SuperTip = superToolTip31;
             this.btnResetCom.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnResetCom_ItemClick);
             // 
             // btnRestoreSettings
@@ -326,9 +326,9 @@
             this.btnRestoreSettings.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnRestoreSettings.ItemAppearance.Normal.Options.UseFont = true;
             this.btnRestoreSettings.Name = "btnRestoreSettings";
-            toolTipItem8.Text = "Khôi phục lại cài đặt mặc định";
-            superToolTip8.Items.Add(toolTipItem8);
-            this.btnRestoreSettings.SuperTip = superToolTip8;
+            toolTipItem32.Text = "Khôi phục lại cài đặt mặc định";
+            superToolTip32.Items.Add(toolTipItem32);
+            this.btnRestoreSettings.SuperTip = superToolTip32;
             this.btnRestoreSettings.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnRestoreSettings_ItemClick);
             // 
             // BarBtnHDSD
@@ -389,7 +389,7 @@
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 659);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 789);
             this.barDockControlBottom.Manager = this.barManager;
             this.barDockControlBottom.Size = new System.Drawing.Size(1278, 29);
             // 
@@ -399,7 +399,7 @@
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 27);
             this.barDockControlLeft.Manager = this.barManager;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 632);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 762);
             // 
             // barDockControlRight
             // 
@@ -407,7 +407,7 @@
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.barDockControlRight.Location = new System.Drawing.Point(1278, 27);
             this.barDockControlRight.Manager = this.barManager;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 632);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 762);
             // 
             // PopupResetCom
             // 
@@ -587,7 +587,7 @@
             this.gcCOM.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemComboBox1,
             this.repositoryItemTextEdit2});
-            this.gcCOM.Size = new System.Drawing.Size(1278, 580);
+            this.gcCOM.Size = new System.Drawing.Size(1278, 710);
             this.gcCOM.TabIndex = 0;
             this.gcCOM.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gvCOM});
@@ -1308,8 +1308,7 @@
             // 
             // TimerCheckSim
             // 
-            this.TimerCheckSim.Enabled = true;
-            this.TimerCheckSim.Interval = 10000;
+            this.TimerCheckSim.Interval = 30000;
             this.TimerCheckSim.Tick += new System.EventHandler(this.TimerCheckSim_Tick);
             // 
             // popupMenu1
@@ -1325,7 +1324,7 @@
             // TimerNotification
             // 
             this.TimerNotification.Enabled = true;
-            this.TimerNotification.Interval = 3600000;
+            this.TimerNotification.Interval = 900000;
             this.TimerNotification.Tick += new System.EventHandler(this.TimerNotification_Tick);
             // 
             // HelpUI
@@ -1340,7 +1339,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1278, 688);
+            this.ClientSize = new System.Drawing.Size(1278, 818);
             this.Controls.Add(this.gcCOM);
             this.Controls.Add(this.panelControl1);
             this.Controls.Add(this.barDockControlLeft);

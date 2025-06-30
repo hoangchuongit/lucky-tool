@@ -142,11 +142,11 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BurnTKForm2.cs">
+    <Compile Include="BurnTKForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BurnTKForm2.Designer.cs">
-      <DependentUpon>BurnTKForm2.cs</DependentUpon>
+    <Compile Include="BurnTKForm.Designer.cs">
+      <DependentUpon>BurnTKForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ChangePassForm.cs">
       <SubType>Form</SubType>
@@ -199,8 +199,8 @@
     <Compile Include="Utils\Common.cs" />
     <Compile Include="Utils\SecureConfig.cs" />
     <Compile Include="Utils\StringExtensions.cs" />
-    <EmbeddedResource Include="BurnTKForm2.resx">
-      <DependentUpon>BurnTKForm2.cs</DependentUpon>
+    <EmbeddedResource Include="BurnTKForm.resx">
+      <DependentUpon>BurnTKForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ChangePassForm.resx">
       <DependentUpon>ChangePassForm.cs</DependentUpon>
