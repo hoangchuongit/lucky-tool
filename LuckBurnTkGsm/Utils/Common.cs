@@ -10,16 +10,24 @@ namespace LuckBurnTK.Utils
 {
     public class Common
     {
+#if !DEBUG
+        public static string UrlBurnAUTH = "https://luckburn.mobi/auth/";
+        public static string UrlBurnAPI = "https://luckburn.mobi/api/";
+#else
+        public static string UrlBurnAUTH = "http://localhost:3000/";
+        public static string UrlBurnAPI = "http://localhost:3001/";
+#endif
+
         private static readonly Random _random = new Random();
 
         public static IEnumerable<Dictionary<string, string>> GetFullPortNames()
         {
-            using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Caption LIKE '%(COM%'"))
+            using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Caption LIKE '%(COM%' AND ConfigManagerErrorCode = 0"))
             {
                 return searcher.Get().Cast<ManagementBaseObject>().Select(p => new Dictionary<string, string>{
                     { "Caption", p["Caption"]?.ToString() ?? string.Empty },
                     { "DeviceID", p["DeviceID"]?.ToString() ?? string.Empty }
-                }).ToList();
+                }).ToList().Where(x => x["Caption"].Contains("XR21V1414"));
             }
         }
 

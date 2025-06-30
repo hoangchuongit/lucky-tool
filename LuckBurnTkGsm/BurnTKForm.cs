@@ -26,6 +26,9 @@ namespace LuckBurnTK
     {
         private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
+        private readonly GuideFlyoutPanel panel;
+        private readonly int countLessons;
+
         /// Danh sách cổng COM
         private readonly List<SerialPort> SerialPorts = new List<SerialPort>();
 
@@ -55,13 +58,16 @@ namespace LuckBurnTK
         public BurnTKForm(string apikey)
         {
             InitializeComponent();
+            countLessons = 5;
+            panel = new GuideFlyoutPanel(this, countLessons);
             ApiKey = apikey;
             _prefixController = new PrefixNumberController(apikey);
             InitializeControls();
         }
 
-        private async void InitializeControls()
+        private void InitializeControls()
         {
+            LoadNotification();
             txtMinAccountControl.EditValue = Properties.Settings.Default.MinAccount;
             LoadCOMForm();
         }
@@ -69,7 +75,8 @@ namespace LuckBurnTK
         private void LoadCOMForm()
         {
             string[] portNames = SerialPort.GetPortNames();
-            var fullPortNames = Common.GetFullPortNames();
+            var fullPortNames = CheckComOnline();
+            if (fullPortNames == null) return;
             InitializeSerialPorts(portNames, fullPortNames);
             gcCOM.DataSource = ComDataGrid;
             foreach (var port in SerialPorts)
@@ -95,7 +102,7 @@ namespace LuckBurnTK
             {
                 //if (port != "COM14") return;
                 var regexPattern = $@"\b{Regex.Escape(port)}\b";
-                var isValid = fullPortNames.FirstOrDefault(x => Regex.IsMatch(x["Caption"], regexPattern, RegexOptions.IgnoreCase) && x["Caption"].Contains("XR21V1414"));
+                var isValid = fullPortNames.FirstOrDefault(x => Regex.IsMatch(x["Caption"], regexPattern, RegexOptions.IgnoreCase));
                 if (isValid == null) continue;
                 var deviceID = isValid["DeviceID"].ToString().Split('\\')[2].ToString();
                 SerialPort sp = new SerialPort(port)
@@ -107,8 +114,9 @@ namespace LuckBurnTK
                     DataBits = 8,
                     Handshake = Handshake.None,
                     RtsEnable = true,
-                    ReadTimeout = 3000,
-                    WriteTimeout = 3000
+                    ReadTimeout = 5000,
+                    WriteTimeout = 5000,
+                    ReadBufferSize = 16384,
                 };
                 sp.DataReceived += SerialPort_DataReceived;
                 sp.ErrorReceived += SerialPort_ErrorReceived;
@@ -169,7 +177,7 @@ namespace LuckBurnTK
             }
 
             MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
-            //Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
+            Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
             //logger.Info(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
 
             if (MessageCOMs[sp.PortName].Contains("RING"))
@@ -258,7 +266,8 @@ namespace LuckBurnTK
                         dto.Message101 = string.Empty;
                         dto.Message = string.Empty;
                         dto.IsFinish = false;
-                    }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message", "Tele");
+                        dto.Telecom = string.Empty;
+                    }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish", "Telecom");
                 }
                 catch (Exception ex)
                 {
@@ -278,7 +287,7 @@ namespace LuckBurnTK
         private void SerialPort_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
         {
             SerialPort sp = (SerialPort)sender;
-            logger.Error($"Error on port {sp.PortName}: {e.EventType}");
+            logger.Error($"[{sp.PortName}] Error: {e.EventType} - {MessageCOMs[sp.PortName]}");
             MessageCOMs[sp.PortName] = string.Empty;
             UpdateComData(sp.PortName, dto =>
             {
@@ -297,6 +306,7 @@ namespace LuckBurnTK
                 if (!MessageCOMs[sp.PortName].Contains("AT+EGMR=") || !MessageCOMs[sp.PortName].Contains("\nOK")) return;
                 var mess = MessageCOMs[sp.PortName].AT_Command("AT+EGMR=");
                 MessageCOMs[sp.PortName] = string.Empty;
+                UpdateComData(sp.PortName, dto => dto.Message101 = "Thay đổi IMEI cổng COM thành công. Chờ 5s.", "Message101");
                 Thread.Sleep(5000);
                 SendATCommand(sp, "AT+QSIMSTAT?");
             }
@@ -460,6 +470,7 @@ namespace LuckBurnTK
                 mess = mess.Substring(mess.IndexOf("+CUSD"));
                 if (mess.Split(',').Length <= 0) return;
                 var mess2 = mess.Split('\"')[1];
+                Console.WriteLine(mess2);
                 UpdateComData(sp.PortName, dto => dto.Message101 = mess2, "Message101");
                 // Lấy số điện thoại từ tin nhắn gửi về
                 var phoneStr = mess2.Replace("\"", string.Empty);
@@ -801,11 +812,14 @@ namespace LuckBurnTK
                     no_carrier = callDetail.no_carrier ? 1 : 0,
                 };
                 await _prefixController.ReleaseSlot(releaseSlotReq, filePath);
-                // Xóa file ghi âm trên RAM
+                // Xóa file trong folder
+                File.Delete(filePath);
+                // Xóa file ghi âm trên RAM của GSM
                 Thread.Sleep(1000);
                 SendATCommand(sp, "AT+QFDEL=\"RAM:record.amr\"", 1000);
                 // Xóa khỏi danh sách cổng COM đang ghi âm
                 if (RecordingPorts.ContainsKey(sp.PortName)) RecordingPorts.TryRemove(sp.PortName, out _);
+                // Xóa bỏ tin nhắn từ GSM trả về để làm luồng mới
                 MessageCOMs[sp.PortName] = string.Empty;
                 // Gửi AT lấy số điện thoại và thông tin tài khoản chính
                 if (!callDetail.no_carrier)
@@ -819,7 +833,7 @@ namespace LuckBurnTK
             }
         }
 
-        private void BtnUpdateMinAccountControl_Click(object sender, EventArgs e)
+        private void BtnStartBurn_Click(object sender, EventArgs e)
         {
             decimal minValue = Convert.ToDecimal(txtMinAccountControl.EditValue);
             Properties.Settings.Default.MinAccount = (int)minValue;
@@ -891,7 +905,7 @@ namespace LuckBurnTK
             if (XtraMessageBox.Show("Bạn có chắc chắn muốn đặt lại STT cổng COM?", "Xác nhận",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                Properties.Settings.Default.COMs = String.Empty;
+                Properties.Settings.Default.COMs = string.Empty;
                 Properties.Settings.Default.Save();
                 foreach (var item in ComDataGrid)
                 {
@@ -925,7 +939,6 @@ namespace LuckBurnTK
                         }
                     });
                 }
-                gvCOM.RefreshData();
             }
         }
 
@@ -1021,67 +1034,42 @@ namespace LuckBurnTK
 
         private void TimerCheckSim_Tick(object sender, EventArgs e)
         {
-            var data = ComDataGrid.Where(item => string.IsNullOrEmpty(item.PhoneNumber) || item.PhoneNumber == "Phone Unknow").ToList();
-            if (data.Count <= 0) return;
-            foreach (var item in data)
+            var fullPortNames = CheckComOnline();
+            if (fullPortNames == null) return;
+            foreach (var item in ComDataGrid)
             {
-                var com = SerialPorts.Find(x => x.PortName == item.COM);
-                if (com == null) continue;
+                var sp = SerialPorts.Find(x => x.PortName == item.COM);
+                if (sp == null) continue;
                 _ = Task.Run(() =>
                 {
                     try
                     {
-                        SendATCommand(com, "AT+QSIMSTAT?");
+                        if (sp.IsOpen == true)
+                        {
+                            if (string.IsNullOrEmpty(item.PhoneNumber) || item.PhoneNumber == "Phone Unknow")
+                            {
+                                SendATCommand(sp, "AT+QSIMSTAT?");
+                            }
+                        }
+                        else
+                        {
+                            UpdateComData(sp.PortName, dto =>
+                            {
+                                dto.ICCID = "COM ERROR";
+                                dto.PhoneNumber = "COM ERROR";
+                                dto.TKChinh = 0;
+                                dto.Message101 = "COM ERROR. Đảm bảo các cổng COM không có dấu chấm than. This PC > Manager > Device Manager > Ports (COM & LPT)";
+                                dto.Message = "COM ERROR";
+                                dto.IsFinish = false;
+                                dto.Telecom = "COM ERROR";
+                            }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish", "Telecom");
+                        }
                     }
                     catch (Exception ex)
                     {
-                        logger.Error($"Lỗi khi gửi lệnh tới {com.PortName}: {ex.Message}");
+                        logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
                     }
                 });
-            }
-        }
-
-        private void UpdateComData(string portName, Action<ComDto> updateAction, params string[] propertyNames)
-        {
-            try
-            {
-                var item = ComDataGrid.FirstOrDefault(dto => dto.COM == portName);
-                if (item == null) return;
-                updateAction(item);
-                InvokeIfRequired(() =>
-                {
-                    int rowHandle = gvCOM.LocateByValue("COM", portName);
-                    if (rowHandle >= 0 && propertyNames != null && propertyNames.Any())
-                        foreach (var propertyName in propertyNames)
-                        {
-                            gvCOM.RefreshRowCell(rowHandle, gvCOM.Columns[propertyName]);
-                        }
-                });
-            }
-            catch (Exception ex)
-            {
-                logger.Error($"UpdateComData error: {ex.Message}");
-            }
-        }
-
-        private void InvokeIfRequired(Action action)
-        {
-            if (gcCOM.InvokeRequired) gcCOM.Invoke(action);
-            else action();
-        }
-
-        private void SendATCommand(SerialPort sp, string command, int timeout = 1000)
-        {
-            try
-            {
-                MessageCOMs[sp.PortName] = string.Empty;
-                sp.WriteLine($"{command}{Environment.NewLine}");
-                Thread.Sleep(timeout);
-                MessageCOMs[sp.PortName].AT_Command(command);
-            }
-            catch (Exception ex)
-            {
-                logger.Error($"SendATCommand: {ex.Message}");
             }
         }
 
@@ -1115,7 +1103,7 @@ namespace LuckBurnTK
             termForm.ShowDialog();
         }
 
-        private void gvCOM_MouseDown(object sender, MouseEventArgs e)
+        private void GvCOM_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -1230,6 +1218,10 @@ namespace LuckBurnTK
             }
         }
 
+        private void PopupPhatSinhCuoc_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+        }
+
         private void BtnTotalRevenue_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             var report = new ReportTotal(ApiKey);
@@ -1248,10 +1240,146 @@ namespace LuckBurnTK
             form.ShowDialog();
         }
 
-        private async void TimerNotification_Tick(object sender, EventArgs e)
+        private void TimerNotification_Tick(object sender, EventArgs e)
+        {
+            LoadNotification();
+        }
+
+        private IEnumerable<Dictionary<string, string>> CheckComOnline()
+        {
+            var fullPortNames = Common.GetFullPortNames();
+            var countComsOnline = fullPortNames.Count();
+            BarPCCom.Caption = $"PC COMs Online: <b><size=12><color=green>{countComsOnline}</color></size></b>";
+            if (countComsOnline == 0)
+            {
+                TimerCheckSim.Enabled = false;
+                XtraMessageBox.Show("Toàn bộ cổng COM bị lỗi. Đảm bảo các cổng COM không có dấu chấm than.\nThis PC > Manager > Device Manager > Ports (COM & LPT)", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Application.Exit();
+                return null;
+            }
+            else return fullPortNames;
+        }
+
+        private async void LoadNotification()
         {
             var notificaton = await _prefixController.GetNotification();
             TxtNotification.Caption = notificaton;
         }
+
+        private void UpdateComData(string portName, Action<ComDto> updateAction, params string[] propertyNames)
+        {
+            try
+            {
+                var item = ComDataGrid.FirstOrDefault(dto => dto.COM == portName);
+                if (item == null) return;
+                updateAction(item);
+                InvokeIfRequired(() =>
+                {
+                    int rowHandle = gvCOM.LocateByValue("COM", portName);
+                    if (rowHandle >= 0 && propertyNames != null && propertyNames.Any())
+                        foreach (var propertyName in propertyNames)
+                        {
+                            gvCOM.RefreshRowCell(rowHandle, gvCOM.Columns[propertyName]);
+                        }
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"UpdateComData error: {ex.Message}");
+            }
+        }
+
+        private void InvokeIfRequired(Action action)
+        {
+            if (gcCOM.InvokeRequired) gcCOM.Invoke(action);
+            else action();
+        }
+
+        private void SendATCommand(SerialPort sp, string command, int timeout = 1000)
+        {
+            try
+            {
+                MessageCOMs[sp.PortName] = string.Empty;
+                sp.WriteLine($"{command}{Environment.NewLine}");
+                Thread.Sleep(timeout);
+                MessageCOMs[sp.PortName].AT_Command(command);
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"SendATCommand: {ex.Message}");
+            }
+        }
+
+        #region Hướng dẫn sử dụng cho người dùng
+
+        private void HelpUI_QueryGuideFlyoutControl(object sender, DevExpress.Utils.VisualEffects.QueryGuideFlyoutControlEventArgs e)
+        {
+            e.Control = panel;
+        }
+
+        private void BarBtnHDSD_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            HelpUI.ShowGuides = DevExpress.Utils.DefaultBoolean.True;
+            SetLesson(panel.CurrentLessonIndex);
+        }
+
+        public void SetLesson(int index)
+        {
+            if (index < 0 || index > countLessons - 1) return;
+            switch (index)
+            {
+                case 0:
+                    FirstLesson(); break;
+                case 1:
+                    SecondLesson(); break;
+                case 2:
+                    ThirdLesson(); break;
+                case 3:
+                    FourthLesson(); break;
+                case 4:
+                    FifthLesson(); break;
+            }
+        }
+
+        public void EndTutorial()
+        {
+            HelpUI.ShowGuides = DevExpress.Utils.DefaultBoolean.False;
+        }
+
+        private void FirstLesson()
+        {
+            panel.LabelText = $"<b><size=10>Hạn mức nhỏ nhất</size></b><br><br>Giữ lại số tiền tương ứng trong tài khoản chính của thuê bao. Đảm bảo số dư tài khoản chính không nhỏ hơn hạn mức giữ lại</color>.";
+            guide1.TargetElement = txtMinAccountControl;
+        }
+
+        private void SecondLesson()
+        {
+            panel.LabelText = $"<b><size=10>Nút Burn</size></b><br><br>Khởi động Burn cho tất cả các thuê bao có trạng thái <color=red>\"Stop Burn\"</color>.";
+            guide1.TargetElement = BtnStartBurn;
+        }
+
+        private void ThirdLesson()
+        {
+            panel.LabelText = $"<b><size=10>Danh sách cổng COMs</size></b>" +
+                $"<br><br>Hiển thị thông tin thuê bao trên từng cổng COM.\n" +
+                $"Nếu các cột hiển thị <color=red>\"COM ERROR\"</color>, kiểm tra kết nối của các cổng COM với PC\n" +
+                $"<b>This PC > Manager > Device Manager > Ports (COM & LPT)</b>\n" +
+                $"Nếu hiển thị màu vàng với dấu chấm than thì hãy rút cổng COM trên PC ra và cắm lại, sau đó khởi động lại phần mềm.";
+            guide1.TargetElement = gcCOM;
+        }
+
+        private void FourthLesson()
+        {
+            panel.LabelText = $"<b><size=10>Thông báo</size></b><br><br>Hiển thị thông báo của hệ thống, tin khuyến mãi, phiên bản cập nhật...";
+            guide1.TargetElement = TxtNotification;
+        }
+
+        private void FifthLesson()
+        {
+            panel.LabelText = $"<b><size=10>PC COMs Online</size></b><br><br>Hiển thị số cổng COM đang kết nối với hệ thống. Nếu số cổng COM ít hơn ở danh sách, hãy kiểm tra lại kết nối của PC với cổng COM.";
+            guide1.TargetElement = BarPCCom;
+        }
+
+        #endregion Hướng dẫn sử dụng cho người dùng
     }
 }

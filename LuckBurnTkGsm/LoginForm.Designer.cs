@@ -62,7 +62,7 @@
             this.chkRememberMe.Properties.Appearance.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkRememberMe.Properties.Appearance.Options.UseFont = true;
             this.chkRememberMe.Properties.Caption = "Ghi nhớ mật khẩu";
-            this.chkRememberMe.Size = new System.Drawing.Size(233, 20);
+            this.chkRememberMe.Size = new System.Drawing.Size(131, 20);
             this.chkRememberMe.TabIndex = 13;
             // 
             // btnLogin
@@ -72,7 +72,7 @@
             this.btnLogin.AppearanceHovered.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.btnLogin.AppearanceHovered.Options.UseBackColor = true;
             this.btnLogin.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("btnLogin.ImageOptions.SvgImage")));
-            this.btnLogin.Location = new System.Drawing.Point(15, 147);
+            this.btnLogin.Location = new System.Drawing.Point(14, 148);
             this.btnLogin.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
             this.btnLogin.Name = "btnLogin";
             this.btnLogin.Size = new System.Drawing.Size(268, 30);

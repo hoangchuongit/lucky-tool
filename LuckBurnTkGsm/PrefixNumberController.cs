@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using LuckBurnTK.Utils;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -18,7 +19,7 @@ namespace LuckBurnTK
         {
             _httpClient = new HttpClient
             {
-                BaseAddress = new Uri("https://luckburn.mobi/api/"),
+                BaseAddress = new Uri(Common.UrlBurnAPI),
                 Timeout = TimeSpan.FromSeconds(30)
             };
             _httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);

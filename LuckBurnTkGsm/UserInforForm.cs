@@ -1,4 +1,5 @@
 ﻿using DevExpress.XtraEditors;
+using LuckBurnTK.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
@@ -17,7 +18,7 @@ namespace LuckBurnTK
             InitializeComponent();
             _httpClient = new HttpClient
             {
-                BaseAddress = new Uri("https://luckburn.mobi/"),
+                BaseAddress = new Uri(Common.UrlBurnAUTH),
                 Timeout = TimeSpan.FromSeconds(30)
             };
             _httpClient.DefaultRequestHeaders.Add("x-api-key", ApiKey);
@@ -59,7 +60,7 @@ namespace LuckBurnTK
                 var changePassData = new { fullname, ngan_hang, so_tai_khoan, chu_tai_khoan };
                 string jsonData = JsonConvert.SerializeObject(changePassData);
                 var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await _httpClient.PostAsync("auth/update-info", content);
+                HttpResponseMessage response = await _httpClient.PostAsync("update-info", content);
                 if (response.IsSuccessStatusCode) Close();
                 else XtraMessageBox.Show("Cập nhật thông tin tài khoản thất bại", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

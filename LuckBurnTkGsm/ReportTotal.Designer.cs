@@ -239,7 +239,7 @@ namespace LuckBurnTK
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(110, 36);
             this.label14.TabIndex = 3;
-            this.label14.Text = "Số lượng:";
+            this.label14.Text = "Số burn:";
             this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // panelControl14
@@ -336,7 +336,7 @@ namespace LuckBurnTK
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(110, 36);
             this.label4.TabIndex = 3;
-            this.label4.Text = "Số lượng:";
+            this.label4.Text = "Số burn:";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // panelControl10
@@ -433,7 +433,7 @@ namespace LuckBurnTK
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(110, 36);
             this.label8.TabIndex = 3;
-            this.label8.Text = "Số lượng:";
+            this.label8.Text = "Số burn:";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // panelControl7

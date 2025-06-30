@@ -43,7 +43,7 @@ namespace LuckBurnTK
 
                 // Hiển thị thông báo đã tải xong
                 Cursor = Cursors.Default;
-                if (dataTable == null || dataTable.Length <= 0) XtraMessageBox.Show("Không có dữ liệu trong khoảng thời gian này.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (dataTable == null || dataTable.Length <= 0) return;
 
                 // success
                 var success = dataTable.FirstOrDefault(x => x.status == StatusEnum.SUCCESS.ToString());

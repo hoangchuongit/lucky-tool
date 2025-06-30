@@ -1,4 +1,5 @@
 ﻿using DevExpress.XtraEditors;
+using LuckBurnTK.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
@@ -14,7 +15,11 @@ namespace LuckBurnTK
         public LoginForm()
         {
             InitializeComponent();
-            _httpClient = new HttpClient();
+            _httpClient = new HttpClient()
+            {
+                BaseAddress = new Uri(Common.UrlBurnAUTH),
+                Timeout = TimeSpan.FromSeconds(30)
+            };
 
             // Thiết lập tab cho các control
             txtEmail.TabIndex = 0;
@@ -58,7 +63,7 @@ namespace LuckBurnTK
                 string jsonData = JsonConvert.SerializeObject(loginData);
                 var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage response = await _httpClient.PostAsync("https://luckburn.mobi/auth/login", content);
+                HttpResponseMessage response = await _httpClient.PostAsync("login", content);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -78,14 +83,12 @@ namespace LuckBurnTK
                 else
                 {
                     string errorMessage = "Đăng nhập thất bại. ";
-
                     if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                         errorMessage += "Tài khoản hoặc mật khẩu không đúng!";
                     else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
                         errorMessage += "Dữ liệu đăng nhập không hợp lệ!";
                     else
                         errorMessage += "Lỗi máy chủ. Vui lòng thử lại sau!";
-
                     XtraMessageBox.Show(errorMessage, "Lỗi",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }

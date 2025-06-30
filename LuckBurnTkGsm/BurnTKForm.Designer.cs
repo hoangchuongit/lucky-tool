@@ -52,21 +52,25 @@
             this.btnChangeIMEI = new DevExpress.XtraBars.BarButtonItem();
             this.btnResetCom = new DevExpress.XtraBars.BarButtonItem();
             this.btnRestoreSettings = new DevExpress.XtraBars.BarButtonItem();
-            this.bar1 = new DevExpress.XtraBars.Bar();
+            this.BarBtnHDSD = new DevExpress.XtraBars.BarButtonItem();
+            this.BarNotification = new DevExpress.XtraBars.Bar();
             this.TxtNotification = new DevExpress.XtraBars.BarStaticItem();
+            this.BarPCCom = new DevExpress.XtraBars.BarStaticItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
-            this.btnStartStop = new DevExpress.XtraBars.BarButtonItem();
             this.PopupResetCom = new DevExpress.XtraBars.BarButtonItem();
             this.PopupChangeIMEI = new DevExpress.XtraBars.BarButtonItem();
             this.PopupBurn = new DevExpress.XtraBars.BarButtonItem();
+            this.PopupPhatSinhCuoc = new DevExpress.XtraBars.BarButtonItem();
+            this.BarBurnCom = new DevExpress.XtraBars.BarStaticItem();
             this.repositoryItemTextEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.panelControl1 = new DevExpress.XtraEditors.PanelControl();
+            this.label1 = new System.Windows.Forms.Label();
             this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
-            this.btnUpdateMinAccountControl = new DevExpress.XtraEditors.SimpleButton();
+            this.BtnStartBurn = new DevExpress.XtraEditors.SimpleButton();
             this.txtMinAccountControl = new DevExpress.XtraEditors.TextEdit();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.gcCOM = new DevExpress.XtraGrid.GridControl();
@@ -79,14 +83,12 @@
             this.TKChinh = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Message101 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Message = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.IMEI = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.Telecom = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemTextEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.TimerCheckSim = new System.Windows.Forms.Timer(this.components);
             this.popupMenu1 = new DevExpress.XtraBars.PopupMenu(this.components);
             this.TimerNotification = new System.Windows.Forms.Timer(this.components);
-            this.label1 = new System.Windows.Forms.Label();
-            this.HanSd = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.HelpUI = new DevExpress.Utils.VisualEffects.AdornerUIManager(this.components);
+            this.guide1 = new DevExpress.Utils.VisualEffects.Guide();
             ((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).BeginInit();
@@ -97,13 +99,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.popupMenu1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HelpUI)).BeginInit();
             this.SuspendLayout();
             // 
             // barManager
             // 
             this.barManager.Bars.AddRange(new DevExpress.XtraBars.Bar[] {
             this.mainToolBar,
-            this.bar1});
+            this.BarNotification});
             this.barManager.DockControls.Add(this.barDockControlTop);
             this.barManager.DockControls.Add(this.barDockControlBottom);
             this.barManager.DockControls.Add(this.barDockControlLeft);
@@ -111,7 +114,6 @@
             this.barManager.DockWindowTabFont = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.barManager.Form = this;
             this.barManager.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
-            this.btnStartStop,
             this.btnComSettingDropDown,
             this.btnUpdateComPort,
             this.btnResetComPort,
@@ -127,11 +129,15 @@
             this.barSubItem1,
             this.btnDoiMatKhau,
             this.btnUserInfor,
-            this.TxtNotification});
-            this.barManager.MaxItemId = 20;
+            this.TxtNotification,
+            this.PopupPhatSinhCuoc,
+            this.BarPCCom,
+            this.BarBurnCom,
+            this.BarBtnHDSD});
+            this.barManager.MaxItemId = 25;
             this.barManager.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemTextEdit1});
-            this.barManager.StatusBar = this.bar1;
+            this.barManager.StatusBar = this.BarNotification;
             // 
             // mainToolBar
             // 
@@ -144,7 +150,8 @@
             new DevExpress.XtraBars.LinkPersistInfo(this.barBtnRule),
             new DevExpress.XtraBars.LinkPersistInfo(this.BtnTotalRevenue),
             new DevExpress.XtraBars.LinkPersistInfo(this.BtnDoanhThu),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnComSettingDropDown, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnComSettingDropDown, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(this.BarBtnHDSD)});
             this.mainToolBar.OptionsBar.AllowQuickCustomization = false;
             this.mainToolBar.OptionsBar.DisableClose = true;
             this.mainToolBar.OptionsBar.DisableCustomization = true;
@@ -324,31 +331,51 @@
             this.btnRestoreSettings.SuperTip = superToolTip8;
             this.btnRestoreSettings.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnRestoreSettings_ItemClick);
             // 
-            // bar1
+            // BarBtnHDSD
             // 
-            this.bar1.BarName = "Custom 3";
-            this.bar1.CanDockStyle = DevExpress.XtraBars.BarCanDockStyle.Bottom;
-            this.bar1.DockCol = 0;
-            this.bar1.DockRow = 0;
-            this.bar1.DockStyle = DevExpress.XtraBars.BarDockStyle.Bottom;
-            this.bar1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.TxtNotification)});
-            this.bar1.OptionsBar.AllowQuickCustomization = false;
-            this.bar1.OptionsBar.DrawDragBorder = false;
-            this.bar1.OptionsBar.UseWholeRow = true;
-            this.bar1.Text = "Custom 3";
+            this.BarBtnHDSD.Caption = "Hướng dẫn sử dụng";
+            this.BarBtnHDSD.Id = 24;
+            this.BarBtnHDSD.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("BarBtnHDSD.ImageOptions.Image")));
+            this.BarBtnHDSD.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("BarBtnHDSD.ImageOptions.LargeImage")));
+            this.BarBtnHDSD.Name = "BarBtnHDSD";
+            this.BarBtnHDSD.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph;
+            this.BarBtnHDSD.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BarBtnHDSD_ItemClick);
+            // 
+            // BarNotification
+            // 
+            this.BarNotification.BarName = "Bar Notification";
+            this.BarNotification.CanDockStyle = DevExpress.XtraBars.BarCanDockStyle.Bottom;
+            this.BarNotification.DockCol = 0;
+            this.BarNotification.DockRow = 0;
+            this.BarNotification.DockStyle = DevExpress.XtraBars.BarDockStyle.Bottom;
+            this.BarNotification.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(this.TxtNotification),
+            new DevExpress.XtraBars.LinkPersistInfo(this.BarPCCom)});
+            this.BarNotification.OptionsBar.AllowQuickCustomization = false;
+            this.BarNotification.OptionsBar.DrawDragBorder = false;
+            this.BarNotification.OptionsBar.UseWholeRow = true;
+            this.BarNotification.Text = "Bar Notification";
             // 
             // TxtNotification
             // 
+            this.TxtNotification.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
             this.TxtNotification.AutoSize = DevExpress.XtraBars.BarStaticItemSize.Spring;
-            this.TxtNotification.Caption = "Hệ thống thực hiện thống kê 4h/lần, chậm nhất sau 24h";
+            this.TxtNotification.Caption = "Những burn <color=Blue>\"Chờ đối soát\"</color> được xử lý sau 4h/lần, chậm nhất sa" +
+    "u 24h. Xin cảm ơn!";
             this.TxtNotification.Id = 19;
-            this.TxtNotification.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 12F, System.Drawing.FontStyle.Bold);
-            this.TxtNotification.ItemAppearance.Normal.ForeColor = System.Drawing.Color.DarkRed;
+            this.TxtNotification.ItemAppearance.Normal.Font = new System.Drawing.Font("Cascadia Code", 12F);
             this.TxtNotification.ItemAppearance.Normal.Options.UseFont = true;
-            this.TxtNotification.ItemAppearance.Normal.Options.UseForeColor = true;
             this.TxtNotification.Name = "TxtNotification";
             this.TxtNotification.TextAlignment = System.Drawing.StringAlignment.Center;
+            // 
+            // BarPCCom
+            // 
+            this.BarPCCom.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
+            this.BarPCCom.Caption = "PC COMs Online: <b><size=12><color=green>0</color></size></b>";
+            this.BarPCCom.Id = 21;
+            this.BarPCCom.ItemAppearance.Normal.Font = new System.Drawing.Font("Cascadia Code", 10F);
+            this.BarPCCom.ItemAppearance.Normal.Options.UseFont = true;
+            this.BarPCCom.Name = "BarPCCom";
             // 
             // barDockControlTop
             // 
@@ -362,9 +389,9 @@
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 662);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 659);
             this.barDockControlBottom.Manager = this.barManager;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1278, 26);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1278, 29);
             // 
             // barDockControlLeft
             // 
@@ -372,7 +399,7 @@
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 27);
             this.barDockControlLeft.Manager = this.barManager;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 635);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 632);
             // 
             // barDockControlRight
             // 
@@ -380,12 +407,7 @@
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.barDockControlRight.Location = new System.Drawing.Point(1278, 27);
             this.barDockControlRight.Manager = this.barManager;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 635);
-            // 
-            // btnStartStop
-            // 
-            this.btnStartStop.Id = 8;
-            this.btnStartStop.Name = "btnStartStop";
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 632);
             // 
             // PopupResetCom
             // 
@@ -420,6 +442,25 @@
             this.PopupBurn.Name = "PopupBurn";
             this.PopupBurn.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.PopupBurn_ItemClick);
             // 
+            // PopupPhatSinhCuoc
+            // 
+            this.PopupPhatSinhCuoc.Caption = "Phát sinh cước";
+            this.PopupPhatSinhCuoc.Id = 20;
+            this.PopupPhatSinhCuoc.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("PopupPhatSinhCuoc.ImageOptions.Image")));
+            this.PopupPhatSinhCuoc.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("PopupPhatSinhCuoc.ImageOptions.LargeImage")));
+            this.PopupPhatSinhCuoc.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F);
+            this.PopupPhatSinhCuoc.ItemAppearance.Normal.Options.UseFont = true;
+            this.PopupPhatSinhCuoc.Name = "PopupPhatSinhCuoc";
+            this.PopupPhatSinhCuoc.Visibility = DevExpress.XtraBars.BarItemVisibility.Never;
+            this.PopupPhatSinhCuoc.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.PopupPhatSinhCuoc_ItemClick);
+            // 
+            // BarBurnCom
+            // 
+            this.BarBurnCom.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
+            this.BarBurnCom.Caption = "Burn COMs: <b><color=red>32</color></b>";
+            this.BarBurnCom.Id = 22;
+            this.BarBurnCom.Name = "BarBurnCom";
+            // 
             // repositoryItemTextEdit1
             // 
             this.repositoryItemTextEdit1.AutoHeight = false;
@@ -436,7 +477,7 @@
             this.panelControl1.Controls.Add(this.label1);
             this.panelControl1.Controls.Add(this.labelControl3);
             this.panelControl1.Controls.Add(this.labelControl2);
-            this.panelControl1.Controls.Add(this.btnUpdateMinAccountControl);
+            this.panelControl1.Controls.Add(this.BtnStartBurn);
             this.panelControl1.Controls.Add(this.txtMinAccountControl);
             this.panelControl1.Controls.Add(this.labelControl1);
             this.panelControl1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -445,11 +486,23 @@
             this.panelControl1.Size = new System.Drawing.Size(1278, 52);
             this.panelControl1.TabIndex = 4;
             // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.Font = new System.Drawing.Font("Cascadia Code", 10F, System.Drawing.FontStyle.Bold);
+            this.label1.ForeColor = System.Drawing.Color.DarkRed;
+            this.label1.Location = new System.Drawing.Point(911, 8);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(355, 36);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "* Lưu lượng giới hạn trong khoảng thời gian 23h đến 5h sáng";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // labelControl3
             // 
             this.labelControl3.Appearance.Font = new System.Drawing.Font("Verdana", 18F, System.Drawing.FontStyle.Bold);
             this.labelControl3.Appearance.Options.UseFont = true;
-            this.labelControl3.Location = new System.Drawing.Point(299, 11);
+            this.labelControl3.Location = new System.Drawing.Point(250, 11);
             this.labelControl3.Name = "labelControl3";
             this.labelControl3.Size = new System.Drawing.Size(298, 29);
             this.labelControl3.TabIndex = 5;
@@ -461,40 +514,40 @@
             this.labelControl2.Appearance.ForeColor = System.Drawing.Color.Red;
             this.labelControl2.Appearance.Options.UseFont = true;
             this.labelControl2.Appearance.Options.UseForeColor = true;
-            this.labelControl2.Location = new System.Drawing.Point(235, 11);
+            this.labelControl2.Location = new System.Drawing.Point(186, 11);
             this.labelControl2.Name = "labelControl2";
             this.labelControl2.Size = new System.Drawing.Size(58, 29);
             this.labelControl2.TabIndex = 4;
             this.labelControl2.Text = "VNĐ";
             // 
-            // btnUpdateMinAccountControl
+            // BtnStartBurn
             // 
-            this.btnUpdateMinAccountControl.Appearance.BackColor = System.Drawing.Color.MintCream;
-            this.btnUpdateMinAccountControl.Appearance.Font = new System.Drawing.Font("Verdana", 16F, System.Drawing.FontStyle.Bold);
-            this.btnUpdateMinAccountControl.Appearance.Options.UseBackColor = true;
-            this.btnUpdateMinAccountControl.Appearance.Options.UseFont = true;
-            this.btnUpdateMinAccountControl.Appearance.Options.UseTextOptions = true;
-            this.btnUpdateMinAccountControl.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.btnUpdateMinAccountControl.Appearance.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.btnUpdateMinAccountControl.AppearanceHovered.Font = new System.Drawing.Font("Verdana", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnUpdateMinAccountControl.AppearanceHovered.Options.UseFont = true;
-            this.btnUpdateMinAccountControl.ButtonStyle = DevExpress.XtraEditors.Controls.BorderStyles.HotFlat;
-            this.btnUpdateMinAccountControl.ImageOptions.AllowGlyphSkinning = DevExpress.Utils.DefaultBoolean.False;
-            this.btnUpdateMinAccountControl.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdateMinAccountControl.ImageOptions.Image")));
-            this.btnUpdateMinAccountControl.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
-            this.btnUpdateMinAccountControl.Location = new System.Drawing.Point(616, 8);
-            this.btnUpdateMinAccountControl.Name = "btnUpdateMinAccountControl";
-            this.btnUpdateMinAccountControl.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.btnUpdateMinAccountControl.Size = new System.Drawing.Size(122, 36);
-            this.btnUpdateMinAccountControl.TabIndex = 2;
-            this.btnUpdateMinAccountControl.Text = "BURN";
-            this.btnUpdateMinAccountControl.ToolTip = "Khởi động lại burn cho các cổng COM đang dừng";
-            this.btnUpdateMinAccountControl.Click += new System.EventHandler(this.BtnUpdateMinAccountControl_Click);
+            this.BtnStartBurn.Appearance.BackColor = System.Drawing.Color.MintCream;
+            this.BtnStartBurn.Appearance.Font = new System.Drawing.Font("Verdana", 16F, System.Drawing.FontStyle.Bold);
+            this.BtnStartBurn.Appearance.Options.UseBackColor = true;
+            this.BtnStartBurn.Appearance.Options.UseFont = true;
+            this.BtnStartBurn.Appearance.Options.UseTextOptions = true;
+            this.BtnStartBurn.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.BtnStartBurn.Appearance.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.BtnStartBurn.AppearanceHovered.Font = new System.Drawing.Font("Verdana", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnStartBurn.AppearanceHovered.Options.UseFont = true;
+            this.BtnStartBurn.ButtonStyle = DevExpress.XtraEditors.Controls.BorderStyles.HotFlat;
+            this.BtnStartBurn.ImageOptions.AllowGlyphSkinning = DevExpress.Utils.DefaultBoolean.False;
+            this.BtnStartBurn.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("BtnStartBurn.ImageOptions.Image")));
+            this.BtnStartBurn.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
+            this.BtnStartBurn.Location = new System.Drawing.Point(567, 8);
+            this.BtnStartBurn.Name = "BtnStartBurn";
+            this.BtnStartBurn.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.BtnStartBurn.Size = new System.Drawing.Size(122, 36);
+            this.BtnStartBurn.TabIndex = 2;
+            this.BtnStartBurn.Text = "BURN";
+            this.BtnStartBurn.ToolTip = "Khởi động lại burn cho các cổng COM đang dừng";
+            this.BtnStartBurn.Click += new System.EventHandler(this.BtnStartBurn_Click);
             // 
             // txtMinAccountControl
             // 
             this.txtMinAccountControl.EditValue = "";
-            this.txtMinAccountControl.Location = new System.Drawing.Point(103, 8);
+            this.txtMinAccountControl.Location = new System.Drawing.Point(54, 8);
             this.txtMinAccountControl.Name = "txtMinAccountControl";
             this.txtMinAccountControl.Properties.Appearance.Font = new System.Drawing.Font("Verdana", 18F, System.Drawing.FontStyle.Bold);
             this.txtMinAccountControl.Properties.Appearance.ForeColor = System.Drawing.Color.Red;
@@ -519,9 +572,9 @@
             this.labelControl1.Appearance.Options.UseFont = true;
             this.labelControl1.Location = new System.Drawing.Point(12, 11);
             this.labelControl1.Name = "labelControl1";
-            this.labelControl1.Size = new System.Drawing.Size(85, 29);
+            this.labelControl1.Size = new System.Drawing.Size(36, 29);
             this.labelControl1.TabIndex = 3;
-            this.labelControl1.Text = "Giữ lại";
+            this.labelControl1.Text = "Để";
             // 
             // gcCOM
             // 
@@ -534,7 +587,7 @@
             this.gcCOM.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemComboBox1,
             this.repositoryItemTextEdit2});
-            this.gcCOM.Size = new System.Drawing.Size(1278, 583);
+            this.gcCOM.Size = new System.Drawing.Size(1278, 580);
             this.gcCOM.TabIndex = 0;
             this.gcCOM.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gvCOM});
@@ -549,18 +602,15 @@
             this.ICCID,
             this.PhoneNumber,
             this.TKChinh,
-            this.HanSd,
             this.Message101,
-            this.Message,
-            this.IMEI,
-            this.Telecom});
+            this.Message});
             this.gvCOM.GridControl = this.gcCOM;
             this.gvCOM.Name = "gvCOM";
             this.gvCOM.OptionsSelection.MultiSelect = true;
             this.gvCOM.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CellSelect;
             this.gvCOM.OptionsView.ShowGroupPanel = false;
             this.gvCOM.RowCellStyle += new DevExpress.XtraGrid.Views.Grid.RowCellStyleEventHandler(this.GvCOM_RowCellStyle);
-            this.gvCOM.MouseDown += new System.Windows.Forms.MouseEventHandler(this.gvCOM_MouseDown);
+            this.gvCOM.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GvCOM_MouseDown);
             // 
             // COM
             // 
@@ -1185,7 +1235,9 @@
             // TKChinh
             // 
             this.TKChinh.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
+            this.TKChinh.AppearanceCell.ForeColor = System.Drawing.Color.DarkRed;
             this.TKChinh.AppearanceCell.Options.UseFont = true;
+            this.TKChinh.AppearanceCell.Options.UseForeColor = true;
             this.TKChinh.AppearanceCell.Options.UseTextOptions = true;
             this.TKChinh.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.TKChinh.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
@@ -1220,13 +1272,15 @@
             this.Message101.Name = "Message101";
             this.Message101.OptionsColumn.AllowEdit = false;
             this.Message101.Visible = true;
-            this.Message101.VisibleIndex = 6;
+            this.Message101.VisibleIndex = 5;
             this.Message101.Width = 707;
             // 
             // Message
             // 
             this.Message.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
+            this.Message.AppearanceCell.ForeColor = System.Drawing.Color.Green;
             this.Message.AppearanceCell.Options.UseFont = true;
+            this.Message.AppearanceCell.Options.UseForeColor = true;
             this.Message.AppearanceCell.Options.UseTextOptions = true;
             this.Message.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
             this.Message.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
@@ -1243,29 +1297,8 @@
             this.Message.OptionsFilter.AllowAutoFilter = false;
             this.Message.OptionsFilter.AllowFilter = false;
             this.Message.Visible = true;
-            this.Message.VisibleIndex = 7;
+            this.Message.VisibleIndex = 6;
             this.Message.Width = 96;
-            // 
-            // IMEI
-            // 
-            this.IMEI.AppearanceCell.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.IMEI.AppearanceCell.Options.UseFont = true;
-            this.IMEI.AppearanceCell.Options.UseTextOptions = true;
-            this.IMEI.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.IMEI.Caption = "IMEI";
-            this.IMEI.FieldName = "IMEI";
-            this.IMEI.Name = "IMEI";
-            this.IMEI.OptionsColumn.AllowEdit = false;
-            this.IMEI.OptionsColumn.AllowSize = false;
-            this.IMEI.OptionsColumn.FixedWidth = true;
-            this.IMEI.OptionsFilter.AllowAutoFilter = false;
-            this.IMEI.Width = 120;
-            // 
-            // Telecom
-            // 
-            this.Telecom.Caption = "Telecom";
-            this.Telecom.FieldName = "Telecom";
-            this.Telecom.Name = "Telecom";
             // 
             // repositoryItemTextEdit2
             // 
@@ -1284,7 +1317,8 @@
             this.popupMenu1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(this.PopupBurn),
             new DevExpress.XtraBars.LinkPersistInfo(this.PopupResetCom),
-            new DevExpress.XtraBars.LinkPersistInfo(this.PopupChangeIMEI)});
+            new DevExpress.XtraBars.LinkPersistInfo(this.PopupChangeIMEI),
+            new DevExpress.XtraBars.LinkPersistInfo(this.PopupPhatSinhCuoc)});
             this.popupMenu1.Manager = this.barManager;
             this.popupMenu1.Name = "popupMenu1";
             // 
@@ -1294,37 +1328,13 @@
             this.TimerNotification.Interval = 3600000;
             this.TimerNotification.Tick += new System.EventHandler(this.TimerNotification_Tick);
             // 
-            // label1
+            // HelpUI
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold);
-            this.label1.ForeColor = System.Drawing.Color.DarkRed;
-            this.label1.Location = new System.Drawing.Point(782, 19);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(484, 14);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "* Lưu lượng truy cập giới hạn trong khoảng thời gian từ 23h đến 5h sáng";
-            // 
-            // HanSd
-            // 
-            this.HanSd.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
-            this.HanSd.AppearanceCell.Options.UseFont = true;
-            this.HanSd.AppearanceCell.Options.UseTextOptions = true;
-            this.HanSd.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.HanSd.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold);
-            this.HanSd.AppearanceHeader.FontStyleDelta = System.Drawing.FontStyle.Bold;
-            this.HanSd.AppearanceHeader.Options.UseFont = true;
-            this.HanSd.AppearanceHeader.Options.UseTextOptions = true;
-            this.HanSd.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.HanSd.Caption = "Hạn sử dụng";
-            this.HanSd.FieldName = "HanSd";
-            this.HanSd.Name = "HanSd";
-            this.HanSd.OptionsColumn.AllowEdit = false;
-            this.HanSd.OptionsColumn.FixedWidth = true;
-            this.HanSd.Visible = true;
-            this.HanSd.VisibleIndex = 5;
-            this.HanSd.Width = 92;
+            this.HelpUI.Elements.Add(this.guide1);
+            this.HelpUI.GuideAppearances.ElementNormal.Font = new System.Drawing.Font("Verdana", 9F);
+            this.HelpUI.GuideAppearances.ElementNormal.Options.UseFont = true;
+            this.HelpUI.Owner = this;
+            this.HelpUI.QueryGuideFlyoutControl += new DevExpress.Utils.VisualEffects.QueryGuideFlyoutControlEventHandler(this.HelpUI_QueryGuideFlyoutControl);
             // 
             // BurnTKForm
             // 
@@ -1355,6 +1365,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.popupMenu1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HelpUI)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1369,21 +1380,19 @@
         private DevExpress.XtraBars.BarDockControl barDockControlLeft;
         private DevExpress.XtraBars.BarDockControl barDockControlRight;
         private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit repositoryItemTextEdit1;
-        private DevExpress.XtraBars.BarButtonItem btnStartStop;
         private DevExpress.XtraBars.BarSubItem btnComSettingDropDown;
         private DevExpress.XtraBars.BarButtonItem btnUpdateComPort;
         private DevExpress.XtraBars.BarButtonItem btnResetComPort;
         private DevExpress.XtraBars.BarButtonItem btnResetCom;
         private DevExpress.XtraBars.BarButtonItem btnRestoreSettings;
         private DevExpress.XtraEditors.PanelControl panelControl1;
-        private DevExpress.XtraEditors.SimpleButton btnUpdateMinAccountControl;
+        private DevExpress.XtraEditors.SimpleButton BtnStartBurn;
         private DevExpress.XtraEditors.TextEdit txtMinAccountControl;
         private DevExpress.XtraEditors.LabelControl labelControl1;
         private DevExpress.XtraEditors.LabelControl labelControl2;
         private DevExpress.XtraEditors.LabelControl labelControl3;
         private DevExpress.XtraGrid.GridControl gcCOM;
         private DevExpress.XtraGrid.Views.Grid.GridView gvCOM;
-        private DevExpress.XtraGrid.Columns.GridColumn IMEI;
         private DevExpress.XtraGrid.Columns.GridColumn COM;
         private DevExpress.XtraGrid.Columns.GridColumn STT;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repositoryItemComboBox1;
@@ -1396,7 +1405,6 @@
         private DevExpress.XtraBars.BarButtonItem BtnDoanhThu;
         private DevExpress.XtraGrid.Columns.GridColumn Message101;
         private DevExpress.XtraBars.BarButtonItem barBtnRule;
-        private DevExpress.XtraGrid.Columns.GridColumn Telecom;
         private DevExpress.XtraBars.BarButtonItem btnChangeIMEI;
         private DevExpress.XtraBars.BarButtonItem BtnTotalRevenue;
         private DevExpress.XtraBars.PopupMenu popupMenu1;
@@ -1406,10 +1414,15 @@
         private DevExpress.XtraBars.BarSubItem barSubItem1;
         private DevExpress.XtraBars.BarButtonItem btnDoiMatKhau;
         private DevExpress.XtraBars.BarButtonItem btnUserInfor;
-        private DevExpress.XtraBars.Bar bar1;
+        private DevExpress.XtraBars.Bar BarNotification;
         private DevExpress.XtraBars.BarStaticItem TxtNotification;
         private System.Windows.Forms.Timer TimerNotification;
         private System.Windows.Forms.Label label1;
-        private DevExpress.XtraGrid.Columns.GridColumn HanSd;
+        private DevExpress.XtraBars.BarButtonItem PopupPhatSinhCuoc;
+        private DevExpress.XtraBars.BarStaticItem BarPCCom;
+        private DevExpress.XtraBars.BarStaticItem BarBurnCom;
+        private DevExpress.Utils.VisualEffects.AdornerUIManager HelpUI;
+        private DevExpress.XtraBars.BarButtonItem BarBtnHDSD;
+        private DevExpress.Utils.VisualEffects.Guide guide1;
     }
 }

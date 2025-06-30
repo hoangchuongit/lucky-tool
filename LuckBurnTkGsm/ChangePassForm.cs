@@ -1,4 +1,5 @@
 ﻿using DevExpress.XtraEditors;
+using LuckBurnTK.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
@@ -15,7 +16,11 @@ namespace LuckBurnTK
         public ChangePassForm(string ApiKey)
         {
             InitializeComponent();
-            _httpClient = new HttpClient();
+            _httpClient = new HttpClient()
+            {
+                BaseAddress = new Uri(Common.UrlBurnAUTH),
+                Timeout = TimeSpan.FromSeconds(30)
+            };
             _httpClient.DefaultRequestHeaders.Add("x-api-key", ApiKey);
             txtPassOld.TabIndex = 0;
             txtPassNew.TabIndex = 1;
@@ -49,7 +54,7 @@ namespace LuckBurnTK
                 var changePassData = new { old_password, new_password };
                 string jsonData = JsonConvert.SerializeObject(changePassData);
                 var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await _httpClient.PostAsync("https://luckburn.mobi/auth/change-password", content);
+                HttpResponseMessage response = await _httpClient.PostAsync("change-password", content);
                 if (response.IsSuccessStatusCode)
                 {
                     Close();

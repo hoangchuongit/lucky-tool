@@ -1,4 +1,5 @@
 ﻿using AutoUpdaterDotNET;
+using NLog;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -17,10 +18,7 @@ namespace LuckBurnTK
         [STAThread]
         private static void Main()
         {
-            //var mess = "[COM102]: +CUSD: 2,\"Your input is error or system busy,pls try again!\",15+CLCC: 1,0,6,0,0,\"19000180\",129,\"\"NO CARRIER";
-            //mess = mess.Substring(mess.IndexOf("+CUSD"));
-            //int? tkchinh = Common.ExtractBalance(mess);
-
+            RemoveFileInFolderRecord();
             CultureInfo viVN = new CultureInfo("vi-VN");
             Thread.CurrentThread.CurrentCulture = viVN;
             Thread.CurrentThread.CurrentUICulture = viVN;
@@ -39,6 +37,24 @@ namespace LuckBurnTK
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new LoginForm());
+        }
+
+        private static void RemoveFileInFolderRecord()
+        {
+            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string recordDirectory = Path.Combine(baseDirectory, "record");
+            if (!Directory.Exists(recordDirectory)) return;
+            foreach (string file in Directory.GetFiles(recordDirectory))
+            {
+                try
+                {
+                    File.Delete(file);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"RemoveFileInFolderRecord: {ex.Message}");
+                }
+            }
         }
 
         private static void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
