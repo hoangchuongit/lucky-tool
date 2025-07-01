@@ -29,6 +29,8 @@ namespace LuckBurnTK
         private readonly GuideFlyoutPanel panel;
         private readonly int countLessons;
 
+        private readonly SemaphoreSlim semaphore = new SemaphoreSlim(16);
+
         /// Danh sách cổng COM
         private readonly List<SerialPort> SerialPorts = new List<SerialPort>();
 
@@ -82,8 +84,9 @@ namespace LuckBurnTK
             gcCOM.DataSource = ComDataGrid;
             foreach (var port in SerialPorts)
             {
-                _ = Task.Run(() =>
+                _ = Task.Run(async () =>
                 {
+                    await semaphore.WaitAsync();
                     try
                     {
                         InitializeModem(port);
@@ -91,6 +94,10 @@ namespace LuckBurnTK
                     catch (Exception ex)
                     {
                         logger.Error($"{port.PortName} - LoadCOMForm Error: {ex.Message}");
+                    }
+                    finally
+                    {
+                        semaphore.Release();
                     }
                 });
             }
@@ -147,6 +154,8 @@ namespace LuckBurnTK
             {
                 if (sp == null) return;
                 if (!sp.IsOpen) sp.Open();
+                sp.DiscardInBuffer();
+                sp.DiscardOutBuffer();
                 // Khởi động lại modem mà không thay đổi các cài đặt, chỉ tái thiết lập kết nối hoặc trạng thái của modem.
                 SendATCommand(sp, "ATZ");
                 // Đặt mã ký tự về ASCII
@@ -179,7 +188,8 @@ namespace LuckBurnTK
             }
 
             MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
-            Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
+            //AppendLogToMemo(sp.PortName, MessageCOMs[sp.PortName]);
+            //Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
             //logger.Info(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
 
             // Nếu cổng COM chưa nằm trong danh sách ghi âm thì bổ sung vào danh sách. Nếu đã có thì ghi nối tiếp dữ liệu
@@ -219,20 +229,20 @@ namespace LuckBurnTK
             }
 
             // Nếu cổng COM bị lỗi thì báo
-            if (MessageCOMs[sp.PortName].Contains("ERROR"))
-            {
-                sp.DiscardInBuffer();
-                UpdateComData(sp.PortName, dto =>
-                {
-                    dto.ICCID = string.Empty;
-                    dto.PhoneNumber = string.Empty;
-                    dto.TKChinh = 0;
-                    dto.Message101 = "UUSD lỗi, tự động thử lại sau 30s.";
-                    dto.Message = string.Empty;
-                    dto.IsFinish = true;
-                    dto.Telecom = string.Empty;
-                }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish", "Telecom");
-            }
+            //if (MessageCOMs[sp.PortName].Contains("ERROR"))
+            //{
+            //    sp.DiscardInBuffer();
+            //    UpdateComData(sp.PortName, dto =>
+            //    {
+            //        dto.ICCID = string.Empty;
+            //        dto.PhoneNumber = string.Empty;
+            //        dto.TKChinh = 0;
+            //        dto.Message101 = "UUSD lỗi, tự động thử lại sau 30s.";
+            //        dto.Message = string.Empty;
+            //        dto.IsFinish = true;
+            //        dto.Telecom = string.Empty;
+            //    }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish", "Telecom");
+            //}
 
             // Lắng nghe trạng thái sim đã sẵn sàng để làm việc chưa?
             ListenEventSIMStatus(sp);
@@ -268,6 +278,7 @@ namespace LuckBurnTK
             logger.Error($"[{sp.PortName}] Error: {e.EventType} - {MessageCOMs[sp.PortName]}");
             MessageCOMs[sp.PortName] = string.Empty;
             sp.DiscardInBuffer();
+            sp.DiscardOutBuffer();
             if (sp.IsOpen) sp.Close();
             UpdateComData(sp.PortName, dto =>
             {
@@ -287,6 +298,7 @@ namespace LuckBurnTK
             {
                 MessageCOMs[sp.PortName] = string.Empty;
                 sp.DiscardInBuffer();
+                sp.DiscardOutBuffer();
                 try
                 {
                     UpdateComData(sp.PortName, dto =>
@@ -346,7 +358,14 @@ namespace LuckBurnTK
                     var mess = MessageCOMs[sp.PortName].AT_Command("AT+QCCID");
                     MessageCOMs[sp.PortName] = string.Empty;
                     //Console.WriteLine($"[ {sp.PortName} ] SendATCommand: - {mess}");
-                    UpdateComData(sp.PortName, dto => dto.ICCID = mess.Substring(0, 20), "ICCID");
+                    UpdateComData(sp.PortName,
+                        dto => dto.ICCID = mess.Replace("ATZ", "")
+                                                .Replace("AT+CSCS=\"GSM\"", "")
+                                                .Replace("AT+CMGF=1", "")
+                                                .Replace("AT+CNMI=2,2", "")
+                                                .Replace("AT+QCCID", "")
+                                                .Replace("AT+CUSD=1,\"*101#\",15", "").Substring(0, 20),
+                        "ICCID");
                     //Console.WriteLine($"=------------------------------");
                     SendATCommand(sp, "AT+QSIMSTAT?");
                 }
@@ -505,22 +524,7 @@ namespace LuckBurnTK
                     }
                     // Lấy thông tin nhà mạng
                     // Nếu không lấy được thông tin nhà mạng thì cũng dừng đốt để lấy lại thông tin qua *101#
-                    var telecom = ComDataGrid.FirstOrDefault(x => x.COM == sp.PortName).Telecom;
-                    if (telecom == null)
-                    {
-                        //UpdateComData(sp.PortName, dto =>
-                        //{
-                        //    dto.ICCID = string.Empty;
-                        //    dto.PhoneNumber = string.Empty;
-                        //    dto.TKChinh = 0;
-                        //    dto.Message101 = string.Empty;
-                        //    dto.Message = string.Empty;
-                        //    dto.IsFinish = false;
-                        //    dto.Telecom = string.Empty;
-                        //}, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish", "Telecom");
-                        //return;
-                        telecom = "Other";
-                    }
+                    var telecom = ComDataGrid.FirstOrDefault(x => x.COM == sp.PortName).Telecom ?? "Other";
                     // Gọi API để lấy ra đầu số call hoặc sms và các thông tin cần để xử lý
                     var prefixSmsReq = new GetPrefixSmsReq()
                     {
@@ -562,7 +566,8 @@ namespace LuckBurnTK
                         // Xóa tất cả file trong RAM - chủ yếu các file ghi âm
                         SendATCommand(sp, "AT+QFDEL=\"RAM:record.amr\"", 1000);
                         // Call
-                        SendATCommand(sp, $"ATD{prefixSmsRes.prefix};", 1000);
+                        //SendATCommand(sp, $"ATD{prefixSmsRes.prefix};", 1000);
+                        SendATCommand(sp, $"ATD18008168;", 1000);
                     }
                     else if (prefixSmsRes.type == PrefixNumberType.SMS)
                     {
@@ -670,6 +675,7 @@ namespace LuckBurnTK
                     SendATCommand(sp, "AT+CFUN=1,1", 10000);
                     var fileToCOM = FileToCOMs[sp.PortName];
                     sp.DiscardInBuffer();
+                    sp.DiscardOutBuffer();
                     SendATCommand(sp, $"AT+QFOPEN=\"RAM:content.amr\",0,{fileToCOM.data.Length}");
                 }
                 else if (MessageCOMs[sp.PortName].Contains("CONNECT") && MessageCOMs[sp.PortName].Contains("+QFWRITE"))
@@ -723,6 +729,7 @@ namespace LuckBurnTK
                     RecordingTokens[sp.PortName] = cts;
                     _ = Task.Run(async () =>
                     {
+                        await semaphore.WaitAsync();
                         try
                         {
                             await Task.Delay(callDetail.call_duration * 1000, cts.Token);
@@ -731,6 +738,10 @@ namespace LuckBurnTK
                         catch (TaskCanceledException)
                         {
                             logger.Info($"[{sp.PortName}] - Ngắt kết nối chủ động (NO CARRIER).");
+                        }
+                        finally
+                        {
+                            semaphore.Release();
                         }
                     });
                 }
@@ -833,7 +844,7 @@ namespace LuckBurnTK
                 };
                 await _prefixController.ReleaseSlot(releaseSlotReq, filePath);
                 // Xóa file trong folder
-                File.Delete(filePath);
+                //File.Delete(filePath);
                 // Xóa file ghi âm trên RAM của GSM
                 Thread.Sleep(1000);
                 SendATCommand(sp, "AT+QFDEL=\"RAM:record.amr\"", 1000);
@@ -863,8 +874,9 @@ namespace LuckBurnTK
             {
                 var sp = SerialPorts.FirstOrDefault(dto => dto.PortName == port.COM);
                 if (sp == null) continue;
-                _ = Task.Run(() =>
+                _ = Task.Run(async () =>
                 {
+                    await semaphore.WaitAsync();
                     try
                     {
                         UpdateComData(sp.PortName, dto => dto.Message = "Burning ...", "Message");
@@ -873,6 +885,10 @@ namespace LuckBurnTK
                     catch (Exception ex)
                     {
                         logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
+                    }
+                    finally
+                    {
+                        semaphore.Release();
                     }
                 });
             }
@@ -944,8 +960,9 @@ namespace LuckBurnTK
             {
                 foreach (var sp in SerialPorts)
                 {
-                    _ = Task.Run(() =>
+                    _ = Task.Run(async () =>
                     {
+                        await semaphore.WaitAsync();
                         try
                         {
                             if (!sp.IsOpen) sp.Open();
@@ -958,6 +975,10 @@ namespace LuckBurnTK
                         catch (Exception ex)
                         {
                             logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
+                        }
+                        finally
+                        {
+                            semaphore.Release();
                         }
                     });
                 }
@@ -995,7 +1016,14 @@ namespace LuckBurnTK
                             SendATCommand(sp, "AT&W");
                             // Reset COM
                             SendATCommand(sp, "AT+CFUN=1,1", 10000);
-                            InitializeModem(sp);
+                            // Đặt mã ký tự về ASCII
+                            SendATCommand(sp, "AT+CSCS=\"GSM\"");
+                            // Đặt module về chế độ Text Mode (ASCII)
+                            SendATCommand(sp, "AT+CMGF=1");
+                            // Nhận tin nhắn dưới dạng văn bản
+                            SendATCommand(sp, "AT+CNMI=2,2");
+                            // lấy ICCID của sim
+                            SendATCommand(sp, "AT+QCCID");
                         }
                         catch (Exception ex)
                         {
@@ -1037,7 +1065,14 @@ namespace LuckBurnTK
                             SendATCommand(sp, "AT+QSIMDET=1,0,1");
                             // Lưu thay đổi
                             SendATCommand(sp, "AT&W");
-                            InitializeModem(sp);
+                            // Đặt mã ký tự về ASCII
+                            SendATCommand(sp, "AT+CSCS=\"GSM\"");
+                            // Đặt module về chế độ Text Mode (ASCII)
+                            SendATCommand(sp, "AT+CMGF=1");
+                            // Nhận tin nhắn dưới dạng văn bản
+                            SendATCommand(sp, "AT+CNMI=2,2");
+                            // lấy ICCID của sim
+                            SendATCommand(sp, "AT+QCCID");
                         }
                         catch (Exception ex)
                         {
@@ -1070,6 +1105,7 @@ namespace LuckBurnTK
                         if (string.IsNullOrEmpty(item.PhoneNumber))
                         {
                             sp.DiscardInBuffer();
+                            sp.DiscardOutBuffer();
                             SendATCommand(sp, "AT+QCCID");
                         }
                     }
@@ -1168,7 +1204,14 @@ namespace LuckBurnTK
                             SendATCommand(sp, "AT&W");
                             // Reset COM
                             SendATCommand(sp, "AT+CFUN=1,1", 10000);
-                            InitializeModem(sp);
+                            // Đặt mã ký tự về ASCII
+                            SendATCommand(sp, "AT+CSCS=\"GSM\"");
+                            // Đặt module về chế độ Text Mode (ASCII)
+                            SendATCommand(sp, "AT+CMGF=1");
+                            // Nhận tin nhắn dưới dạng văn bản
+                            SendATCommand(sp, "AT+CNMI=2,2");
+                            // lấy ICCID của sim
+                            SendATCommand(sp, "AT+QCCID");
                         }
                         catch (Exception ex)
                         {
@@ -1221,6 +1264,7 @@ namespace LuckBurnTK
                     {
                         try
                         {
+                            if (!sp.IsOpen) sp.Open();
                             UpdateComData(sp.PortName, dto =>
                             {
                                 dto.TKChinh = 0; dto.Message101 = ""; dto.Message = "Burning ...";
@@ -1262,6 +1306,22 @@ namespace LuckBurnTK
         {
             LoadNotification();
         }
+
+        //private void AppendLogToMemo(string port, string message)
+        //{
+        //    if (MemoLog.InvokeRequired)
+        //    {
+        //        MemoLog.BeginInvoke(new Action(() =>
+        //        {
+        //            MemoLog.AppendText($"{port}: {message}\r\n");
+        //        }));
+        //    }
+        //    else
+        //    {
+        //        MemoLog.AppendText($"{port}: {message}\r\n");
+        //    }
+        //}
+
 
         private IEnumerable<Dictionary<string, string>> CheckComOnline()
         {
@@ -1399,5 +1459,38 @@ namespace LuckBurnTK
         }
 
         #endregion Hướng dẫn sử dụng cho người dùng
+
+        private void PopupResetSIM_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            int[] selectedHandles = gvCOM.GetSelectedRows();
+            foreach (int handle in selectedHandles)
+            {
+                if (gvCOM.GetRow(handle) is ComDto row)
+                {
+                    var sp = SerialPorts.FirstOrDefault(x => x.PortName == row.COM);
+                    if (sp == null) continue;
+                    _ = Task.Run(() =>
+                    {
+                        try
+                        {
+                            sp.DiscardInBuffer();
+                            sp.DiscardOutBuffer();
+                            if (sp.IsOpen)
+                            {
+                                sp.Close();
+                                Thread.Sleep(1000);
+                            }
+                            sp.Open();
+                            // lấy ICCID của sim
+                            SendATCommand(sp, "AT+QCCID");
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
+                        }
+                    });
+                }
+            }
+        }
     }
 }
