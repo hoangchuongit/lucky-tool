@@ -1,4 +1,5 @@
-﻿using LuckBurnTK.Utils;
+﻿using DevExpress.Pdf.Native.BouncyCastle.Ocsp;
+using LuckBurnTK.Utils;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -47,43 +48,50 @@ namespace LuckBurnTK
             }
         }
 
-        public async Task<bool> ReleaseSlot(ReleaseSlotReq req, string filePath = null)
+        public async Task<bool> ReleaseSlot(ReleaseSlotReq req)
+        {
+            try
+            {
+                string jsonData = JsonConvert.SerializeObject(req);
+                var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync("sms-call-center/release-slot", content);
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"ReleaseSlot ERROR: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<bool> ReleaseUploadFile(string history_id, string filePath = null)
         {
             try
             {
                 using (var form = new MultipartFormDataContent())
                 {
-                    // Add required fields
-                    form.Add(new StringContent(req.request_id), "request_id");
-                    form.Add(new StringContent(req.history_id), "history_id");
-                    form.Add(new StringContent(req.prefix), "prefix");
-                    form.Add(new StringContent(req.prefix_unit), "prefix_unit");
-                    form.Add(new StringContent(req.start_call), "start_call");
-                    form.Add(new StringContent(req.end_call), "end_call");
-                    if (!string.IsNullOrEmpty(req.start_record)) form.Add(new StringContent(req.start_record), "start_record");
-                    if (!string.IsNullOrEmpty(req.end_record)) form.Add(new StringContent(req.end_record), "end_record");
-                    if (req.duration != null) form.Add(new StringContent(req.duration.ToString()), "duration");
-                    form.Add(new StringContent(req.no_carrier.ToString()), "no_carrier");
-                    // Nếu có file audio, thêm vào form
+                    form.Add(new StringContent(history_id), "history_id");
                     if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
                     {
-                        var stream = File.OpenRead(filePath);
-                        var audioContent = new StreamContent(stream);
-                        audioContent.Headers.ContentType = new MediaTypeHeaderValue("audio/amr");
-                        form.Add(audioContent, "audio_file", Path.GetFileName(filePath));
+                        using (var stream = File.OpenRead(filePath))
+                        {
+                            var audioContent = new StreamContent(stream);
+                            audioContent.Headers.ContentType = new MediaTypeHeaderValue("audio/amr");
+                            form.Add(audioContent, "audio_file", Path.GetFileName(filePath));
+                            var request = new HttpRequestMessage(HttpMethod.Post, "sms-call-center/release-upload-file")
+                            {
+                                Content = form
+                            };
+                            var response = await _httpClient.SendAsync(request);
+                            return response.IsSuccessStatusCode;
+                        }
                     }
-                    // Gửi request
-                    var request = new HttpRequestMessage(HttpMethod.Post, "sms-call-center/release-slot")
-                    {
-                        Content = form
-                    };
-                    var response = await _httpClient.SendAsync(request);
-                    return response.IsSuccessStatusCode;
+                    return false;
                 }
             }
             catch (Exception ex)
             {
-                logger.Error($"ReleaseSlot ERROR: {ex.Message}");
+                logger.Error($"ReleaseUploadFile ERROR: {ex.Message}");
                 throw;
             }
         }
@@ -141,5 +149,46 @@ namespace LuckBurnTK
                 throw ex;
             }
         }
+
+        public async Task<VMGSmsRes> GetVMGSms(VMGSmsRes req)
+        {
+            try
+            {
+                string jsonData = JsonConvert.SerializeObject(req);
+                var client = new HttpClient();
+                var request = new HttpRequestMessage(HttpMethod.Post, "Http://103.68.240.22:8077/api_km.php");
+                var content = new StringContent(jsonData, null, "application/json");
+                request.Content = content;
+                var response = await client.SendAsync(request);
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<VMGSmsRes>(responseBody);
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"GetVMGSms ERROR: {ex.Message}");
+                throw ex;
+            }
+        }
+
+        public async Task<bool> UpdateVMGsms(VMGSmsReq req)
+        {
+            try
+            {
+                string jsonData = JsonConvert.SerializeObject(req);
+                var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync("sms-call-center/vmg-sms", content);
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"UpdateVMGsms ERROR: {ex.Message}");
+                throw;
+            }
+        }
+
     }
 }

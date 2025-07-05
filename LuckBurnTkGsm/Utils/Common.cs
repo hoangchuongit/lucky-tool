@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Management;
 using System.Security.Cryptography;
@@ -10,7 +11,7 @@ namespace LuckBurnTK.Utils
 {
     public class Common
     {
-#if DEBUG
+#if !DEBUG
         public static string UrlBurnAUTH = "https://luckburn.mobi/auth/";
         public static string UrlBurnAPI = "https://luckburn.mobi/api/";
 #else
@@ -147,14 +148,20 @@ namespace LuckBurnTK.Utils
         {
             if (string.IsNullOrWhiteSpace(input)) return null;
             // Regex: bắt số có thể chứa , hoặc . trước các đơn vị d, đ, vnd, vnđ
-            var match = Regex.Match(input, @"([\d.,]+)\s*(v?n?[dđ])", RegexOptions.IgnoreCase);
-            if (match.Success)
-            {
-                string raw = match.Groups[1].Value;
-                string cleaned = raw.Replace(",", "").Replace(".", "");
-                if (int.TryParse(cleaned, out int balance)) return balance;
-            }
-            return null;
+            var match = Regex.Match(input, @"([\d.,]+)\s*(v?n?[dđ])", RegexOptions.None);
+            if (!match.Success) return null;
+            string raw = match.Groups[1].Value;
+            if (Regex.IsMatch(raw, @"^\d{9,11}$"))
+                return null;
+            string cleaned = raw.Replace(",", "").Replace(".", "");
+            return int.TryParse(cleaned, out int balance) ? balance : (int?)null;
+        }
+
+        public static string ExtractNgayKH(string input)
+        {
+            var m = Regex.Match(input, @"ngay kh:\s*(\d{2}/\d{2}/\d{4})", RegexOptions.IgnoreCase);
+            if (!m.Success) return null;
+            return m.Groups[1].Value;
         }
 
         public static byte[] RemoveConnectHeader(byte[] buffer)

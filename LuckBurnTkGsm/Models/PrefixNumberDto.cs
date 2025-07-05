@@ -34,6 +34,11 @@ namespace LuckBurnTK.Models
             public int no_carrier { get; set; }
         }
 
+        public class ReleaseUploadFileReq
+        {
+            public string history_id { get; set; }
+        }
+
         public class GetPrefixSmsRes
         {
             public string request_id { get; set; }
@@ -73,6 +78,23 @@ namespace LuckBurnTK.Models
             SUCCESS,
             FAIL,
             DONE
+        }
+
+        public class VMGSmsRes
+        {
+            public string phone { get; set; }
+            public string serviceCode { get; set; }
+            public string commandCode { get; set; }
+            public bool result { get; set; }
+        }
+
+        public class VMGSmsReq
+        {
+            public string request_id { get; set; }
+            public string history_id { get; set; }
+            public string prefix { get; set; }
+            public string prefix_unit { get; set; }
+            public string status { get; set; }
         }
     }
 }

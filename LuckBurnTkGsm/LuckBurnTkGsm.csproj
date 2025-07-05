@@ -199,6 +199,7 @@
     <Compile Include="Utils\Common.cs" />
     <Compile Include="Utils\SecureConfig.cs" />
     <Compile Include="Utils\StringExtensions.cs" />
+    <Compile Include="Utils\TimeUtils.cs" />
     <EmbeddedResource Include="BurnTKForm.resx">
       <DependentUpon>BurnTKForm.cs</DependentUpon>
     </EmbeddedResource>
