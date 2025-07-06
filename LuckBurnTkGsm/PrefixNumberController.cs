@@ -100,7 +100,7 @@ namespace LuckBurnTK
         {
             try
             {
-                var response = await _httpClient.GetAsync($"sms-call-center/get-revenue-total?from_date={fromdate}&to_date={todate}");
+                var response = await _httpClient.GetAsync($"report/get-revenue-total?from_date={fromdate}&to_date={todate}");
                 if (response.IsSuccessStatusCode)
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();
@@ -119,7 +119,7 @@ namespace LuckBurnTK
         {
             try
             {
-                var response = await _httpClient.GetAsync($"sms-call-center/get-revenue-detail?from_date={fromdate}&to_date={todate}");
+                var response = await _httpClient.GetAsync($"report/get-revenue-detail?from_date={fromdate}&to_date={todate}");
                 if (response.IsSuccessStatusCode)
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();
