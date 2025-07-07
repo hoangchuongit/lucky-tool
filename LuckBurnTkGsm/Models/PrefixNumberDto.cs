@@ -96,5 +96,26 @@ namespace LuckBurnTK.Models
             public string prefix_unit { get; set; }
             public string status { get; set; }
         }
+
+        public enum TranferMoneyEnum
+        {
+            TWO_FRIENDS,
+            SENDI
+        }
+
+        public class TranferMoneyReq
+        {
+            public string phone_number { get; set; }
+            public double amount { get; set; }
+            public double amount_left { get; set; }
+            public TranferMoneyEnum type { get; set; }
+        }
+
+        public class TranferMoneyRes
+        {
+            public string sim_dst { get; set; }
+            public double message { get; set; }
+            public double history_id { get; set; }
+        }
     }
 }

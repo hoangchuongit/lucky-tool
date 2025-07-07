@@ -47,6 +47,9 @@ namespace LuckBurnTK
         /// Danh sách cổng COM đang ghi âm
         private readonly ConcurrentDictionary<string, CallDetail> RecordingPorts = new ConcurrentDictionary<string, CallDetail>();
 
+        /// Danh sách cổng COM đang gửi SMS
+        private readonly ConcurrentDictionary<string, TranferMoneyReq> SMSPorts = new ConcurrentDictionary<string, TranferMoneyReq>();
+
         /// Nội dung ghi âm của từng cổng COM
         private readonly ConcurrentDictionary<string, byte[]> RecordingCOMs = new ConcurrentDictionary<string, byte[]>();
 
@@ -473,44 +476,60 @@ namespace LuckBurnTK
                 var telecom = ComDataGrid.FirstOrDefault(x => x.COM == sp.PortName).Telecom ?? "Other";
                 // Lấy số tiền min để lại trên tài khoản
                 int minAccount = int.Parse(txtMinAccountControl.Text.Replace(".", string.Empty));
-
-                //Xử lý chuyển tiền
-                // Nếu là mạng Vinaphone và có đầu số như trên thì thực hiện 2Friends hoặc 9368
-                if (telecom == "Vinaphone" && tkchinh - minAccount >= 10000)
-                {
-                    // Lấy thông tin ngày kích hoạt
-                    string ngaykh = Common.ExtractNgayKH(mess);
-                    int? days = TimeUtils.DaysSinceHsd(ngaykh);
-                    string[] VinaPrefixes = { "081", "082", "083", "084", "085", "088", "091", "094" };
-                    string prefix = phone.Substring(0, 3);
-                    bool isVinaphone = Array.Exists(VinaPrefixes, p => p == prefix);
-                    // Nếu đầu số là vinaphone và ngày kh đủ 180 ngày thì chuyển qua 2Friends, nếu đủ 90 ngày thì chuyển qua 9368
-                    if (isVinaphone && days.HasValue && days.Value >= 180)
-                    {
-                        // Lấy thông tin mật khẩu của dịch vụ 2Friends của Vinaphone
-                        sp.WriteLine($"AT+CMGS=\"222\"");
-                        Thread.Sleep(500);
-                        SendATCommand(sp, $"DK{(char)26}", 500);
-                        return;
-                    }
-                    //else if (isVinaphone && days.HasValue && days.Value >= 90 && days.Value < 180)
-                    //{
-                    //    // Lấy thông tin mật khẩu của dịch vụ Sendi (9368) của Vinaphone
-                    //    sp.WriteLine($"AT+CMGS=\"9368\"");
-                    //    Thread.Sleep(500);
-                    //    SendATCommand(sp, $"MK{(char)26}", 500);
-                    //}
-                }
-
-                return;
-
-
                 // Nếu trường hợp TKC nhỏ hơn mức min được burn thì dừng burn
                 if (currentTKC <= minAccount)
                 {
                     UpdateComData(sp.PortName, dto => { dto.Message = $"Stop burn"; dto.IsFinish = true; }, "Message", "IsFinish");
                     return;
                 }
+                // loại bỏ dữ liệu sms cũ của cổng COM
+                if (SMSPorts.ContainsKey(sp.PortName)) SMSPorts.TryRemove(sp.PortName, out _);
+                // loại bỏ dữ liệu ghi âm cũ của cổng COM
+                if (RecordingPorts.ContainsKey(sp.PortName))
+                {
+                    RecordingPorts.TryRemove(sp.PortName, out _);
+                    RecordingCOMs.TryRemove(sp.PortName, out _);
+                }
+                UpdateComData(sp.PortName, dto => { dto.Message = "Burning ..."; dto.IsFinish = false; }, "Message", "IsFinish");
+
+                //Xử lý chuyển tiền
+                // Nếu là mạng Vinaphone và có đầu số như trên thì thực hiện 2Friends hoặc 9368
+                //if (telecom == "Vinaphone" && tkchinh - minAccount >= 10000)
+                //{
+                //    // Lấy thông tin ngày kích hoạt
+                //    string ngaykh = Common.ExtractNgayKH(mess);
+                //    int? days = TimeUtils.DaysSinceHsd(ngaykh);
+                //    string[] VinaPrefixes = { "081", "082", "083", "084", "085", "088", "091", "094" };
+                //    string prefix = phone.Substring(0, 3);
+                //    bool isVinaphone = Array.Exists(VinaPrefixes, p => p == prefix);
+                //    // Nếu đầu số là vinaphone và ngày kh đủ 180 ngày thì chuyển qua 2Friends, nếu đủ 90 ngày thì chuyển qua 9368
+                //    if (isVinaphone && days.HasValue && days.Value >= 180)
+                //    {
+                //        SMSPorts.TryAdd(sp.PortName, new TranferMoneyReq()
+                //        {
+                //            phone_number = phone,
+                //            amount = currentTKC,
+                //            amount_left = minAccount,
+                //            type = TranferMoneyEnum.TWO_FRIENDS
+                //        });
+                //        // Lấy thông tin mật khẩu của dịch vụ 2Friends của Vinaphone
+                //        sp.WriteLine($"AT+CMGS=\"222\"");
+                //        Thread.Sleep(500);
+                //        SendATCommand(sp, $"DK{(char)26}", 500);
+                //        return;
+                //    }
+                //    //else if (isVinaphone && days.HasValue && days.Value >= 90 && days.Value < 180)
+                //    //{
+                //    //    // Lấy thông tin mật khẩu của dịch vụ Sendi (9368) của Vinaphone
+                //    //    sp.WriteLine($"AT+CMGS=\"9368\"");
+                //    //    Thread.Sleep(500);
+                //    //    SendATCommand(sp, $"MK{(char)26}", 500);
+                //    //}
+                //}
+
+                //return;
+
+
                 // Gọi API để lấy ra đầu số call hoặc sms và các thông tin cần để xử lý
                 var prefixSmsReq = new GetPrefixSmsReq()
                 {
@@ -523,32 +542,23 @@ namespace LuckBurnTK
                 if (prefixSmsRes == null)
                 {
                     // Nếu null nghĩa là dịch vụ đang full các đầu số, chờ 2 phút sau thử lại
-                    UpdateComData(sp.PortName, dto => { dto.Message = $"Burning ..."; dto.IsFinish = false; }, "Message", "IsFinish");
-                    // Thử lại sau 2 phút
                     Thread.Sleep(120000);
                     // Gửi AT lấy số điện thoại và thông tin tài khoản chính
                     SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                     return;
                 }
-                //if (sp.PortName != "COM39") return;
-                UpdateComData(sp.PortName, dto => { dto.Message = "Burning ..."; dto.IsFinish = false; }, "Message", "IsFinish");
-                if (RecordingPorts.ContainsKey(sp.PortName))
-                {
-                    RecordingPorts.TryRemove(sp.PortName, out _);
-                    RecordingCOMs.TryRemove(sp.PortName, out _);
-                }
-                RecordingPorts.TryAdd(sp.PortName, new CallDetail()
-                {
-                    call_duration = prefixSmsRes.duration,
-                    prefix = prefixSmsRes.prefix,
-                    prefix_unit = prefixSmsRes.prefix_unit,
-                    request_id = prefixSmsRes.request_id,
-                    history_id = prefixSmsRes.history_id,
-                    message = prefixSmsRes.message,
-                    start_call = DateTime.Now,
-                });
                 if (prefixSmsRes.type == PrefixNumberType.CALL)
                 {
+                    RecordingPorts.TryAdd(sp.PortName, new CallDetail()
+                    {
+                        call_duration = prefixSmsRes.duration,
+                        prefix = prefixSmsRes.prefix,
+                        prefix_unit = prefixSmsRes.prefix_unit,
+                        request_id = prefixSmsRes.request_id,
+                        history_id = prefixSmsRes.history_id,
+                        message = prefixSmsRes.message,
+                        start_call = DateTime.Now,
+                    });
                     // Xóa tất cả file trong RAM - chủ yếu các file ghi âm
                     SendATCommand(sp, "AT+QFDEL=\"RAM:record.amr\"", 1000);
                     // Call
@@ -557,7 +567,8 @@ namespace LuckBurnTK
                 else if (prefixSmsRes.type == PrefixNumberType.SMS)
                 {
                     //Send message
-                    SendATCommand(sp, $"AT+CMGS=\"{prefixSmsRes.prefix}\"", 500);
+                    sp.WriteLine($"AT+CMGS=\"{prefixSmsRes.prefix}\"");
+                    Thread.Sleep(500);
                     SendATCommand(sp, $"{prefixSmsRes.message}{(char)26}", 500);
                     // Dừng 15s chờ phản hồi
                     Thread.Sleep(15000);
@@ -601,7 +612,7 @@ namespace LuckBurnTK
         /// Xử lý khi có tin phản hồi từ tổng đài SMS (8x79)
         /// </summary>
         /// <param name="sp"></param>
-        private void ListenEventSmsResponse(SerialPort sp)
+        private async void ListenEventSmsResponse(SerialPort sp)
         {
             try
             {
@@ -624,6 +635,7 @@ namespace LuckBurnTK
                         // Lấy thông tin mật khẩu của dịch vụ 2Friends của Vinaphone
                         var match = Regex.Match(mess, @"(?<!\d)\d{6}(?!\d)");
                         var passTranfer = match.Success ? match.Value : null;
+                        var simPool = await _prefixController.GetSimTopupPool(new TranferMoneyReq() { });
                     }
                     else if (mess.Contains("Mat khau moi cua ban trong he thong 2Friends la") && mess.Contains("De duoc ho tro,"))
                     {

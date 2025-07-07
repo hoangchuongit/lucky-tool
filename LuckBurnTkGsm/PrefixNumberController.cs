@@ -26,6 +26,11 @@ namespace LuckBurnTK
             _httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);
         }
 
+        /// <summary>
+        /// Lấy thông tin đầu số để thực hiện call hoặc sms
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
         public async Task<GetPrefixSmsRes> GetPrefixNumber(GetPrefixSmsReq req)
         {
             try
@@ -48,6 +53,11 @@ namespace LuckBurnTK
             }
         }
 
+        /// <summary>
+        /// Gửi thông tin đã hoàn thành cuộc gọi lên tổng đài - để chờ tổng đài xác nhận
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
         public async Task<bool> ReleaseSlot(ReleaseSlotReq req)
         {
             try
@@ -64,6 +74,12 @@ namespace LuckBurnTK
             }
         }
 
+        /// <summary>
+        /// Gửi bản ghi từ thiết bị ghi âm được lên server
+        /// </summary>
+        /// <param name="history_id"></param>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         public async Task<bool> ReleaseUploadFile(string history_id, string filePath = null)
         {
             try
@@ -96,6 +112,12 @@ namespace LuckBurnTK
             }
         }
 
+        /// <summary>
+        /// Báo cáo thống kê tổng
+        /// </summary>
+        /// <param name="fromdate"></param>
+        /// <param name="todate"></param>
+        /// <returns></returns>
         public async Task<GetRevenueTotalRes[]> GetRevenueTotal(string fromdate, string todate)
         {
             try
@@ -115,6 +137,12 @@ namespace LuckBurnTK
             }
         }
 
+        /// <summary>
+        /// Báo cáo thống kê chi tiết
+        /// </summary>
+        /// <param name="fromdate"></param>
+        /// <param name="todate"></param>
+        /// <returns></returns>
         public async Task<GetRevenueDetailRes[]> GetRevenueDetail(string fromdate, string todate)
         {
             try
@@ -134,6 +162,10 @@ namespace LuckBurnTK
             }
         }
 
+        /// <summary>
+        /// Lấy notification của hệ thống mỗi 15 phút/lần
+        /// </summary>
+        /// <returns></returns>
         public async Task<string> GetNotification()
         {
             try
@@ -150,6 +182,11 @@ namespace LuckBurnTK
             }
         }
 
+        /// <summary>
+        /// Lấy thông tin về tin nhắn đã gửi đi từ VMG trả về
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
         public async Task<VMGSmsRes> GetVMGSms(VMGSmsRes req)
         {
             try
@@ -174,6 +211,11 @@ namespace LuckBurnTK
             }
         }
 
+        /// <summary>
+        /// Cập nhật thông tin của VMG sau khi gửi tin nhắn
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
         public async Task<bool> UpdateVMGsms(VMGSmsReq req)
         {
             try
@@ -187,6 +229,32 @@ namespace LuckBurnTK
             {
                 logger.Error($"UpdateVMGsms ERROR: {ex.Message}");
                 throw;
+            }
+        }
+
+        /// <summary>
+        /// Lấy thông tin sim để chuyển tiền vào
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        public async Task<TranferMoneyRes> GetSimTopupPool(TranferMoneyReq req)
+        {
+            try
+            {
+                string jsonData = JsonConvert.SerializeObject(req);
+                var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync("tranfer-money", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<TranferMoneyRes>(responseBody);
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"GetSimTopupPool ERROR: {ex.Message}");
+                throw ex;
             }
         }
 
