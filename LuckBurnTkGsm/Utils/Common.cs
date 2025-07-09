@@ -11,7 +11,7 @@ namespace LuckBurnTK.Utils
 {
     public class Common
     {
-#if !DEBUG
+#if DEBUG
         public static string UrlBurnAUTH = "https://luckburn.mobi/auth/";
         public static string UrlBurnAPI = "https://luckburn.mobi/api/";
 #else
@@ -185,6 +185,15 @@ namespace LuckBurnTK.Utils
                 return _random.Next(10000, 21000); // 21 không bao gồm, nên là 10-20
             else
                 return _random.Next(50000, 61000); // 61 không bao gồm, nên là 50-60
+        }
+
+        public static int? DaysSinceHsd(string hsd, string currentDate)
+        {
+            if (!DateTime.TryParseExact(hsd, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime expiry))
+                return null;
+            if (!DateTime.TryParseExact(currentDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime current))
+                return null;
+            return (current.Date - expiry.Date).Days;
         }
     }
 }

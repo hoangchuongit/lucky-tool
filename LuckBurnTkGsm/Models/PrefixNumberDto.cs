@@ -108,14 +108,15 @@ namespace LuckBurnTK.Models
             public string phone_number { get; set; }
             public double amount { get; set; }
             public double amount_left { get; set; }
-            public TranferMoneyEnum type { get; set; }
+            public string type { get; set; }
+            public Guid history_id { get; set; }
         }
 
         public class TranferMoneyRes
         {
             public string sim_dst { get; set; }
-            public double message { get; set; }
-            public double history_id { get; set; }
+            public string message { get; set; }
+            public Guid history_id { get; set; }
         }
     }
 }

@@ -67,6 +67,7 @@ namespace LuckBurnTK
 
                 if (response.IsSuccessStatusCode)
                 {
+                    var dateCurrent = response.Headers.Date?.ToLocalTime().ToString("yyyy-MM-dd");
                     string responseBody = await response.Content.ReadAsStringAsync();
                     dynamic result = JsonConvert.DeserializeObject(responseBody);
 
@@ -76,7 +77,7 @@ namespace LuckBurnTK
                     Properties.Settings.Default.RememberMe = chkRememberMe.Checked;
                     Properties.Settings.Default.Save();
                     Hide();
-                    var mainForm = new BurnTKForm(result.api_key.ToString());
+                    var mainForm = new BurnTKForm(result.api_key.ToString(), dateCurrent);
                     mainForm.ShowDialog();
                     Close();
                 }

@@ -249,14 +249,37 @@ namespace LuckBurnTK
                     string responseBody = await response.Content.ReadAsStringAsync();
                     return JsonConvert.DeserializeObject<TranferMoneyRes>(responseBody);
                 }
-                return null;
             }
             catch (Exception ex)
             {
                 logger.Error($"GetSimTopupPool ERROR: {ex.Message}");
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Báo cáo thống kê chi tiết
+        /// </summary>
+        /// <param name="fromdate"></param>
+        /// <param name="todate"></param>
+        /// <returns></returns>
+        public async Task<GetRevenueDetailRes[]> UpdateStatusGetSimTopupPool(string history_id, double amount)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"tranfer-money?history_id={history_id}&amount={amount}");
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<GetRevenueDetailRes[]>(responseBody);
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"GetRevenueDetail ERROR: {ex.Message}");
                 throw ex;
             }
         }
-
     }
 }
