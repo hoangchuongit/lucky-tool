@@ -48,7 +48,7 @@ namespace LuckBurnTK
         private readonly ConcurrentDictionary<string, CallDetail> RecordingPorts = new ConcurrentDictionary<string, CallDetail>();
 
         /// Danh sách cổng COM đang gửi SMS
-        private readonly ConcurrentDictionary<string, TranferMoneyReq> SMSPorts = new ConcurrentDictionary<string, TranferMoneyReq>();
+        private readonly ConcurrentDictionary<string, TranferMoneySMSPort> SMSPorts = new ConcurrentDictionary<string, TranferMoneySMSPort>();
 
         /// Nội dung ghi âm của từng cổng COM
         private readonly ConcurrentDictionary<string, byte[]> RecordingCOMs = new ConcurrentDictionary<string, byte[]>();
@@ -197,8 +197,8 @@ namespace LuckBurnTK
 
             MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
             //AppendLogToMemo(sp.PortName, MessageCOMs[sp.PortName]);
-            //if (sp.PortName == "COM181")
-                //Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
+            if (sp.PortName == "COM181")
+                Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
             //logger.Info(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
 
             // Nếu cổng COM chưa nằm trong danh sách ghi âm thì bổ sung vào danh sách. Nếu đã có thì ghi nối tiếp dữ liệu
@@ -498,38 +498,47 @@ namespace LuckBurnTK
                 }
                 //Xử lý chuyển tiền
                 // Nếu là mạng Vinaphone và có đầu số như trên thì thực hiện 2Friends hoặc 9368
-                //if (telecom == "Vinaphone" && tkchinh - minAccount >= 10000)
-                //{
-                //    // Lấy thông tin ngày kích hoạt
-                //    string ngaykh = Common.ExtractNgayKH(mess);
-                //    int? days = Common.DaysSinceHsd(ngaykh, DateCurrent);
-                //    string[] VinaPrefixes = { "081", "082", "083", "084", "085", "088", "091", "094" };
-                //    string prefix = phone.Substring(0, 3);
-                //    bool isVinaphone = Array.Exists(VinaPrefixes, p => p == prefix);
-                //    // Nếu đầu số là vinaphone và ngày kh đủ 180 ngày thì chuyển qua 2Friends, nếu đủ 90 ngày thì chuyển qua 9368
-                //    if (isVinaphone && days.HasValue && days.Value >= 180)
-                //    {
-                //        SMSPorts.TryAdd(sp.PortName, new TranferMoneyReq()
-                //        {
-                //            phone_number = phone,
-                //            amount = currentTKC,
-                //            amount_left = minAccount,
-                //            type = TranferMoneyEnum.TWO_FRIENDS.ToString()
-                //        });
-                //        // Lấy thông tin mật khẩu của dịch vụ 2Friends của Vinaphone
-                //        sp.WriteLine($"AT+CMGS=\"222\"");
-                //        Thread.Sleep(500);
-                //        SendATCommand(sp, $"DK{(char)26}", 500);
-                //        return;
-                //    }
-                //    //else if (isVinaphone && days.HasValue && days.Value >= 90 && days.Value < 180)
-                //    //{
-                //    //    // Lấy thông tin mật khẩu của dịch vụ Sendi (9368) của Vinaphone
-                //    //    sp.WriteLine($"AT+CMGS=\"9368\"");
-                //    //    Thread.Sleep(500);
-                //    //    SendATCommand(sp, $"MK{(char)26}", 500);
-                //    //}
-                //}
+                if (telecom == "Vinaphone" && tkchinh - minAccount >= 10000)
+                {
+                    // Lấy thông tin ngày kích hoạt
+                    string ngaykh = Common.ExtractNgayKH(mess);
+                    int? days = Common.DaysSinceHsd(ngaykh, DateCurrent);
+                    string[] VinaPrefixes = { "081", "082", "083", "084", "085", "088", "091", "094" };
+                    string prefix = phone.Substring(0, 3);
+                    bool isVinaphone = Array.Exists(VinaPrefixes, p => p == prefix);
+                    // Nếu đầu số là vinaphone và ngày kh đủ 180 ngày thì chuyển qua 2Friends, nếu đủ 90 ngày thì chuyển qua 9368
+                    if (isVinaphone && days.HasValue && days.Value >= 180)
+                    {
+
+                        var simPool = await _prefixController.GetSimTopupPool(new TranferMoneyReq()
+                        {
+                            phone_number = phone,
+                            amount = currentTKC,
+                            amount_left = minAccount,
+                            type = TranferMoneyEnum.TWO_FRIENDS.ToString()
+                        });
+                        if (simPool != null)
+                        {
+                            SMSPorts.TryAdd(sp.PortName, new TranferMoneySMSPort()
+                            {
+                                history_id = simPool.history_id.ToString(),
+                                message = simPool.message,
+                            });
+                            // Lấy thông tin mật khẩu của dịch vụ 2Friends của Vinaphone
+                            sp.WriteLine($"AT+CMGS=\"222\"");
+                            Thread.Sleep(500);
+                            SendATCommand(sp, $"DK{(char)26}", 500);
+                            return;
+                        }
+                    }
+                    //else if (isVinaphone && days.HasValue && days.Value >= 90 && days.Value < 180)
+                    //{
+                    //    // Lấy thông tin mật khẩu của dịch vụ Sendi (9368) của Vinaphone
+                    //    sp.WriteLine($"AT+CMGS=\"9368\"");
+                    //    Thread.Sleep(500);
+                    //    SendATCommand(sp, $"MK{(char)26}", 500);
+                    //}
+                }
 
                 // Gọi API để lấy ra đầu số call hoặc sms và các thông tin cần để xử lý
                 var prefixSmsReq = new GetPrefixSmsReq()
@@ -640,23 +649,13 @@ namespace LuckBurnTK
                         if (SMSPorts.ContainsKey(sp.PortName) && !string.IsNullOrEmpty(passTranfer))
                         {
                             var smsDetail = SMSPorts[sp.PortName];
-                            var simPool = await _prefixController.GetSimTopupPool(new TranferMoneyReq()
-                            {
-                                phone_number = smsDetail.phone_number,
-                                amount = smsDetail.amount,
-                                amount_left = smsDetail.amount_left,
-                                type = smsDetail.type
-                            });
-                            if (simPool != null)
-                            {
-                                var cuphap = simPool.message.Replace("PASSWORD", passTranfer.ToString());
-                                // Gửi SMS chuyển tiền
-                                sp.WriteLine($"AT+CMGS=\"222\"");
-                                Thread.Sleep(500);
-                                SendATCommand(sp, $"{cuphap}{(char)26}", 500);
-                                MessageCOMs[sp.PortName] = string.Empty;
-                                return;
-                            }
+                            var cuphap = smsDetail.message.Replace("PASSWORD", passTranfer.ToString());
+                            // Gửi SMS chuyển tiền
+                            sp.WriteLine($"AT+CMGS=\"222\"");
+                            Thread.Sleep(500);
+                            SendATCommand(sp, $"{cuphap}{(char)26}", 500);
+                            MessageCOMs[sp.PortName] = string.Empty;
+                            return;
                         }
                         // Tiếp tục đốt
                         SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
@@ -670,24 +669,13 @@ namespace LuckBurnTK
                         if (SMSPorts.ContainsKey(sp.PortName))
                         {
                             var smsDetail = SMSPorts[sp.PortName];
-                            var simPool = await _prefixController.GetSimTopupPool(new TranferMoneyReq()
-                            {
-                                phone_number = smsDetail.phone_number,
-                                amount = smsDetail.amount,
-                                amount_left = smsDetail.amount_left,
-                                type = smsDetail.type.ToString()
-                            });
-                            if (simPool != null)
-                            {
-                                smsDetail.history_id = simPool.history_id;
-                                var cuphap = simPool.message.Replace("PASSWORD", passTranfer.ToString());
-                                // Gửi SMS chuyển tiền
-                                sp.WriteLine($"AT+CMGS=\"222\"");
-                                Thread.Sleep(500);
-                                SendATCommand(sp, $"{cuphap}{(char)26}", 500);
-                                MessageCOMs[sp.PortName] = string.Empty;
-                                return;
-                            }
+                            var cuphap = smsDetail.message.Replace("PASSWORD", passTranfer.ToString());
+                            // Gửi SMS chuyển tiền
+                            sp.WriteLine($"AT+CMGS=\"222\"");
+                            Thread.Sleep(500);
+                            SendATCommand(sp, $"{cuphap}{(char)26}", 500);
+                            MessageCOMs[sp.PortName] = string.Empty;
+                            return;
                         }
                         // Tiếp tục đốt
                         SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
@@ -698,7 +686,7 @@ namespace LuckBurnTK
                         if (SMSPorts.ContainsKey(sp.PortName))
                         {
                             var smsDetail = SMSPorts[sp.PortName];
-                            await _prefixController.UpdateStatusGetSimTopupPool(smsDetail.history_id.ToString(), smsDetail.amount);
+                            await _prefixController.UpdateStatusGetSimTopupPool(smsDetail.history_id.ToString(), TranferMoneyEnum.TWO_FRIENDS.ToString());
                         }
                         SMSPorts.TryRemove(sp.PortName, out _);
                         // Tiếp tục đốt

@@ -118,5 +118,11 @@ namespace LuckBurnTK.Models
             public string message { get; set; }
             public Guid history_id { get; set; }
         }
+
+        public class TranferMoneySMSPort
+        {
+            public string history_id { get; set; }
+            public string message { get; set; }
+        }
     }
 }
