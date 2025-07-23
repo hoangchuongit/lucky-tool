@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace LuckOTP
+namespace LuckCheck
 {
     internal static class Program
     {

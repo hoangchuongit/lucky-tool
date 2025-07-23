@@ -1,11 +1,8 @@
-﻿using DevExpress.Data.Extensions;
-using DevExpress.XtraEditors;
+﻿using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
 using LuckOTP.Model;
 using LuckOTP.Repositories;
 using LuckOTP.Utils;
-using Newtonsoft.Json;
-using Npgsql;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -63,7 +60,6 @@ namespace LuckOTP
             Country = country;
             SetupServices();
             ReadPUDBinanceCheck();
-            //StartListeningForNotifications();
             LoadCOMForm();
             TimerCheckSimError.Start();
             TimerSyncDB.Start();
@@ -114,50 +110,6 @@ namespace LuckOTP
             }
         }
 
-        private async void StartListeningForNotifications()
-        {
-            using (var conn = new NpgsqlConnection(Common.connectionString))
-            {
-                await conn.OpenAsync();
-                conn.Notification += (o, e) =>
-                {
-                    Invoke(new Action(() =>
-                    {
-                        try
-                        {
-                            // Kiểm tra channel nhận được thông báo
-                            if (e.Channel == "service_channel")
-                            {
-                                var data = JsonConvert.DeserializeObject<SimListenCurrentServiceCode>(e.Payload);
-                                var comGrid = ComDataGrid.FirstOrDefault(x => x.Phone == data.phone_number);
-                                var sp = SerialPorts.Find(x => x.PortName == comGrid.Com);
-                                if (data.service_code == "zalo")
-                                {
-                                    SendATCommand(sp, "AT+CMGS=\"6020\"", 500);
-                                    SendATCommand(sp, "ZALO" + (char)26, 500);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            logger.Error($"Lỗi LISTEN service_channel: {ex.Message}");
-                        }
-                    }));
-                };
-                using (var cmd = new NpgsqlCommand("LISTEN service_channel;", conn))
-                {
-                    await cmd.ExecuteNonQueryAsync();
-                }
-                await Task.Run(() =>
-                {
-                    while (true)
-                    {
-                        conn.Wait();
-                    }
-                });
-            }
-        }
-
         private void LoadCOMForm()
         {
             string[] portNames = SerialPort.GetPortNames();
@@ -177,30 +129,32 @@ namespace LuckOTP
             foreach (string port in portNames)
             {
                 var regexPattern = $@"\b{Regex.Escape(port)}\b";
-                var isValid = fullPortNames.FirstOrDefault(x => Regex.IsMatch(x["Caption"], regexPattern, RegexOptions.IgnoreCase) && x["Caption"].Contains("XR21V1414"));
+                var isValid = fullPortNames.FirstOrDefault(x => Regex.IsMatch(x["Caption"], regexPattern, RegexOptions.IgnoreCase));
                 if (isValid == null) continue;
                 var deviceID = isValid["DeviceID"].ToString().Split('\\')[2].ToString();
                 SerialPort sp = new SerialPort(port)
                 {
                     BaudRate = 115200,
+                    Encoding = Encoding.ASCII,
                     Parity = Parity.None,
                     StopBits = StopBits.One,
                     DataBits = 8,
                     Handshake = Handshake.None,
                     RtsEnable = true,
-                    ReadTimeout = 3000,
-                    WriteTimeout = 3000
+                    ReadTimeout = 5000,
+                    WriteTimeout = 5000,
+                    ReadBufferSize = 16384,
                 };
                 sp.DataReceived += SerialPort_DataReceived;
                 sp.ErrorReceived += SerialPort_ErrorReceived;
 
                 SerialPorts.Add(sp);
-                MessageCOMs.TryAdd(sp.PortName, "");
+                MessageCOMs.TryAdd(sp.PortName, string.Empty);
 
                 // tạo object tương ứng với các cột
                 var data = new ComDto
                 {
-                    Stt = dataCOms.FindIndex(x => x == deviceID) > -1 ? (dataCOms.FindIndex(x => x == deviceID) + 1).ToString() : "-1",
+                    Stt = ComConfigManager.GetOrAssignSTT(sp.PortName, true),
                     Com = sp.PortName,
                     DeviceID = deviceID,
                     ICCID = "",
@@ -210,7 +164,7 @@ namespace LuckOTP
                 };
                 ComDataGrid.Add(data);
             }
-            ComDataGrid = new BindingList<ComDto>(ComDataGrid.OrderBy(c => int.Parse(c.Stt)).ToList());
+            ComDataGrid = new BindingList<ComDto>(ComDataGrid.OrderBy(c => !string.IsNullOrEmpty(c.Stt) ? int.Parse(c.Stt) : -1).ToList());
         }
 
         private void InitializeModem(SerialPort sp)
@@ -219,20 +173,19 @@ namespace LuckOTP
             {
                 if (sp == null) return;
                 if (!sp.IsOpen) sp.Open();
+                sp.DiscardInBuffer();
+                sp.DiscardOutBuffer();
+                SendATCommand(sp, "AT+IPR=115200");
                 // Khởi động lại modem mà không thay đổi các cài đặt, chỉ tái thiết lập kết nối hoặc trạng thái của modem.
                 SendATCommand(sp, "ATZ");
                 // Đặt mã ký tự về ASCII
                 SendATCommand(sp, "AT+CSCS=\"GSM\"");
-                // Đặt module về chế độ Text Mode (ASCII)
-                SendATCommand(sp, "AT+CMGF=1");
-                // Nhận tin nhắn dưới dạng văn bản
-                SendATCommand(sp, "AT+CNMI=2,2");
-                // Hủy chuyển hướng cuộc gọi của sim
-                SendATCommand(sp, "AT+CCFC=0,0");
-                // Xóa tất cả file trong RAM - chủ yếu các file ghi âm
-                SendATCommand(sp, "AT+QFDEL=\"RAM:record.wav\"", 1000);
-                // Kiểm tra cổng COM đã cắm SIM hay chưa?
-                //SendATCommand(sp, "AT+QSIMSTAT?");
+                // Bật hoặc tắt chức năng Phát hiện thẻ SIM
+                SendATCommand(sp, "AT+QSIMDET=1,0");
+                // Kích hoạt chế độ thông báo sự kiện SIM
+                SendATCommand(sp, "AT+QSIMSTAT=1");
+                // lấy ICCID của sim
+                SendATCommand(sp, "AT+QCCID");
             }
             catch (Exception ex)
             {
@@ -314,7 +267,7 @@ namespace LuckOTP
             }
 
             // Lắng nghe xem SIM có được cắm vào cổng COM hay không
-            ListenEventSIMInsert(sp);
+            //ListenEventSIMInsert(sp);
 
             // Lắng nghe trạng thái sim đã sẵn sàng để làm việc chưa?
             ListenEventSIMStatus(sp);
@@ -328,25 +281,6 @@ namespace LuckOTP
             // Lắng nghe change IMEI thành công
             ListenEventChangeIMEI(sp);
 
-            // Trigger: Trạng thái SIM đã bị tháo
-            if (MessageCOMs[sp.PortName].Contains("+CPIN: NOT READY"))
-            {
-                MessageCOMs[sp.PortName] = string.Empty;
-                // Cập nhật SIM lên hệ thống database
-                UploadSimToSystem(sp.PortName, string.Empty, string.Empty, true);
-                // Cập nhật gridview
-                UpdateComData(sp.PortName, dto =>
-                {
-                    dto.ICCID = ""; dto.Phone = ""; dto.TrangThai = ""; dto.Message = "";
-                }, "ICCID", "Phone", "TrangThai", "Message");
-            }
-
-            // Trigger: Trạng thái SIM đã cắm
-            if (MessageCOMs[sp.PortName].Contains("Call Ready") && MessageCOMs[sp.PortName].Contains("+CPIN: READY"))
-            {
-                MessageCOMs[sp.PortName] = string.Empty;
-                SendATCommand(sp, "AT+QSIMSTAT?");
-            }
         }
 
         /// <summary>
@@ -645,36 +579,49 @@ namespace LuckOTP
         /// <param name="sp"></param>
         private void ListenEventSIMStatus(SerialPort sp)
         {
-            try
+            var content = MessageCOMs[sp.PortName];
+            // Trạng thái SIM đã tháo
+            if ((content.Contains("+CPIN: NOT INSERTED") || content.Contains("+CPIN: NOT READY")) && content.Contains("+QSIMSTAT: 1,0"))
             {
-                if (!MessageCOMs[sp.PortName].Contains("+CPIN:") || !MessageCOMs[sp.PortName].Contains("\nOK")) return;
-                var mess = MessageCOMs[sp.PortName].AT_Command();
-                // đánh số thứ tự COM nếu SIM chưa được đặt
-                var currentRow = ComDataGrid.FirstOrDefault(x => x.Com == sp.PortName);
-                if (currentRow.Stt == "-1")
+                // Xóa các tin nhắn cũ đi
+                SendATCommand(sp, $"AT+CMGD=2,4");
+                MessageCOMs[sp.PortName] = string.Empty;
+                sp.DiscardInBuffer();
+                sp.DiscardOutBuffer();
+                try
                 {
-                    var dataCOms = Properties.Settings.Default.COMs.Trim().Split(',').Where(x => !string.IsNullOrEmpty(x)).ToList();
-                    //currentRow.Stt = (dataCOms.Count + 1).ToString();
-                    var stt = (dataCOms.Count + 1).ToString();
-                    // Cập nhật Properties.Settings
-                    dataCOms.Add(currentRow.DeviceID);
-                    Properties.Settings.Default.COMs = string.Join(",", dataCOms);
-                    Properties.Settings.Default.Save();
-                    // Làm mới GridView (cập nhật dòng cụ thể)
-                    UpdateComData(sp.PortName, dto => dto.Stt = stt, "Stt");
+                    // Cập nhật SIM lên hệ thống database
+                    UploadSimToSystem(sp.PortName, string.Empty, string.Empty, true);
+                    // Cập nhật gridview
+                    UpdateComData(sp.PortName, dto =>
+                    {
+                        dto.ICCID = ""; dto.Phone = ""; dto.TrangThai = ""; dto.Message = "";
+                    }, "ICCID", "Phone", "TrangThai", "Message");
                 }
-                if (mess.Contains("+CPIN: READY"))
+                catch (Exception ex)
                 {
-                    MessageCOMs[sp.PortName] = string.Empty;
-
-                    UpdateComData(sp.PortName, dto => dto.TrangThai = "SIM READY", "TrangThai");
-
-                    SendATCommand(sp, "AT+QCCID");
+                    logger.Error($"Tháo SIM thất bại: {ex.Message}");
+                    UpdateComData(sp.PortName, dto => dto.TrangThai = "", "TrangThai");
                 }
             }
-            catch (Exception)
+
+            // Trạng thái SIM đã cắm
+            if (content.Contains("+CPIN: READY") && content.Contains("+QSIMSTAT: 1,1"))
             {
-                UpdateComData(sp.PortName, dto => dto.TrangThai = "", "TrangThai");
+                MessageCOMs[sp.PortName] = string.Empty;
+                try
+                {
+                    // đánh số thứ tự COM nếu SIM chưa được đặt
+                    var stt = ComConfigManager.GetOrAssignSTT(sp.PortName);
+                    UpdateComData(sp.PortName, dto => dto.Stt = stt, "Stt");
+                    // lấy ICCID của sim
+                    SendATCommand(sp, "AT+QCCID");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error($"Cắm SIM thất bại: {ex.Message}");
+                    UpdateComData(sp.PortName, dto => dto.TrangThai = "", "TrangThai");
+                }
             }
         }
 

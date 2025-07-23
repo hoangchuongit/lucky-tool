@@ -197,8 +197,7 @@ namespace LuckBurnTK
 
             MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
             //AppendLogToMemo(sp.PortName, MessageCOMs[sp.PortName]);
-            if (sp.PortName == "COM181")
-                Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
+            //Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
             //logger.Info(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
 
             // Nếu cổng COM chưa nằm trong danh sách ghi âm thì bổ sung vào danh sách. Nếu đã có thì ghi nối tiếp dữ liệu
@@ -506,10 +505,9 @@ namespace LuckBurnTK
                     string[] VinaPrefixes = { "081", "082", "083", "084", "085", "088", "091", "094" };
                     string prefix = phone.Substring(0, 3);
                     bool isVinaphone = Array.Exists(VinaPrefixes, p => p == prefix);
-                    // Nếu đầu số là vinaphone và ngày kh đủ 180 ngày thì chuyển qua 2Friends, nếu đủ 90 ngày thì chuyển qua 9368
+                    //Nếu đầu số là vinaphone và ngày kh đủ 180 ngày thì chuyển qua 2Friends, nếu đủ 90 ngày thì chuyển qua 9368
                     if (isVinaphone && days.HasValue && days.Value >= 180)
                     {
-
                         var simPool = await _prefixController.GetSimTopupPool(new TranferMoneyReq()
                         {
                             phone_number = phone,
@@ -533,10 +531,26 @@ namespace LuckBurnTK
                     }
                     //else if (isVinaphone && days.HasValue && days.Value >= 90 && days.Value < 180)
                     //{
-                    //    // Lấy thông tin mật khẩu của dịch vụ Sendi (9368) của Vinaphone
-                    //    sp.WriteLine($"AT+CMGS=\"9368\"");
-                    //    Thread.Sleep(500);
-                    //    SendATCommand(sp, $"MK{(char)26}", 500);
+                    //    var simPool = await _prefixController.GetSimTopupPool(new TranferMoneyReq()
+                    //    {
+                    //        phone_number = phone,
+                    //        amount = currentTKC,
+                    //        amount_left = minAccount,
+                    //        type = TranferMoneyEnum.SENDI.ToString()
+                    //    });
+                    //    if (simPool != null)
+                    //    {
+                    //        SMSPorts.TryAdd(sp.PortName, new TranferMoneySMSPort()
+                    //        {
+                    //            history_id = simPool.history_id.ToString(),
+                    //            message = simPool.message,
+                    //        });
+                    //        // Lấy thông tin mật khẩu của dịch vụ Sendi (9368) của Vinaphone
+                    //        sp.WriteLine($"AT+CMGS=\"9368\"");
+                    //        Thread.Sleep(500);
+                    //        SendATCommand(sp, $"MK{(char)26}", 500);
+                    //        return;
+                    //    }
                     //}
                 }
 
@@ -687,6 +701,60 @@ namespace LuckBurnTK
                         {
                             var smsDetail = SMSPorts[sp.PortName];
                             await _prefixController.UpdateStatusGetSimTopupPool(smsDetail.history_id.ToString(), TranferMoneyEnum.TWO_FRIENDS.ToString());
+                        }
+                        SMSPorts.TryRemove(sp.PortName, out _);
+                        // Tiếp tục đốt
+                        SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
+                    }
+                }
+                else if (content.Contains("+CMT: \"9368\""))
+                {
+                    var mess = MessageCOMs[sp.PortName];
+                    if (mess.Contains("Quy khach chua tao mat khau cho dich vu Sendi."))
+                    {
+                        // Gửi SMS kich hoat NHANH ON
+                        sp.WriteLine($"AT+CMGS=\"9368\"");
+                        Thread.Sleep(500);
+                        SendATCommand(sp, $"MK 021091{(char)26}", 500);
+                        MessageCOMs[sp.PortName] = string.Empty;
+                    }
+                    else if (mess.Contains("la Mat khau de su dung DV chuyen tien Sendi cua Quy khach.")
+                        || (mess.Contains("Chao mung QK den voi dich vu chuyen tien Sendi.")
+                            && mess.Contains("De doi mat khau")))
+                    {
+                        // Lấy thông tin mật khẩu của dịch vụ 2Friends của Vinaphone
+                        var match = Regex.Match(mess, @"(?<!\d)\d{6}(?!\d)");
+                        var passTranfer = match.Success ? match.Value : null;
+                        // Gửi SMS kich hoat NHANH ON
+                        sp.WriteLine($"AT+CMGS=\"9368\"");
+                        Thread.Sleep(500);
+                        SendATCommand(sp, $"NHANH ON {passTranfer}{(char)26}", 500);
+                        MessageCOMs[sp.PortName] = string.Empty;
+                    }
+                    else if (mess.Contains("QK da dang ky thanh cong tinh nang chuyen tien nhanh cua DV Sendi.")
+                            || mess.Contains("QK da bat tinh nang chuyen tien nhanh."))
+                    {
+                        MessageCOMs[sp.PortName] = string.Empty;
+                        if (SMSPorts.ContainsKey(sp.PortName))
+                        {
+                            var smsDetail = SMSPorts[sp.PortName];
+                            // Gửi SMS chuyển tiền
+                            sp.WriteLine($"AT+CMGS=\"9368\"");
+                            Thread.Sleep(500);
+                            SendATCommand(sp, $"{smsDetail.message}{(char)26}", 500);
+                            MessageCOMs[sp.PortName] = string.Empty;
+                            return;
+                        }
+                        // Tiếp tục đốt
+                        SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
+                    }
+                    else if (mess.Contains("Chuyen tien thanh cong") && mess.Contains("Tai khoan chinh cua QK bi tru"))
+                    {
+                        MessageCOMs[sp.PortName] = string.Empty;
+                        if (SMSPorts.ContainsKey(sp.PortName))
+                        {
+                            var smsDetail = SMSPorts[sp.PortName];
+                            await _prefixController.UpdateStatusGetSimTopupPool(smsDetail.history_id.ToString(), TranferMoneyEnum.SENDI.ToString());
                         }
                         SMSPorts.TryRemove(sp.PortName, out _);
                         // Tiếp tục đốt

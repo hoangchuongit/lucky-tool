@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Management;
 using System.Security.Cryptography;
@@ -10,7 +11,15 @@ namespace LuckOTP.Utils
 {
     public class Common
     {
-        public static readonly string connectionString = "Host=51.79.161.237;Port=5432;Database=luckotp;User Id=gsm;Password=Ninhpm@123;Pooling=true;MinPoolSize=1;MaxPoolSize=20";
+#if !DEBUG
+        public static string UrlBurnAUTH = "https://emailreal.com/auth/";
+        public static string UrlBurnAPI = "https://emailreal.com/api/";
+#else
+        public static string UrlBurnAUTH = "http://localhost:3001/auth/";
+        public static string UrlBurnAPI = "http://localhost:3000/api/";
+#endif
+
+        private static readonly Random _random = new Random();
 
         public static IEnumerable<Dictionary<string, string>> GetFullPortNames()
         {
@@ -27,10 +36,7 @@ namespace LuckOTP.Utils
         {
             try
             {
-                return Enumerable.Range(0, hex.Length)
-                             .Where(x => x % 2 == 0)
-                             .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
-                             .ToArray();
+                return Enumerable.Range(0, hex.Length).Where(x => x % 2 == 0).Select(x => Convert.ToByte(hex.Substring(x, 2), 16)).ToArray();
             }
             catch (Exception)
             {
@@ -43,13 +49,10 @@ namespace LuckOTP.Utils
             // Regular expression to match phone numbers
             // Matches 10 digits starting with 0 or 11 digits starting with 84
             string pattern = @"(?:0\d{9}|\d{9}|84\d{9})(?!\d)";
-
             // Create a Regex object
             Regex regex = new Regex(pattern);
-
             // Find matches
             Match match = regex.Match(input);
-
             // Check if a match is found
             if (match.Success)
             {
@@ -57,66 +60,22 @@ namespace LuckOTP.Utils
                 phone = phone.Length == 11 ? "0" + phone.Substring(2) : phone.Length == 9 ? "0" + phone : phone;
                 return phone;
             }
-
             return null;
-        }
-
-        public static byte[] CreateWavHeader(int dataLength, int sampleRate, int numChannels, int bitsPerSample)
-        {
-            int blockAlign = numChannels * (bitsPerSample / 8);
-            int byteRate = sampleRate * blockAlign;
-            byte[] header = new byte[44];
-
-            // RIFF header
-            Buffer.BlockCopy(Encoding.ASCII.GetBytes("RIFF"), 0, header, 0, 4);
-            BitConverter.GetBytes(36 + dataLength).CopyTo(header, 4); // File size minus 8 bytes
-            Buffer.BlockCopy(Encoding.ASCII.GetBytes("WAVE"), 0, header, 8, 4);
-
-            // fmt chunk
-            Buffer.BlockCopy(Encoding.ASCII.GetBytes("fmt "), 0, header, 12, 4);
-            BitConverter.GetBytes(16).CopyTo(header, 16); // PCM header size
-            BitConverter.GetBytes((short)1).CopyTo(header, 20); // Audio format (PCM)
-            BitConverter.GetBytes((short)numChannels).CopyTo(header, 22);
-            BitConverter.GetBytes(sampleRate).CopyTo(header, 24);
-            BitConverter.GetBytes(byteRate).CopyTo(header, 28);
-            BitConverter.GetBytes((short)blockAlign).CopyTo(header, 32);
-            BitConverter.GetBytes((short)bitsPerSample).CopyTo(header, 34);
-
-            // data chunk
-            Buffer.BlockCopy(Encoding.ASCII.GetBytes("data"), 0, header, 36, 4);
-            BitConverter.GetBytes(dataLength).CopyTo(header, 40);
-
-            return header;
-        }
-
-        // Converts bytes to kilobytes and returns the result as a string.
-        public static string BytesToKB(long bytes)
-        {
-            // Convert bytes to kilobytes (1 KB = 1024 bytes)
-            long kb = bytes / 1024;
-
-            // Return the result as a formatted string
-            return $"{kb} KB";
         }
 
         public static bool IsValidUtf16(string input)
         {
             // Bước 1: Kiểm tra độ dài và ký tự hex
-            if (input.Length % 4 != 0 || !Regex.IsMatch(input, @"\A\b[0-9A-Fa-f]+\b\Z"))
-                return false;
+            if (input.Length % 4 != 0 || !Regex.IsMatch(input, @"\A\b[0-9A-Fa-f]+\b\Z")) return false;
             // Bước 2: Duyệt từng cặp 4 ký tự (mã UTF-16)
             for (int i = 0; i < input.Length; i += 4)
             {
                 string hex = input.Substring(i, 4);
                 int unicodeValue = Convert.ToInt32(hex, 16);
-
                 // Loại bỏ các mã trong khoảng D800 - DFFF (surrogate pairs)
-                if (unicodeValue >= 0xD800 && unicodeValue <= 0xDFFF)
-                    return false;
-
+                if (unicodeValue >= 0xD800 && unicodeValue <= 0xDFFF) return false;
                 // Kiểm tra xem có nằm ngoài phạm vi UTF-16
-                if (unicodeValue > 0xFFFF)
-                    return false;
+                if (unicodeValue > 0xFFFF) return false;
             }
             return true;
         }
@@ -124,14 +83,12 @@ namespace LuckOTP.Utils
         public static string DecodeUnicode(string unicodeString)
         {
             StringBuilder sb = new StringBuilder();
-
             for (int i = 0; i < unicodeString.Length; i += 4)
             {
                 string hex = unicodeString.Substring(i, 4);
                 int unicodeValue = Convert.ToInt32(hex, 16);
                 sb.Append((char)unicodeValue);
             }
-
             return sb.ToString();
         }
 
@@ -140,16 +97,12 @@ namespace LuckOTP.Utils
         {
             // TAC dành cho Quectel M26 (có thể thay đổi)
             string tac = "86159703";
-
             // Tạo 6 số serial ngẫu nhiên
             string serial = GenerateRandomNumber(6);
-
             // Kết hợp TAC + Serial
             string imeiBase = tac + serial;
-
             // Tính checksum bằng Luhn Algorithm
             int checksum = CalculateLuhnChecksum(imeiBase);
-
             return imeiBase + checksum;
         }
 
@@ -159,13 +112,11 @@ namespace LuckOTP.Utils
             {
                 byte[] randomBytes = new byte[length];
                 rng.GetBytes(randomBytes);
-
                 char[] result = new char[length];
                 for (int i = 0; i < length; i++)
                 {
                     result[i] = (char)('0' + (randomBytes[i] % 10)); // Chuyển thành số từ 0-9
                 }
-
                 return new string(result);
             }
         }
@@ -174,22 +125,75 @@ namespace LuckOTP.Utils
         {
             int sum = 0;
             bool doubleDigit = true;
-
             for (int i = imeiBase.Length - 1; i >= 0; i--)
             {
                 int n = imeiBase[i] - '0';
-
                 if (doubleDigit)
                 {
                     n *= 2;
                     if (n > 9) n -= 9;
                 }
-
                 sum += n;
                 doubleDigit = !doubleDigit;
             }
-
             return (10 - (sum % 10)) % 10;
+        }
+
+        /// <summary>
+        /// Trích xuất số tiền từ chuỗi tài khoản chính (tìm trước VND, VNĐ, d, đ)
+        /// </summary>
+        /// <param name="input">Chuỗi đầu vào chứa số dư</param>
+        /// <returns>Số tiền nếu tìm được, null nếu không</returns>
+        public static int? ExtractBalance(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input)) return null;
+            // Regex: bắt số có thể chứa , hoặc . trước các đơn vị d, đ, vnd, vnđ
+            var match = Regex.Match(input, @"([\d.,]+)\s*(v?n?[dđ])", RegexOptions.None);
+            if (!match.Success) return null;
+            string raw = match.Groups[1].Value;
+            if (Regex.IsMatch(raw, @"^\d{9,11}$"))
+                return null;
+            string cleaned = raw.Replace(",", "").Replace(".", "");
+            return int.TryParse(cleaned, out int balance) ? balance : (int?)null;
+        }
+
+        public static string ExtractNgayKH(string input)
+        {
+            var m = Regex.Match(input, @"ngay kh:\s*(\d{2}/\d{2}/\d{4})", RegexOptions.IgnoreCase);
+            if (!m.Success) return null;
+            return m.Groups[1].Value;
+        }
+
+        public static byte[] RemoveConnectHeader(byte[] buffer)
+        {
+            string header = "\r\nCONNECT\r\n";
+            string bufferAsString = Encoding.ASCII.GetString(buffer);
+            int headerIndex = bufferAsString.IndexOf(header);
+            if (headerIndex == -1) return buffer;
+            int byteOffset = Encoding.ASCII.GetByteCount(bufferAsString.Substring(0, headerIndex + header.Length));
+            int remainingLength = buffer.Length - byteOffset;
+            byte[] newBuffer = new byte[remainingLength];
+            Buffer.BlockCopy(buffer, byteOffset, newBuffer, 0, remainingLength);
+            return newBuffer;
+        }
+
+        public static int GenerateRandomCallDuration()
+        {
+            // Chọn ngẫu nhiên 1 trong 2 khoảng
+            bool useFirstRange = _random.Next(2) == 0;
+            if (useFirstRange)
+                return _random.Next(10000, 21000); // 21 không bao gồm, nên là 10-20
+            else
+                return _random.Next(50000, 61000); // 61 không bao gồm, nên là 50-60
+        }
+
+        public static int? DaysSinceHsd(string hsd, string currentDate)
+        {
+            if (!DateTime.TryParseExact(hsd, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime expiry))
+                return null;
+            if (!DateTime.TryParseExact(currentDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime current))
+                return null;
+            return (current.Date - expiry.Date).Days;
         }
     }
 }

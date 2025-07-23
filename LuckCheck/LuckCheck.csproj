@@ -7,8 +7,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{99DD1C4C-B004-4D22-B084-8544A0C0697D}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>LuckOTP</RootNamespace>
-    <AssemblyName>LuckOTP</AssemblyName>
+    <RootNamespace>LuckCheck</RootNamespace>
+    <AssemblyName>LuckCheck</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -50,6 +50,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevExpress.BonusSkins.v22.2, Version=22.2.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
@@ -204,21 +207,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GSM.cs">
+    <Compile Include="GSMForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GSM.Designer.cs">
-      <DependentUpon>GSM.cs</DependentUpon>
+    <Compile Include="GSMForm.Designer.cs">
+      <DependentUpon>GSMForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ComDto.cs" />
-    <Compile Include="DBController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\ComConfigManager.cs" />
     <Compile Include="Utils\Common.cs" />
     <Compile Include="Utils\StringExtensions.cs" />
-    <EmbeddedResource Include="GSM.resx">
-      <DependentUpon>GSM.cs</DependentUpon>
-      <SubType>Designer</SubType>
+    <EmbeddedResource Include="GSMForm.resx">
+      <DependentUpon>GSMForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -264,9 +266,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="pud.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

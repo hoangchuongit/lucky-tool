@@ -5,8 +5,6 @@ VisualStudioVersion = 17.14.36119.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckOtpGsm", "LuckOtpGsm\LuckOtpGsm.csproj", "{1F528D73-413E-4EEF-B4E9-D896497DF692}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckCheckSimGsm", "LuckCheckSimGsm\LuckCheckSimGsm.csproj", "{99DD1C4C-B004-4D22-B084-8544A0C0697D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckBurnTkGsm", "LuckBurnTkGsm\LuckBurnTkGsm.csproj", "{91A880D1-C985-4D61-9414-D7CBCF38F030}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckCheat", "LuckCheat\LuckCheat.csproj", "{1AB7388F-22C1-443F-9786-6BD44F0BBCF0}"
@@ -21,6 +19,10 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "LuckGmail", "LuckGmail\Luck
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckUpdater", "LuckUpdater\LuckUpdater.csproj", "{D6E71683-CDB1-401F-B81C-FD53E6144196}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckOTP", "LuckOTP\LuckOTP.csproj", "{F6BB3106-341A-4F9C-938B-58011E57CD66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckCheck", "LuckCheck\LuckCheck.csproj", "{99DD1C4C-B004-4D22-B084-8544A0C0697D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,10 +33,6 @@ Global
 		{1F528D73-413E-4EEF-B4E9-D896497DF692}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F528D73-413E-4EEF-B4E9-D896497DF692}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F528D73-413E-4EEF-B4E9-D896497DF692}.Release|Any CPU.Build.0 = Release|Any CPU
-		{99DD1C4C-B004-4D22-B084-8544A0C0697D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{99DD1C4C-B004-4D22-B084-8544A0C0697D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{99DD1C4C-B004-4D22-B084-8544A0C0697D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{99DD1C4C-B004-4D22-B084-8544A0C0697D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{91A880D1-C985-4D61-9414-D7CBCF38F030}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{91A880D1-C985-4D61-9414-D7CBCF38F030}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91A880D1-C985-4D61-9414-D7CBCF38F030}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -59,6 +57,14 @@ Global
 		{D6E71683-CDB1-401F-B81C-FD53E6144196}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6E71683-CDB1-401F-B81C-FD53E6144196}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6E71683-CDB1-401F-B81C-FD53E6144196}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6BB3106-341A-4F9C-938B-58011E57CD66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6BB3106-341A-4F9C-938B-58011E57CD66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6BB3106-341A-4F9C-938B-58011E57CD66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6BB3106-341A-4F9C-938B-58011E57CD66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99DD1C4C-B004-4D22-B084-8544A0C0697D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99DD1C4C-B004-4D22-B084-8544A0C0697D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99DD1C4C-B004-4D22-B084-8544A0C0697D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99DD1C4C-B004-4D22-B084-8544A0C0697D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

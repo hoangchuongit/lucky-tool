@@ -19,8 +19,6 @@ namespace LuckBurnTK.Utils
         public static string UrlBurnAPI = "http://localhost:3001/";
 #endif
 
-        private static readonly Random _random = new Random();
-
         public static IEnumerable<Dictionary<string, string>> GetFullPortNames()
         {
             using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Caption LIKE '%(COM%' AND ConfigManagerErrorCode = 0"))
@@ -175,16 +173,6 @@ namespace LuckBurnTK.Utils
             byte[] newBuffer = new byte[remainingLength];
             Buffer.BlockCopy(buffer, byteOffset, newBuffer, 0, remainingLength);
             return newBuffer;
-        }
-
-        public static int GenerateRandomCallDuration()
-        {
-            // Chọn ngẫu nhiên 1 trong 2 khoảng
-            bool useFirstRange = _random.Next(2) == 0;
-            if (useFirstRange)
-                return _random.Next(10000, 21000); // 21 không bao gồm, nên là 10-20
-            else
-                return _random.Next(50000, 61000); // 61 không bao gồm, nên là 50-60
         }
 
         public static int? DaysSinceHsd(string hsd, string currentDate)
