@@ -1,5 +1,4 @@
-﻿using DevExpress.Data.Extensions;
-using DevExpress.XtraEditors;
+﻿using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using LuckBurn.Model;
@@ -9,22 +8,16 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Input;
-using static DevExpress.Data.Helpers.FindSearchRichParser;
-using static DevExpress.Utils.HashCodeHelper.Blob;
 using static LuckBurnTK.Models.PrefixNumberDto;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 
 namespace LuckBurnTK
 {
@@ -114,11 +107,10 @@ namespace LuckBurnTK
         {
             foreach (string port in portNames)
             {
-                //if (port != "COM14") return;
+                //if (port != "COM218") continue;
                 var regexPattern = $@"\b{Regex.Escape(port)}\b";
                 var isValid = fullPortNames.FirstOrDefault(x => Regex.IsMatch(x["Caption"], regexPattern, RegexOptions.IgnoreCase));
                 if (isValid == null) continue;
-                var deviceID = isValid["DeviceID"].ToString().Split('\\')[2].ToString();
                 SerialPort sp = new SerialPort(port)
                 {
                     BaudRate = 115200,
@@ -142,7 +134,6 @@ namespace LuckBurnTK
                 {
                     COM = sp.PortName,
                     STT = ComConfigManager.GetOrAssignSTT(sp.PortName, true),
-                    DeviceID = deviceID,
                     ICCID = string.Empty,
                     PhoneNumber = string.Empty,
                     TKChinh = 0,
@@ -161,17 +152,24 @@ namespace LuckBurnTK
             {
                 if (sp == null) return;
                 if (!sp.IsOpen) sp.Open();
-                sp.DiscardInBuffer();
-                sp.DiscardOutBuffer();
-                SendATCommand(sp, "AT+IPR=115200");
                 // Khởi động lại modem mà không thay đổi các cài đặt, chỉ tái thiết lập kết nối hoặc trạng thái của modem.
                 SendATCommand(sp, "ATZ");
+                // Đưa Baudrate về tốc độ  115200
+                SendATCommand(sp, "AT+IPR=115200");
                 // Đặt mã ký tự về ASCII
                 SendATCommand(sp, "AT+CSCS=\"GSM\"");
                 // Bật hoặc tắt chức năng Phát hiện thẻ SIM
                 SendATCommand(sp, "AT+QSIMDET=1,0");
                 // Kích hoạt chế độ thông báo sự kiện SIM
                 SendATCommand(sp, "AT+QSIMSTAT=1");
+                // bật Presentation of Calling Line (điều chỉnh trạng thái caller).
+                SendATCommand(sp, "AT+COLP=1");
+                // bật báo trạng thái hiện tại của cuộc gọi.
+                SendATCommand(sp, "AT+CLCC=1");
+                // cấu hình để modem báo các mã lỗi cuộc gọi như BUSY, NO CARRIER, v.v.
+                SendATCommand(sp, "ATX3");
+                // Lưu thay đổi
+                SendATCommand(sp, "AT&W");
                 // lấy ICCID của sim
                 SendATCommand(sp, "AT+QCCID");
             }
@@ -197,7 +195,7 @@ namespace LuckBurnTK
 
             MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
             //AppendLogToMemo(sp.PortName, MessageCOMs[sp.PortName]);
-            //Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
+            Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
             //logger.Info(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
 
             // Nếu cổng COM chưa nằm trong danh sách ghi âm thì bổ sung vào danh sách. Nếu đã có thì ghi nối tiếp dữ liệu
@@ -282,7 +280,12 @@ namespace LuckBurnTK
         {
             var content = MessageCOMs[sp.PortName];
             // Trạng thái SIM đã tháo
-            if ((content.Contains("+CPIN: NOT INSERTED") || content.Contains("+CPIN: NOT READY")) && content.Contains("+QSIMSTAT: 1,0"))
+            if (
+                (
+                    (content.Contains("+CPIN: NOT INSERTED") || content.Contains("+CPIN: NOT READY")) && content.Contains("+QSIMSTAT: 1,0")
+                )
+                || (content=="\0")
+            )
             {
                 // Dừng nếu đang có cuộc gọi
                 StopCallAndRecord(sp, false);
@@ -310,7 +313,6 @@ namespace LuckBurnTK
                     UpdateComData(sp.PortName, dto => dto.Message101 = "Tháo sim thất bại!", "Message101");
                 }
             }
-
             // Trạng thái SIM đã cắm
             if (content.Contains("+CPIN: READY") && content.Contains("+QSIMSTAT: 1,1"))
             {
@@ -320,12 +322,8 @@ namespace LuckBurnTK
                     // đánh số thứ tự COM nếu SIM chưa được đặt
                     var stt = ComConfigManager.GetOrAssignSTT(sp.PortName);
                     UpdateComData(sp.PortName, dto => dto.STT = stt, "STT");
-                    // Tiếp tục nếu sim đã done
-                    //if (MessageCOMs[sp.PortName].Contains("Call Ready"))
-                    //{
                     // lấy ICCID của sim
                     SendATCommand(sp, "AT+QCCID");
-                    //}
                 }
                 catch (Exception ex)
                 {
@@ -333,7 +331,6 @@ namespace LuckBurnTK
                     UpdateComData(sp.PortName, dto => dto.Message101 = "Cắm sim thất bại!", "Message101");
                 }
             }
-
         }
 
         /// <summary>
@@ -969,7 +966,6 @@ namespace LuckBurnTK
                 // Nếu do nhà mạng tự ngắt thì dừng đốt còn không thì tiếp tục đốt tiếp
                 if (!callDetail.no_carrier) SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                 else UpdateComData(sp.PortName, dto => { dto.Message = $"Stop burn"; dto.IsFinish = true; }, "Message", "IsFinish");
-
             }
             catch (Exception ex)
             {
@@ -1005,7 +1001,7 @@ namespace LuckBurnTK
                     await fs.WriteAsync(audioData, 0, audioData.Length);
                     await fs.FlushAsync();
                 }
-                await Task.Delay(500);
+                await Task.Delay(1000);
                 var result = await _prefixController.ReleaseUploadFile(callDetail.history_id.ToString(), filePath);
                 File.Delete(filePath);
             }
@@ -1066,18 +1062,18 @@ namespace LuckBurnTK
                 }
                 if (status)
                 {
-                    var sortedData = new BindingList<ComDto>(newDataSource.OrderBy(x => !string.IsNullOrEmpty(x.STT) ? int.Parse(x.STT) : -1).ToList());
                     ComDataGrid.Clear();
-                    List<string> deviceIDs = new List<string>();
+                    var sortedData = new BindingList<ComDto>(newDataSource.OrderBy(x => !string.IsNullOrEmpty(x.STT) ? int.Parse(x.STT) : -1).ToList());
+                    var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "com_settings.json");
+                    if (File.Exists(configPath)) File.Delete(configPath);
+                    List<ComConfig> list = new List<ComConfig>();
                     foreach (var item in sortedData)
                     {
                         ComDataGrid.Add(item);
                         if (item.STT == "") continue;
-                        deviceIDs.Add(item.DeviceID);
+                        list.Add(new ComConfig { PortName = item.COM, STT = item.STT });
                     }
-                    var COMs = string.Join(",", deviceIDs);
-                    Properties.Settings.Default.COMs = COMs;
-                    Properties.Settings.Default.Save();
+                    ComConfigManager.Save(list);
                     XtraMessageBox.Show("Đã cập nhật STT cổng COM", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
@@ -1089,13 +1085,10 @@ namespace LuckBurnTK
 
         private void BtnResetComPort_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            if (XtraMessageBox.Show("Bạn có chắc chắn muốn đặt lại STT cổng COM?", "Xác nhận",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (XtraMessageBox.Show("Bạn có chắc chắn muốn đặt lại STT cổng COM?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                // Xoá file config nếu tồn tại
                 var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "com_settings.json");
-                if (File.Exists(configPath))
-                    File.Delete(configPath);
+                if (File.Exists(configPath)) File.Delete(configPath);
                 foreach (var item in ComDataGrid)
                 {
                     item.STT = "";
@@ -1155,23 +1148,26 @@ namespace LuckBurnTK
                                 dto.Message101 = "Reset cổng COM";
                                 dto.Message = "";
                             }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message");
+                            // Reset COM
+                            SendATCommand(sp, "AT+CFUN=1,1", 10000);
+                            // Đưa Baudrate về tốc độ  115200
+                            SendATCommand(sp, "AT+IPR=115200");
+                            // Đảm bảo các URC như RING, +CLIP, +CPIN, SIM hot-swap... được gửi qua UART chính thay vì qua USB AT port.
                             SendATCommand(sp, "AT+QURCCFG=\"urcport\",\"uart1\"");
-                            // Module được thiết lập để sử dụng chế độ "Auto Baud Rate Detection" (Tự động nhận diện tốc độ truyền).
-                            SendATCommand(sp, "AT+IPR=0");
+                            // Đặt mã ký tự về ASCII
+                            SendATCommand(sp, "AT+CSCS=\"GSM\"");
                             // Bật hoặc tắt chức năng Phát hiện thẻ SIM
                             SendATCommand(sp, "AT+QSIMDET=1,0");
                             // Kích hoạt chế độ thông báo sự kiện SIM
                             SendATCommand(sp, "AT+QSIMSTAT=1");
+                            // bật Presentation of Calling Line (điều chỉnh trạng thái caller).
+                            SendATCommand(sp, "AT+COLP=1");
+                            // bật báo trạng thái hiện tại của cuộc gọi.
+                            SendATCommand(sp, "AT+CLCC=1");
+                            // cấu hình để modem báo các mã lỗi cuộc gọi như BUSY, NO CARRIER, v.v.
+                            SendATCommand(sp, "ATX3");
                             // Lưu thay đổi
                             SendATCommand(sp, "AT&W");
-                            // Reset COM
-                            SendATCommand(sp, "AT+CFUN=1,1", 10000);
-                            // Đặt mã ký tự về ASCII
-                            SendATCommand(sp, "AT+CSCS=\"GSM\"");
-                            // Đặt module về chế độ Text Mode (ASCII)
-                            SendATCommand(sp, "AT+CMGF=1");
-                            // Nhận tin nhắn dưới dạng văn bản
-                            SendATCommand(sp, "AT+CNMI=2,2");
                             // lấy ICCID của sim
                             SendATCommand(sp, "AT+QCCID");
                         }
@@ -1204,23 +1200,26 @@ namespace LuckBurnTK
                                 dto.Message101 = "Khôi phục cài đặt gốc cổng COM";
                                 dto.Message = "";
                             }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message");
+                            // Khôi phục các cài đặt AT command về cấu hình nhà sản xuất
                             SendATCommand(sp, "AT&F", 60000);
-                            //
+                            // Đưa Baudrate về tốc độ  115200
+                            SendATCommand(sp, "AT+IPR=115200");
+                            // Đảm bảo các URC như RING, +CLIP, +CPIN, SIM hot-swap... được gửi qua UART chính thay vì qua USB AT port.
                             SendATCommand(sp, "AT+QURCCFG=\"urcport\",\"uart1\"");
-                            // Module được thiết lập để sử dụng chế độ "Auto Baud Rate Detection" (Tự động nhận diện tốc độ truyền).
-                            SendATCommand(sp, "AT+IPR=0");
+                            // Đặt mã ký tự về ASCII
+                            SendATCommand(sp, "AT+CSCS=\"GSM\"");
                             // Bật hoặc tắt chức năng Phát hiện thẻ SIM
                             SendATCommand(sp, "AT+QSIMDET=1,0");
                             // Kích hoạt chế độ thông báo sự kiện SIM
                             SendATCommand(sp, "AT+QSIMSTAT=1");
+                            // bật Presentation of Calling Line (điều chỉnh trạng thái caller).
+                            SendATCommand(sp, "AT+COLP=1");
+                            // bật báo trạng thái hiện tại của cuộc gọi.
+                            SendATCommand(sp, "AT+CLCC=1");
+                            // cấu hình để modem báo các mã lỗi cuộc gọi như BUSY, NO CARRIER, v.v.
+                            SendATCommand(sp, "ATX3");
                             // Lưu thay đổi
                             SendATCommand(sp, "AT&W");
-                            // Đặt mã ký tự về ASCII
-                            SendATCommand(sp, "AT+CSCS=\"GSM\"");
-                            // Đặt module về chế độ Text Mode (ASCII)
-                            SendATCommand(sp, "AT+CMGF=1");
-                            // Nhận tin nhắn dưới dạng văn bản
-                            SendATCommand(sp, "AT+CNMI=2,2");
                             // lấy ICCID của sim
                             SendATCommand(sp, "AT+QCCID");
                         }
@@ -1343,23 +1342,26 @@ namespace LuckBurnTK
                                 dto.Message101 = "Reset cổng COM";
                                 dto.Message = "";
                             }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message");
+                            // Reset COM
+                            SendATCommand(sp, "AT+CFUN=1,1", 10000);
+                            // Đưa Baudrate về tốc độ  115200
+                            SendATCommand(sp, "AT+IPR=115200");
+                            // Đảm bảo các URC như RING, +CLIP, +CPIN, SIM hot-swap... được gửi qua UART chính thay vì qua USB AT port.
                             SendATCommand(sp, "AT+QURCCFG=\"urcport\",\"uart1\"");
-                            // Module được thiết lập để sử dụng chế độ "Auto Baud Rate Detection" (Tự động nhận diện tốc độ truyền).
-                            SendATCommand(sp, "AT+IPR=0");
+                            // Đặt mã ký tự về ASCII
+                            SendATCommand(sp, "AT+CSCS=\"GSM\"");
                             // Bật hoặc tắt chức năng Phát hiện thẻ SIM
                             SendATCommand(sp, "AT+QSIMDET=1,0");
                             // Kích hoạt chế độ thông báo sự kiện SIM
                             SendATCommand(sp, "AT+QSIMSTAT=1");
+                            // bật Presentation of Calling Line (điều chỉnh trạng thái caller).
+                            SendATCommand(sp, "AT+COLP=1");
+                            // bật báo trạng thái hiện tại của cuộc gọi.
+                            SendATCommand(sp, "AT+CLCC=1");
+                            // cấu hình để modem báo các mã lỗi cuộc gọi như BUSY, NO CARRIER, v.v.
+                            SendATCommand(sp, "ATX3");
                             // Lưu thay đổi
                             SendATCommand(sp, "AT&W");
-                            // Reset COM
-                            SendATCommand(sp, "AT+CFUN=1,1", 10000);
-                            // Đặt mã ký tự về ASCII
-                            SendATCommand(sp, "AT+CSCS=\"GSM\"");
-                            // Đặt module về chế độ Text Mode (ASCII)
-                            SendATCommand(sp, "AT+CMGF=1");
-                            // Nhận tin nhắn dưới dạng văn bản
-                            SendATCommand(sp, "AT+CNMI=2,2");
                             // lấy ICCID của sim
                             SendATCommand(sp, "AT+QCCID");
                         }
@@ -1430,43 +1432,6 @@ namespace LuckBurnTK
             }
         }
 
-        private void PopupPhatSinhCuoc_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
-        {
-        }
-
-        private void PopupResetSIM_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
-        {
-            int[] selectedHandles = gvCOM.GetSelectedRows();
-            foreach (int handle in selectedHandles)
-            {
-                if (gvCOM.GetRow(handle) is ComDto row)
-                {
-                    var sp = SerialPorts.FirstOrDefault(x => x.PortName == row.COM);
-                    if (sp == null) continue;
-                    _ = Task.Run(() =>
-                    {
-                        try
-                        {
-                            sp.DiscardInBuffer();
-                            sp.DiscardOutBuffer();
-                            if (sp.IsOpen)
-                            {
-                                sp.Close();
-                                Thread.Sleep(5000);
-                            }
-                            sp.Open();
-                            // lấy ICCID của sim
-                            SendATCommand(sp, "AT+QCCID");
-                        }
-                        catch (Exception ex)
-                        {
-                            logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
-                        }
-                    });
-                }
-            }
-        }
-
         private void BtnTotalRevenue_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             var report = new ReportTotal(ApiKey);
@@ -1504,7 +1469,6 @@ namespace LuckBurnTK
         //        MemoLog.AppendText($"{port}: {message}\r\n");
         //    }
         //}
-
 
         private IEnumerable<Dictionary<string, string>> CheckComOnline()
         {

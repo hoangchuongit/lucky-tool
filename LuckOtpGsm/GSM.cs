@@ -280,7 +280,6 @@ namespace LuckOTP
 
             // Lắng nghe change IMEI thành công
             ListenEventChangeIMEI(sp);
-
         }
 
         /// <summary>
