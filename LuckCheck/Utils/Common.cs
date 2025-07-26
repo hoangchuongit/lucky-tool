@@ -147,5 +147,18 @@ namespace LuckCheck.Utils
             return int.TryParse(cleaned, out int balance) ? balance : (int?)null;
         }
 
+        public static string ExtractValidPhoneNumberCall(string data)
+        {
+            // Regex tìm số trong dấu ngoặc kép
+            var match = Regex.Match(data, @"\+CLCC:[^""]*""([^""]+)""");
+            if (match.Success)
+            {
+                string phone = match.Groups[1].Value;
+                // Kiểm tra số có độ dài hợp lý và cho phép dấu +
+                if (phone.Length >= 8 && Regex.IsMatch(phone, @"^\+?\d+$"))
+                    return phone;
+            }
+            return null; // Không hợp lệ
+        }
     }
 }

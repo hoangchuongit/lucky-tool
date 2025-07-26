@@ -118,8 +118,6 @@ namespace LuckCheck
             {
                 if (sp == null) return;
                 if (!sp.IsOpen) sp.Open();
-                sp.DiscardInBuffer();
-                sp.DiscardOutBuffer();
                 SendATCommand(sp, "AT+IPR=115200");
                 // Khởi động lại modem mà không thay đổi các cài đặt, chỉ tái thiết lập kết nối hoặc trạng thái của modem.
                 SendATCommand(sp, "ATZ");
@@ -154,15 +152,11 @@ namespace LuckCheck
 
             MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
             //AppendLogToMemo(sp.PortName, MessageCOMs[sp.PortName]);
-            //Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
+            Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
             //logger.Info(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
 
-            // Có cuộc gọi đến thì cancel
-            if (MessageCOMs[sp.PortName].Contains("RING"))
-            {
-                SendATCommand(sp, "ATH");
-                MessageCOMs[sp.PortName] = string.Empty;
-            }
+            // Có cuộc gọi đến
+            ListenEventCallResponse(sp);
 
             // Lắng nghe trạng thái sim đã sẵn sàng để làm việc chưa?
             ListenEventSIMStatus(sp);
@@ -266,11 +260,11 @@ namespace LuckCheck
                                                 .Replace("AT+QCCID", "").Substring(0, 20),
                         "ICCID");
                     // Đặt module về chế độ Text Mode(ASCII)
-                    SendATCommand(sp, "AT+CMGF=1");
-                    // Nhận tin nhắn dưới dạng văn bản
-                    SendATCommand(sp, "AT+CNMI=2,2");
-                    Thread.Sleep(500);
-                    MessageCOMs[sp.PortName] = string.Empty;
+                    //SendATCommand(sp, "AT+CMGF=1");
+                    //// Nhận tin nhắn dưới dạng văn bản
+                    //SendATCommand(sp, "AT+CNMI=2,2");
+                    //Thread.Sleep(500);
+                    //MessageCOMs[sp.PortName] = string.Empty;
                     // Gửi AT lấy số điện thoại và thông tin tài khoản chính
                     SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15", 3000);
                 }
@@ -386,26 +380,32 @@ namespace LuckCheck
         }
 
         /// <summary>
-        /// Upload content đến thiết bị
+        /// Xử lý khi có cuộc gọi
         /// </summary>
         /// <param name="sp"></param>
-        private void UploadFileToDevice(SerialPort sp)
+        private void ListenEventCallResponse(SerialPort sp)
         {
-            var count = 0;
-            while (count < 2)
+            try
             {
-                try
+                var message = MessageCOMs[sp.PortName];
+                if (message.Contains("RING") && message.Contains("+CLCC:") && message.Contains("1,4,0,0,"))
                 {
-                }
-                catch (Exception)
-                {
-                    count += 1;
+                    logger.Info($"[{sp.PortName}] - MessageAll: {message}");
+                    var phoneCall = Common.ExtractValidPhoneNumberCall(message);
+                    if (!string.IsNullOrEmpty(phoneCall))
+                    {
+                        logger.Info($"[{sp.PortName}] - MessageAll: {message}");
+                        SendATCommand(sp, "ATH", 5000);
+                        MessageCOMs[sp.PortName] = string.Empty;
+                        // Hiển thị tin nhắn trong Message
+                        UpdateComData(sp.PortName, dto => dto.Message101 = $"Số điện thoại gọi đến: {phoneCall}", "Message101");
+                    }
                 }
             }
-            if (count >= 2)
+            catch (Exception ex)
             {
-                SendATCommand(sp, "AT+CFUN=1,1", 10000);
-                UploadFileToDevice(sp);
+                logger.Error($"[{sp.PortName}] - ListenEventCallResponse Error: {ex.Message}");
+                UpdateComData(sp.PortName, dto => dto.Message101 = $"Lỗi: Nhận cuộc gọi thất bại: {ex.Message}", "Message");
             }
         }
 

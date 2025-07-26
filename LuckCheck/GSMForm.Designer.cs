@@ -51,6 +51,7 @@
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.PopupResetCom = new DevExpress.XtraBars.BarButtonItem();
             this.PopupChangeIMEI = new DevExpress.XtraBars.BarButtonItem();
+            this.Popup101 = new DevExpress.XtraBars.BarButtonItem();
             this.repositoryItemTextEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.gcCOM = new DevExpress.XtraGrid.GridControl();
             this.gvCOM = new DevExpress.XtraGrid.Views.Grid.GridView();
@@ -64,7 +65,6 @@
             this.repositoryItemTextEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.TimerCheckSim = new System.Windows.Forms.Timer(this.components);
             this.popupMenu1 = new DevExpress.XtraBars.PopupMenu(this.components);
-            this.Popup101 = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gcCOM)).BeginInit();
@@ -236,6 +236,15 @@
             this.PopupChangeIMEI.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("PopupChangeIMEI.ImageOptions.LargeImage")));
             this.PopupChangeIMEI.Name = "PopupChangeIMEI";
             this.PopupChangeIMEI.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.PopupChangeIMEI_ItemClick);
+            // 
+            // Popup101
+            // 
+            this.Popup101.Caption = "*101#";
+            this.Popup101.Id = 29;
+            this.Popup101.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("Popup101.ImageOptions.Image")));
+            this.Popup101.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("Popup101.ImageOptions.LargeImage")));
+            this.Popup101.Name = "Popup101";
+            this.Popup101.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.Popup101_ItemClick);
             // 
             // repositoryItemTextEdit1
             // 
@@ -954,7 +963,7 @@
             // 
             // TimerCheckSim
             // 
-            this.TimerCheckSim.Interval = 10000;
+            this.TimerCheckSim.Interval = 15000;
             this.TimerCheckSim.Tick += new System.EventHandler(this.TimerCheckSim_Tick);
             // 
             // popupMenu1
@@ -965,15 +974,6 @@
             new DevExpress.XtraBars.LinkPersistInfo(this.PopupChangeIMEI)});
             this.popupMenu1.Manager = this.barManager;
             this.popupMenu1.Name = "popupMenu1";
-            // 
-            // Popup101
-            // 
-            this.Popup101.Caption = "*101#";
-            this.Popup101.Id = 29;
-            this.Popup101.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("Popup101.ImageOptions.Image")));
-            this.Popup101.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("Popup101.ImageOptions.LargeImage")));
-            this.Popup101.Name = "Popup101";
-            this.Popup101.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.Popup101_ItemClick);
             // 
             // GSMForm
             // 
