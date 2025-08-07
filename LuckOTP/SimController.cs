@@ -36,7 +36,7 @@ namespace LuckOTP.Repositories
             {
                 string jsonData = JsonConvert.SerializeObject(req);
                 var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync("sms-call-center/get-prefix-number", content);
+                var response = await _httpClient.PostAsync("sim/upsert-sim", content);
                 return response.IsSuccessStatusCode;
             }
             catch (Exception ex)
@@ -45,42 +45,6 @@ namespace LuckOTP.Repositories
                 throw ex;
             }
         }
-
-        ///// <summary>
-        ///// Xử lý khi nhận được OTP từ nhà mạng
-        ///// </summary>
-        ///// <param name="obj"></param>
-        ///// <param name="simDisable"></param>
-        ///// <returns></returns>
-        //public string UpdateOtpTransaction(string phone_number, string supplier_id, string message, string otp)
-        //{
-        //    var query = "SELECT update_otp_transaction_voice(@phone_number, @supplier_id, @message, @otp);";
-        //    logger.Error($"phone_number: {phone_number} - supplier_id: {supplier_id} - message: {message} - otp: {otp}");
-        //    logger.Error($"SELECT update_otp_transaction_voice({phone_number}, {supplier_id}, {message}, {otp});");
-        //    try
-        //    {
-        //        using (var connection = new NpgsqlConnection(Utils.Common.connectionString))
-        //        {
-        //            connection.Open();
-        //            using (var command = new NpgsqlCommand(query, connection))
-        //            {
-        //                command.Parameters.AddWithValue("@phone_number", NpgsqlTypes.NpgsqlDbType.Text, phone_number);
-        //                command.Parameters.AddWithValue("@supplier_id", Guid.Parse(supplier_id));
-        //                command.Parameters.AddWithValue("@message", NpgsqlTypes.NpgsqlDbType.Text, message);
-        //                command.Parameters.AddWithValue("@otp", NpgsqlTypes.NpgsqlDbType.Text, otp);
-
-        //                // Kiểm tra kết quả trả về từ function
-        //                var result = command.ExecuteScalar();
-        //                return result?.ToString();
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        logger.Error($"UpdateOtpTransaction An error occurred: {ex.Message}");
-        //        return null;
-        //    }
-        //}
 
         //public string UpdateOtpTransaction(string phone_number, string supplier_id, string brandName, string message, string otp)
         //{

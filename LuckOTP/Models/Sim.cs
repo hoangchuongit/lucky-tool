@@ -6,7 +6,7 @@ namespace LuckOTP.Model
     {
         public string iccid { get; set; }
         public string phone_number { get; set; }
-        public sim_status_enum sim_status { get; set; }
+        public string sim_status { get; set; }
     }
 
     public enum sim_status_enum

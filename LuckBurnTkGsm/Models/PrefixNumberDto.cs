@@ -88,7 +88,7 @@ namespace LuckBurnTK.Models
             public bool result { get; set; }
         }
 
-        public class VMGSmsReq
+        public class SmsReq
         {
             public string request_id { get; set; }
             public string history_id { get; set; }
@@ -123,6 +123,11 @@ namespace LuckBurnTK.Models
         {
             public string history_id { get; set; }
             public string message { get; set; }
+
+            // Dùng cho đầu 7x39
+            public string request_id { get; set; }
+            public string prefix { get; set; }
+            public string prefix_unit { get; set; }
         }
     }
 }

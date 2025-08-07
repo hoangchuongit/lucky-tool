@@ -35,9 +35,6 @@ namespace LuckOTP
         /// Lịch sử các tin nhắn của từng cổng COM
         private readonly ConcurrentDictionary<string, string> MessageCOMs = new ConcurrentDictionary<string, string>();
 
-        /// Danh sách cổng COM đang ghi âm
-        private readonly ConcurrentDictionary<string, CallDetail> RecordingPorts = new ConcurrentDictionary<string, CallDetail>();
-
         /// Nội dung ghi âm của từng cổng COM
         private readonly ConcurrentDictionary<string, byte[]> RecordingCOMs = new ConcurrentDictionary<string, byte[]>();
 
@@ -123,13 +120,9 @@ namespace LuckOTP
                 {
                     COM = sp.PortName,
                     STT = ComConfigManager.GetOrAssignSTT(sp.PortName, true),
-                    DeviceID = deviceID,
                     ICCID = string.Empty,
                     PhoneNumber = string.Empty,
-                    TKChinh = 0,
                     Message101 = string.Empty,
-                    Message = string.Empty,
-                    IsFinish = false
                 };
                 ComDataGrid.Add(data);
             }
@@ -205,7 +198,7 @@ namespace LuckOTP
             // Kiểm tra nếu cổng COM nằm trong danh sách ghi âm và kết thúc cuộc gọi thì lưu lại file .amr
             if (MessageCOMs[sp.PortName].Contains("+QFDWL:") && MessageCOMs[sp.PortName].Contains("\r\nCONNECT\r\n"))
             {
-                if (RecordingPorts.ContainsKey(sp.PortName) && RecordingCOMs.ContainsKey(sp.PortName))
+                if (RecordingCOMs.ContainsKey(sp.PortName))
                     SaveRecord(sp);
             }
 
@@ -221,9 +214,6 @@ namespace LuckOTP
 
             // Lắng nghe để lấy số serial SIM
             ListenEventICCID(sp);
-
-            // Lắng nghe để lấy thông tin nhà mạng
-            ListenEventTelecom(sp);
 
             // Lắng nghe để lấy thông tin Số điện thoại
             ListenEventPhoneNumber(sp);
@@ -242,8 +232,8 @@ namespace LuckOTP
             if (sp.IsOpen) sp.Close();
             UpdateComData(sp.PortName, dto =>
             {
-                dto.PhoneNumber = string.Empty; dto.TKChinh = 0; dto.Message101 = ""; dto.Message = ""; dto.IsFinish = true;
-            }, "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish");
+                dto.PhoneNumber = string.Empty; dto.Message101 = "";
+            }, "PhoneNumber", "Message101");
         }
 
         /// <summary>
@@ -269,12 +259,8 @@ namespace LuckOTP
                     {
                         dto.ICCID = string.Empty;
                         dto.PhoneNumber = string.Empty;
-                        dto.TKChinh = 0;
                         dto.Message101 = string.Empty;
-                        dto.Message = string.Empty;
-                        dto.IsFinish = false;
-                        dto.Telecom = string.Empty;
-                    }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish", "Telecom");
+                    }, "ICCID", "PhoneNumber", "Message101");
                 }
                 catch (Exception ex)
                 {
@@ -326,43 +312,13 @@ namespace LuckOTP
                     SendATCommand(sp, "AT+CMGF=1");
                     // Nhận tin nhắn dưới dạng văn bản
                     SendATCommand(sp, "AT+CNMI=2,2");
-                    // Gửi AT lấy thông tin nhà mạng
-                    SendATCommand(sp, "AT+COPS?");
-                }
-            }
-            catch (Exception)
-            {
-                UpdateComData(sp.PortName, dto => dto.ICCID = string.Empty, "ICCID");
-            }
-        }
-
-        /// <summary>
-        /// Khi lấy được thông tin nhà mạng
-        /// </summary>
-        /// <param name="sp"></param>
-        private void ListenEventTelecom(SerialPort sp)
-        {
-            try
-            {
-                var content = MessageCOMs[sp.PortName];
-                if (content.Contains("+COPS:") && content.Contains("\nOK"))
-                {
-                    var mess = MessageCOMs[sp.PortName].AT_Command("AT+COPS?").ToLower();
-                    MessageCOMs[sp.PortName] = string.Empty;
-                    string provider = "";
-                    if (mess.Contains("viettel")) provider = "Viettel";
-                    else if (mess.Contains("mobifone")) provider = "Mobifone";
-                    else if (mess.Contains("vinaphone")) provider = "Vinaphone";
-                    else if (mess.Contains("vietnamobile")) provider = "VietnamMobile";
-                    else provider = "Other";
-                    UpdateComData(sp.PortName, dto => dto.Telecom = provider, "Telecom");
-                    // Gửi AT lấy số điện thoại và thông tin tài khoản chính
+                    // Gửi AT lấy số điện thoại
                     SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                 }
             }
             catch (Exception)
             {
-                UpdateComData(sp.PortName, dto => dto.Telecom = "Unknown", "Telecom");
+                UpdateComData(sp.PortName, dto => dto.ICCID = string.Empty, "ICCID");
             }
         }
 
@@ -384,18 +340,20 @@ namespace LuckOTP
                     mess = mess.Substring(mess.IndexOf("+CUSD")).ToLower().Replace("du lieu", " du lieu ");
                     if (mess.Split(',').Length <= 0 && mess.Split('\"').Length <= 1) return;
                     var mess2 = mess.Split('\"')[1];
-                    UpdateComData(sp.PortName, dto => dto.Message101 = mess2, "Message101");
                     // Lấy số điện thoại từ tin nhắn gửi về
                     var phoneStr = mess2.Replace("\"", string.Empty);
                     if (string.IsNullOrEmpty(phoneStr)) return;
                     var phone = Common.GetPhoneNumber(phoneStr);
                     if (string.IsNullOrEmpty(phone)) return;
+                    // Cập nhật gridview
+                    UpdateComData(sp.PortName, dto => { dto.PhoneNumber = phone; dto.Message101 = mess2; }, "PhoneNumber", "Message101");
+                    // Cập nhật database
                     var item = ComDataGrid.FirstOrDefault(dto => dto.COM == sp.PortName);
                     await simController.UpsertSim(new Model.Sim()
                     {
                         phone_number = phone,
                         iccid = item.ICCID.ToString(),
-                        sim_status = Model.sim_status_enum.SIM_INSERTED
+                        sim_status = Model.sim_status_enum.SIM_INSERTED.ToString()
                     });
                 }
             }
@@ -540,16 +498,10 @@ namespace LuckOTP
                 {
                     var sortedData = new BindingList<ComDto>(newDataSource.OrderBy(x => !string.IsNullOrEmpty(x.STT) ? int.Parse(x.STT) : -1).ToList());
                     ComDataGrid.Clear();
-                    List<string> deviceIDs = new List<string>();
                     foreach (var item in sortedData)
                     {
                         ComDataGrid.Add(item);
-                        if (item.STT == "") continue;
-                        deviceIDs.Add(item.DeviceID);
                     }
-                    var COMs = string.Join(",", deviceIDs);
-                    Properties.Settings.Default.COMs = COMs;
-                    Properties.Settings.Default.Save();
                     XtraMessageBox.Show("Đã cập nhật STT cổng COM", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
@@ -591,7 +543,7 @@ namespace LuckOTP
                             SendATCommand(sp, "AT+EGMR=1,7,\"" + Common.GenerateIMEI() + "\"\r\n");
                             UpdateComData(sp.PortName, dto =>
                             {
-                                dto.Message101 = "Đổi IMEI cổng COM..."; dto.Message = "";
+                                dto.Message101 = "Đổi IMEI cổng COM...";
                             }, "Message101", "Message");
                         }
                         catch (Exception ex)
@@ -623,10 +575,8 @@ namespace LuckOTP
                             {
                                 dto.ICCID = string.Empty;
                                 dto.PhoneNumber = string.Empty;
-                                dto.TKChinh = 0;
                                 dto.Message101 = "Reset cổng COM";
-                                dto.Message = "";
-                            }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message");
+                            }, "ICCID", "PhoneNumber", "Message101");
                             SendATCommand(sp, "AT+QURCCFG=\"urcport\",\"uart1\"");
                             // Module được thiết lập để sử dụng chế độ "Auto Baud Rate Detection" (Tự động nhận diện tốc độ truyền).
                             SendATCommand(sp, "AT+IPR=0");
@@ -672,10 +622,8 @@ namespace LuckOTP
                             {
                                 dto.ICCID = string.Empty;
                                 dto.PhoneNumber = string.Empty;
-                                dto.TKChinh = 0;
                                 dto.Message101 = "Khôi phục cài đặt gốc cổng COM";
-                                dto.Message = "";
-                            }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message");
+                            }, "ICCID", "PhoneNumber", "Message101");
                             SendATCommand(sp, "AT&F", 60000);
                             //
                             SendATCommand(sp, "AT+QURCCFG=\"urcport\",\"uart1\"");
@@ -730,16 +678,26 @@ namespace LuckOTP
                         logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
                         UpdateComData(sp.PortName, dto =>
                         {
-                            dto.ICCID = "COM ERROR";
-                            dto.PhoneNumber = "COM ERROR";
-                            dto.TKChinh = 0;
+                            dto.ICCID = string.Empty;
+                            dto.PhoneNumber = string.Empty;
                             dto.Message101 = "COM ERROR. Đảm bảo các cổng COM không có dấu chấm than. This PC > Manager > Device Manager > Ports (COM & LPT)";
-                            dto.Message = "COM ERROR";
-                            dto.IsFinish = true;
-                            dto.Telecom = "COM ERROR";
-                        }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish", "Telecom");
+                        }, "ICCID", "PhoneNumber", "Message101");
                     }
                 });
+            }
+        }
+
+        private void TimerSyncDB_Tick(object sender, EventArgs e)
+        {
+
+            try
+            {
+                var simItems = ComDataGrid.Where(item => !string.IsNullOrEmpty(item.PhoneNumber) && item.PhoneNumber != "COM ERROR").Select(x => x.PhoneNumber).ToList();
+                if (simItems.Count > 0) simController.UpsertTimeSimInsert(string.Join(",", simItems), AccountId);
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"TimeSyncDB_Tick Error: {ex.Message}");
             }
         }
 
@@ -805,5 +763,6 @@ namespace LuckOTP
                 logger.Error($"[{sp.PortName}] SendATCommand: {ex.Message}");
             }
         }
+
     }
 }

@@ -16,7 +16,7 @@ namespace LuckOTP.Utils
         public static string UrlBurnAPI = "https://emailreal.com/api/";
 #else
         public static string UrlBurnAUTH = "http://localhost:3001/auth/";
-        public static string UrlBurnAPI = "http://localhost:3000/api/";
+        public static string UrlBurnAPI = "http://localhost:3000/";
 #endif
 
         private static readonly Random _random = new Random();

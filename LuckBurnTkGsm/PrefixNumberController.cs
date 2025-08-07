@@ -216,13 +216,13 @@ namespace LuckBurnTK
         /// </summary>
         /// <param name="req"></param>
         /// <returns></returns>
-        public async Task<bool> UpdateVMGsms(VMGSmsReq req)
+        public async Task<bool> UpdateSms(SmsReq req)
         {
             try
             {
                 string jsonData = JsonConvert.SerializeObject(req);
                 var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync("sms-call-center/vmg-sms", content);
+                var response = await _httpClient.PostAsync("sms-call-center/sms", content);
                 return response.IsSuccessStatusCode;
             }
             catch (Exception ex)

@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BurnTKForm));
             DevExpress.Utils.SuperToolTip superToolTip5 = new DevExpress.Utils.SuperToolTip();
             DevExpress.Utils.ToolTipItem toolTipItem5 = new DevExpress.Utils.ToolTipItem();
             DevExpress.Utils.SuperToolTip superToolTip6 = new DevExpress.Utils.SuperToolTip();
@@ -38,6 +37,7 @@
             DevExpress.Utils.ToolTipItem toolTipItem7 = new DevExpress.Utils.ToolTipItem();
             DevExpress.Utils.SuperToolTip superToolTip8 = new DevExpress.Utils.SuperToolTip();
             DevExpress.Utils.ToolTipItem toolTipItem8 = new DevExpress.Utils.ToolTipItem();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BurnTKForm));
             this.barManager = new DevExpress.XtraBars.BarManager(this.components);
             this.mainToolBar = new DevExpress.XtraBars.Bar();
             this.barSubItem1 = new DevExpress.XtraBars.BarSubItem();
@@ -382,16 +382,16 @@
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager;
             this.barDockControlTop.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.barDockControlTop.Size = new System.Drawing.Size(1594, 27);
+            this.barDockControlTop.Size = new System.Drawing.Size(1438, 27);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 852);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 854);
             this.barDockControlBottom.Manager = this.barManager;
             this.barDockControlBottom.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.barDockControlBottom.Size = new System.Drawing.Size(1594, 29);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1438, 29);
             // 
             // barDockControlLeft
             // 
@@ -400,16 +400,16 @@
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 27);
             this.barDockControlLeft.Manager = this.barManager;
             this.barDockControlLeft.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 825);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 827);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1594, 27);
+            this.barDockControlRight.Location = new System.Drawing.Point(1438, 27);
             this.barDockControlRight.Manager = this.barManager;
             this.barDockControlRight.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 825);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 827);
             // 
             // PopupResetCom
             // 
@@ -474,7 +474,7 @@
             this.panelControl1.Location = new System.Drawing.Point(0, 27);
             this.panelControl1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.panelControl1.Name = "panelControl1";
-            this.panelControl1.Size = new System.Drawing.Size(1594, 56);
+            this.panelControl1.Size = new System.Drawing.Size(1438, 56);
             this.panelControl1.TabIndex = 4;
             // 
             // label1
@@ -482,10 +482,10 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.Font = new System.Drawing.Font("Cascadia Code", 10F, System.Drawing.FontStyle.Bold);
             this.label1.ForeColor = System.Drawing.Color.DarkRed;
-            this.label1.Location = new System.Drawing.Point(1166, 9);
+            this.label1.Location = new System.Drawing.Point(1010, 8);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(414, 39);
+            this.label1.Size = new System.Drawing.Size(414, 40);
             this.label1.TabIndex = 6;
             this.label1.Text = "* Lưu lượng giới hạn trong khoảng thời gian 23h đến 5h sáng";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -494,7 +494,7 @@
             // 
             this.labelControl3.Appearance.Font = new System.Drawing.Font("Verdana", 18F, System.Drawing.FontStyle.Bold);
             this.labelControl3.Appearance.Options.UseFont = true;
-            this.labelControl3.Location = new System.Drawing.Point(292, 12);
+            this.labelControl3.Location = new System.Drawing.Point(278, 13);
             this.labelControl3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.labelControl3.Name = "labelControl3";
             this.labelControl3.Size = new System.Drawing.Size(298, 29);
@@ -507,7 +507,7 @@
             this.labelControl2.Appearance.ForeColor = System.Drawing.Color.Red;
             this.labelControl2.Appearance.Options.UseFont = true;
             this.labelControl2.Appearance.Options.UseForeColor = true;
-            this.labelControl2.Location = new System.Drawing.Point(217, 12);
+            this.labelControl2.Location = new System.Drawing.Point(212, 13);
             this.labelControl2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.labelControl2.Name = "labelControl2";
             this.labelControl2.Size = new System.Drawing.Size(58, 29);
@@ -529,11 +529,11 @@
             this.BtnStartBurn.ImageOptions.AllowGlyphSkinning = DevExpress.Utils.DefaultBoolean.False;
             this.BtnStartBurn.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("BtnStartBurn.ImageOptions.Image")));
             this.BtnStartBurn.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
-            this.BtnStartBurn.Location = new System.Drawing.Point(662, 9);
+            this.BtnStartBurn.Location = new System.Drawing.Point(634, 8);
             this.BtnStartBurn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.BtnStartBurn.Name = "BtnStartBurn";
             this.BtnStartBurn.Padding = new System.Windows.Forms.Padding(6, 0, 0, 0);
-            this.BtnStartBurn.Size = new System.Drawing.Size(175, 39);
+            this.BtnStartBurn.Size = new System.Drawing.Size(140, 40);
             this.BtnStartBurn.TabIndex = 2;
             this.BtnStartBurn.Text = "BURN";
             this.BtnStartBurn.ToolTip = "Khởi động lại burn cho các cổng COM đang dừng";
@@ -542,7 +542,7 @@
             // txtMinAccountControl
             // 
             this.txtMinAccountControl.EditValue = "";
-            this.txtMinAccountControl.Location = new System.Drawing.Point(63, 9);
+            this.txtMinAccountControl.Location = new System.Drawing.Point(57, 10);
             this.txtMinAccountControl.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.txtMinAccountControl.Name = "txtMinAccountControl";
             this.txtMinAccountControl.Properties.Appearance.Font = new System.Drawing.Font("Verdana", 18F, System.Drawing.FontStyle.Bold);
@@ -566,7 +566,7 @@
             // 
             this.labelControl1.Appearance.Font = new System.Drawing.Font("Verdana", 18F, System.Drawing.FontStyle.Bold);
             this.labelControl1.Appearance.Options.UseFont = true;
-            this.labelControl1.Location = new System.Drawing.Point(14, 12);
+            this.labelControl1.Location = new System.Drawing.Point(13, 13);
             this.labelControl1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.labelControl1.Name = "labelControl1";
             this.labelControl1.Size = new System.Drawing.Size(36, 29);
@@ -584,7 +584,7 @@
             this.gcCOM.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemComboBox1,
             this.repositoryItemTextEdit2});
-            this.gcCOM.Size = new System.Drawing.Size(1594, 769);
+            this.gcCOM.Size = new System.Drawing.Size(1438, 771);
             this.gcCOM.TabIndex = 0;
             this.gcCOM.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gvCOM});
@@ -1339,7 +1339,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1594, 881);
+            this.ClientSize = new System.Drawing.Size(1438, 883);
             this.Controls.Add(this.gcCOM);
             this.Controls.Add(this.panelControl1);
             this.Controls.Add(this.barDockControlLeft);

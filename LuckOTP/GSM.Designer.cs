@@ -28,17 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            DevExpress.Utils.SuperToolTip superToolTip9 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem9 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip10 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem10 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip11 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem11 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip12 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem12 = new DevExpress.Utils.ToolTipItem();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GSM));
-            DevExpress.Utils.SuperToolTip superToolTip1 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem1 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip2 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem2 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip3 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem3 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip4 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem4 = new DevExpress.Utils.ToolTipItem();
-            this.barManager = new DevExpress.XtraBars.BarManager(this.components);
+            this.barManager = new DevExpress.XtraBars.BarManager();
             this.mainToolBar = new DevExpress.XtraBars.Bar();
             this.btnComSettingDropDown = new DevExpress.XtraBars.BarSubItem();
             this.btnUpdateComPort = new DevExpress.XtraBars.BarButtonItem();
@@ -59,13 +58,13 @@
             this.repositoryItemComboBox1 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.ICCID = new DevExpress.XtraGrid.Columns.GridColumn();
             this.PhoneNumber = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.UseTotal = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Message101 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemTextEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
-            this.TimerCheckSim = new System.Windows.Forms.Timer(this.components);
+            this.TimerCheckSim = new System.Windows.Forms.Timer();
             this.guide1 = new DevExpress.Utils.VisualEffects.Guide();
             this.Message = new DevExpress.XtraGrid.Columns.GridColumn();
             this.TKChinh = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.TimerSyncDB = new System.Windows.Forms.Timer();
             ((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gcCOM)).BeginInit();
@@ -144,9 +143,9 @@
             this.btnUpdateComPort.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnUpdateComPort.ItemAppearance.Normal.Options.UseFont = true;
             this.btnUpdateComPort.Name = "btnUpdateComPort";
-            toolTipItem1.Text = "Cập nhật lại số thứ tự cổng COM";
-            superToolTip1.Items.Add(toolTipItem1);
-            this.btnUpdateComPort.SuperTip = superToolTip1;
+            toolTipItem9.Text = "Cập nhật lại số thứ tự cổng COM";
+            superToolTip9.Items.Add(toolTipItem9);
+            this.btnUpdateComPort.SuperTip = superToolTip9;
             this.btnUpdateComPort.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnUpdateComPort_ItemClick);
             // 
             // btnResetComPort
@@ -158,9 +157,9 @@
             this.btnResetComPort.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnResetComPort.ItemAppearance.Normal.Options.UseFont = true;
             this.btnResetComPort.Name = "btnResetComPort";
-            toolTipItem2.Text = "Đặt lại số thứ tự cổng COM";
-            superToolTip2.Items.Add(toolTipItem2);
-            this.btnResetComPort.SuperTip = superToolTip2;
+            toolTipItem10.Text = "Đặt lại số thứ tự cổng COM";
+            superToolTip10.Items.Add(toolTipItem10);
+            this.btnResetComPort.SuperTip = superToolTip10;
             this.btnResetComPort.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnResetComPort_ItemClick);
             // 
             // btnChangeIMEI
@@ -183,9 +182,9 @@
             this.btnResetCom.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnResetCom.ItemAppearance.Normal.Options.UseFont = true;
             this.btnResetCom.Name = "btnResetCom";
-            toolTipItem3.Text = "Reset lại cổng COM";
-            superToolTip3.Items.Add(toolTipItem3);
-            this.btnResetCom.SuperTip = superToolTip3;
+            toolTipItem11.Text = "Reset lại cổng COM";
+            superToolTip11.Items.Add(toolTipItem11);
+            this.btnResetCom.SuperTip = superToolTip11;
             this.btnResetCom.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnResetCom_ItemClick);
             // 
             // btnRestoreSettings
@@ -197,9 +196,9 @@
             this.btnRestoreSettings.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnRestoreSettings.ItemAppearance.Normal.Options.UseFont = true;
             this.btnRestoreSettings.Name = "btnRestoreSettings";
-            toolTipItem4.Text = "Khôi phục lại cài đặt mặc định";
-            superToolTip4.Items.Add(toolTipItem4);
-            this.btnRestoreSettings.SuperTip = superToolTip4;
+            toolTipItem12.Text = "Khôi phục lại cài đặt mặc định";
+            superToolTip12.Items.Add(toolTipItem12);
+            this.btnRestoreSettings.SuperTip = superToolTip12;
             this.btnRestoreSettings.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnRestoreSettings_ItemClick);
             // 
             // barDockControlTop
@@ -286,7 +285,6 @@
             this.STT,
             this.ICCID,
             this.PhoneNumber,
-            this.UseTotal,
             this.Message101});
             this.gvCOM.GridControl = this.gcCOM;
             this.gvCOM.Name = "gvCOM";
@@ -915,27 +913,6 @@
             this.PhoneNumber.VisibleIndex = 3;
             this.PhoneNumber.Width = 110;
             // 
-            // UseTotal
-            // 
-            this.UseTotal.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
-            this.UseTotal.AppearanceCell.Options.UseFont = true;
-            this.UseTotal.AppearanceCell.Options.UseTextOptions = true;
-            this.UseTotal.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-            this.UseTotal.AppearanceCell.TextOptions.WordWrap = DevExpress.Utils.WordWrap.Wrap;
-            this.UseTotal.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold);
-            this.UseTotal.AppearanceHeader.Options.UseFont = true;
-            this.UseTotal.AppearanceHeader.Options.UseTextOptions = true;
-            this.UseTotal.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.UseTotal.Caption = "Số lần SD";
-            this.UseTotal.FieldName = "UseTotal";
-            this.UseTotal.Name = "UseTotal";
-            this.UseTotal.OptionsColumn.AllowEdit = false;
-            this.UseTotal.OptionsColumn.AllowSize = false;
-            this.UseTotal.OptionsColumn.AllowSort = DevExpress.Utils.DefaultBoolean.False;
-            this.UseTotal.OptionsColumn.FixedWidth = true;
-            this.UseTotal.Visible = true;
-            this.UseTotal.VisibleIndex = 4;
-            // 
             // Message101
             // 
             this.Message101.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
@@ -949,7 +926,7 @@
             this.Message101.Name = "Message101";
             this.Message101.OptionsColumn.AllowEdit = false;
             this.Message101.Visible = true;
-            this.Message101.VisibleIndex = 5;
+            this.Message101.VisibleIndex = 4;
             this.Message101.Width = 707;
             // 
             // repositoryItemTextEdit2
@@ -1011,6 +988,11 @@
             this.TKChinh.OptionsFilter.AllowFilter = false;
             this.TKChinh.Width = 80;
             // 
+            // TimerSyncDB
+            // 
+            this.TimerSyncDB.Interval = 120000;
+            this.TimerSyncDB.Tick += new System.EventHandler(this.TimerSyncDB_Tick);
+            // 
             // GSM
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1026,7 +1008,7 @@
             this.LookAndFeel.UseDefaultLookAndFeel = false;
             this.Name = "GSM";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Luck Burn";
+            this.Text = "Luck OTP";
             this.Load += new System.EventHandler(this.BurnTKForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.barManager)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).EndInit();
@@ -1068,6 +1050,6 @@
         private DevExpress.Utils.VisualEffects.Guide guide1;
         private DevExpress.XtraGrid.Columns.GridColumn Message;
         private DevExpress.XtraGrid.Columns.GridColumn TKChinh;
-        private DevExpress.XtraGrid.Columns.GridColumn UseTotal;
+        private System.Windows.Forms.Timer TimerSyncDB;
     }
 }
