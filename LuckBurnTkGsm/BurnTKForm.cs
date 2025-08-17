@@ -170,6 +170,8 @@ namespace LuckBurnTK
                 SendATCommand(sp, "ATX3");
                 // Lưu thay đổi
                 SendATCommand(sp, "AT&W");
+                // Modem
+                //SendATCommand(sp, "ATI");
                 // lấy ICCID của sim
                 SendATCommand(sp, "AT+QCCID");
             }
@@ -195,7 +197,8 @@ namespace LuckBurnTK
 
             MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
             //AppendLogToMemo(sp.PortName, MessageCOMs[sp.PortName]);
-            Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
+            //if (sp.PortName == "COM273")
+            //Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
             //logger.Info(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
 
             // Nếu cổng COM chưa nằm trong danh sách ghi âm thì bổ sung vào danh sách. Nếu đã có thì ghi nối tiếp dữ liệu
@@ -296,6 +299,14 @@ namespace LuckBurnTK
                 sp.DiscardOutBuffer();
                 try
                 {
+                    // loại bỏ dữ liệu sms cũ của cổng COM
+                    if (SMSPorts.ContainsKey(sp.PortName)) SMSPorts.TryRemove(sp.PortName, out _);
+                    // loại bỏ dữ liệu ghi âm cũ của cổng COM
+                    if (RecordingPorts.ContainsKey(sp.PortName))
+                    {
+                        RecordingPorts.TryRemove(sp.PortName, out _);
+                        RecordingCOMs.TryRemove(sp.PortName, out _);
+                    }
                     UpdateComData(sp.PortName, dto =>
                     {
                         dto.ICCID = string.Empty;
@@ -464,11 +475,11 @@ namespace LuckBurnTK
                 var oldTKC = ComDataGrid.FirstOrDefault(x => x.COM == sp.PortName)?.TKChinh ?? 0;
                 int? tkchinh = Common.ExtractBalance(mess);
                 int currentTKC = (int)(tkchinh.HasValue ? tkchinh : 0);
-                if (currentTKC == 0 || currentTKC == oldTKC)
-                {
-                    UpdateComData(sp.PortName, dto => { dto.Message = $"Stop burn"; dto.IsFinish = true; }, "Message", "IsFinish");
-                    return;
-                }
+                //if (currentTKC == 0 || currentTKC == oldTKC)
+                //{
+                //    UpdateComData(sp.PortName, dto => { dto.Message = $"Stop burn"; dto.IsFinish = true; }, "Message", "IsFinish");
+                //    return;
+                //}
                 // Cập nhật tài khoản chính và số điện thoại trên gridview
                 UpdateComData(sp.PortName, dto =>
                 {
@@ -528,6 +539,8 @@ namespace LuckBurnTK
                     }
                 }
 
+                //if (sp.PortName != "COM273") return;
+
                 // Gọi API để lấy ra đầu số call hoặc sms và các thông tin cần để xử lý
                 var prefixSmsReq = new GetPrefixSmsReq()
                 {
@@ -539,8 +552,8 @@ namespace LuckBurnTK
                 var prefixSmsRes = await _prefixController.GetPrefixNumber(prefixSmsReq);
                 if (prefixSmsRes == null)
                 {
-                    // Nếu null nghĩa là dịch vụ đang full các đầu số, chờ 2 phút sau thử lại
-                    Thread.Sleep(120000);
+                    // Nếu null nghĩa là dịch vụ đang full các đầu số, chờ 30s sau thử lại
+                    Thread.Sleep(30000);
                     // Gửi AT lấy số điện thoại và thông tin tài khoản chính
                     SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                     return;
@@ -571,11 +584,23 @@ namespace LuckBurnTK
                         prefix_unit = prefixSmsRes.prefix_unit,
                         request_id = prefixSmsRes.request_id,
                         history_id = prefixSmsRes.history_id.ToString(),
+                        start_time = DateTime.Now
                     });
                     //Send message
-                    sp.WriteLine($"AT+CMGS=\"{prefixSmsRes.prefix}\"");
+                    //sp.Write($"AT+CMGS=\"{prefixSmsRes.prefix}\"\r");
+                    //Thread.Sleep(2000);
+                    //sp.Write($"{prefixSmsRes.message}{char.ConvertFromUtf32(26)}");
+                    ////sp.Write(new byte[] { 0x1A }, 0, 1);
+                    //Thread.Sleep(500);
+                    var prefix = prefixSmsRes.prefix;
+                    if (prefix.IndexOf("9029_NAP") > -1)
+                        prefix = "9029";
+                    sp.Write($"AT+CMGS=\"{prefix}\"\r");
+                    Thread.Sleep(800);
+                    sp.Write($"{prefixSmsRes.message}{(char)26}");
                     Thread.Sleep(500);
-                    SendATCommand(sp, $"{prefixSmsRes.message}{(char)26}", 500);
+                    sp.Write(new byte[] { 0x1A }, 0, 1);
+                    Thread.Sleep(500);
                 }
             }
             catch (Exception ex)
@@ -595,7 +620,7 @@ namespace LuckBurnTK
             {
                 var content = MessageCOMs[sp.PortName];
                 // Phản hồi từ dịch vụ 2Friends chuyển tiền
-                if (content.Contains("+CMT: \"222\""))
+                if (content.Contains("+CMT: \"222\"") || content.Contains("+CMT: \"+222\""))
                 {
                     // Trường hợp đã đăng ký 2Frineds trước đó thì gửi lại lệnh DMK để lấy lại mật khẩu mới
                     if (content.Contains("Quy Khach da dang ky su dung dich vu 2Friends."))
@@ -659,7 +684,7 @@ namespace LuckBurnTK
                         SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                     }
                 }
-                else if (content.Contains("+CMT: \"7539\""))
+                else if (content.Contains("+CMT: \"7539\"") || content.Contains("+CMT: \"+7539\""))
                 {
                     if (content.Contains("Da kich hoat so dien thoai thanh cong"))
                     {
@@ -684,7 +709,7 @@ namespace LuckBurnTK
                         // Tiếp tục đốt
                         SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                     }
-                    else if(content.Contains("Khong the su dung so dien thoai nay"))
+                    else if (content.Contains("Khong the su dung so dien thoai nay"))
                     {
                         MessageCOMs[sp.PortName] = string.Empty;
                         if (SMSPorts.ContainsKey(sp.PortName))
@@ -702,10 +727,35 @@ namespace LuckBurnTK
                             await _prefixController.UpdateSms(releaseSlotReq);
                         }
                         SMSPorts.TryRemove(sp.PortName, out _);
-                        // Dừng 5s
+                        // Dừng 10s
                         Thread.Sleep(10000);
                         // Tiếp tục đốt
                         SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
+                    }
+                }
+                else if (content.Contains("+CMT: \"9029\"") || content.Contains("+CMT: \"+9029\""))
+                {
+                    Console.WriteLine(content, "content");
+                    //" Ban da thanh toan thanh cong giao dich  Ten giao dich: VMG_KV_vmgmedia  Ma giao dich: VMG_2025081214571109594  So tien: 1000 VND  Noi dung: Da nhan thong tin"
+                    int startIndex = content.IndexOf("+CMT");
+                    if (startIndex == -1) return;
+                    var messSplit = content.Substring(startIndex).Split(',');
+                    if (messSplit.Length >= 3)
+                    {
+                        var messContent = string.Join(",", messSplit.Skip(2)).Split('"');
+                        if (messContent.Length >= 3 && !string.IsNullOrEmpty(messContent[2]))
+                        {
+                            var brandName = messSplit[0].Replace("+CMT: \"", "").Replace("\"", "").Trim();
+                            var messData = messContent[2].Replace("\r\n","").Replace("AT+CMGS=", "");
+                            var checkUTF16 = Common.IsValidUtf16(messData);
+                            if (checkUTF16) messData = Common.DecodeUnicode(messData);
+                            MessageCOMs[sp.PortName] = string.Empty;
+                            //Console.WriteLine(messData, "messData");
+                            // Dừng 15s
+                            Thread.Sleep(15000);
+                            // Tiếp tục đốt
+                            SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
+                        }
                     }
                 }
             }
@@ -1201,11 +1251,40 @@ namespace LuckBurnTK
                     try
                     {
                         if (!sp.IsOpen) sp.Open();
-                        if (string.IsNullOrEmpty(item.PhoneNumber))
+                        if (string.IsNullOrEmpty(item.PhoneNumber) || item.Message101.Trim().ToLower().Equals("your input is error or system busy,pls try again!"))
                         {
                             sp.DiscardInBuffer();
                             sp.DiscardOutBuffer();
                             SendATCommand(sp, "AT+QCCID");
+                        }
+                        else
+                        {
+                            var portSMSExist = SMSPorts.FirstOrDefault(x => x.Key == sp.PortName).Value;
+                            if (portSMSExist != null)
+                            {
+
+                                bool greaterThan15s = (DateTime.Now - portSMSExist.start_time).Duration() > TimeSpan.FromSeconds(15);
+                                if (greaterThan15s)
+                                {
+                                    sp.DiscardInBuffer();
+                                    sp.DiscardOutBuffer();
+                                    SendATCommand(sp, "AT+QCCID");
+                                }
+                            }
+                            var portCallExist = RecordingPorts.FirstOrDefault(x => x.Key == sp.PortName).Value;
+                            if (portCallExist != null)
+                            {
+
+                                bool greaterThanDuation = (DateTime.Now - portCallExist.start_call).Duration() > TimeSpan.FromSeconds(portCallExist.call_duration);
+                                if (greaterThanDuation)
+                                {
+                                    SendATCommand(sp, "ATH");
+                                    Thread.Sleep(5000);
+                                    sp.DiscardInBuffer();
+                                    sp.DiscardOutBuffer();
+                                    SendATCommand(sp, "AT+QCCID");
+                                }
+                            }
                         }
                     }
                     catch (Exception ex)

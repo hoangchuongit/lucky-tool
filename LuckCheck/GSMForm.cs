@@ -152,7 +152,7 @@ namespace LuckCheck
 
             MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
             //AppendLogToMemo(sp.PortName, MessageCOMs[sp.PortName]);
-            Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
+            //Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
             //logger.Info(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
 
             // Có cuộc gọi đến
@@ -259,14 +259,14 @@ namespace LuckCheck
                                                 .Replace("AT+CSCS=\"GSM\"", "")
                                                 .Replace("AT+QCCID", "").Substring(0, 20),
                         "ICCID");
-                    // Đặt module về chế độ Text Mode(ASCII)
-                    //SendATCommand(sp, "AT+CMGF=1");
-                    //// Nhận tin nhắn dưới dạng văn bản
-                    //SendATCommand(sp, "AT+CNMI=2,2");
-                    //Thread.Sleep(500);
-                    //MessageCOMs[sp.PortName] = string.Empty;
+                    //Đặt module về chế độ Text Mode(ASCII)
+                    SendATCommand(sp, "AT+CMGF=1");
+                    // Nhận tin nhắn dưới dạng văn bản
+                    SendATCommand(sp, "AT+CNMI=2,2,0,1,0");
+                    Thread.Sleep(500);
+                    MessageCOMs[sp.PortName] = string.Empty;
                     // Gửi AT lấy số điện thoại và thông tin tài khoản chính
-                    SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15", 3000);
+                    SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15", 0);
                 }
             }
             catch (Exception)
