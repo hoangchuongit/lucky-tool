@@ -456,6 +456,9 @@ namespace LuckBurnTK
         /// <returns></returns>
         private async Task SmsOrCallWithPrefix(SerialPort sp)
         {
+            // Lấy số tiền min để lại trên tài khoản
+            int minAccount = int.Parse(txtMinAccountControl.Text.Replace(".", string.Empty));
+            int currentTKC = 0;
             try
             {
                 // Tin nhắn gửi về từ SMS
@@ -474,7 +477,7 @@ namespace LuckBurnTK
                 // Lấy thông tin tài khoản chính
                 var oldTKC = ComDataGrid.FirstOrDefault(x => x.COM == sp.PortName)?.TKChinh ?? 0;
                 int? tkchinh = Common.ExtractBalance(mess);
-                int currentTKC = (int)(tkchinh.HasValue ? tkchinh : 0);
+                currentTKC = (int)(tkchinh.HasValue ? tkchinh : 0);
                 //if (currentTKC == 0 || currentTKC == oldTKC)
                 //{
                 //    UpdateComData(sp.PortName, dto => { dto.Message = $"Stop burn"; dto.IsFinish = true; }, "Message", "IsFinish");
@@ -487,8 +490,6 @@ namespace LuckBurnTK
                 }, "PhoneNumber", "TKChinh", "Message", "IsFinish");
                 // Lấy thông tin nhà mạng
                 var telecom = ComDataGrid.FirstOrDefault(x => x.COM == sp.PortName).Telecom ?? "Other";
-                // Lấy số tiền min để lại trên tài khoản
-                int minAccount = int.Parse(txtMinAccountControl.Text.Replace(".", string.Empty));
                 // Nếu trường hợp TKC nhỏ hơn mức min được burn thì dừng burn
                 if (currentTKC <= minAccount)
                 {
@@ -587,11 +588,6 @@ namespace LuckBurnTK
                         start_time = DateTime.Now
                     });
                     //Send message
-                    //sp.Write($"AT+CMGS=\"{prefixSmsRes.prefix}\"\r");
-                    //Thread.Sleep(2000);
-                    //sp.Write($"{prefixSmsRes.message}{char.ConvertFromUtf32(26)}");
-                    ////sp.Write(new byte[] { 0x1A }, 0, 1);
-                    //Thread.Sleep(500);
                     var prefix = prefixSmsRes.prefix;
                     if (prefix.IndexOf("9029_NAP") > -1)
                         prefix = "9029";
@@ -606,7 +602,17 @@ namespace LuckBurnTK
             catch (Exception ex)
             {
                 logger.Error($"[{sp.PortName}]Burn thất bại: {ex.Message}");
-                UpdateComData(sp.PortName, dto => { dto.Message = $"Stop burn"; dto.IsFinish = true; }, "Message", "IsFinish");
+                if (currentTKC == 0 || currentTKC <= minAccount)
+                {
+                    UpdateComData(sp.PortName, dto => { dto.Message = $"Stop burn"; dto.IsFinish = true; }, "Message", "IsFinish");
+                }
+                else
+                {
+                    UpdateComData(sp.PortName, dto => { dto.Message = $"Restart burn after 30s"; }, "Message");
+                    Thread.Sleep(30000);
+                    // Tiếp tục đốt
+                    SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
+                }
             }
         }
 
@@ -704,8 +710,8 @@ namespace LuckBurnTK
                             await _prefixController.UpdateSms(releaseSlotReq);
                         }
                         SMSPorts.TryRemove(sp.PortName, out _);
-                        // Dừng 10s
-                        Thread.Sleep(10000);
+                        // Dừng 20s
+                        Thread.Sleep(20000);
                         // Tiếp tục đốt
                         SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                     }
@@ -727,8 +733,8 @@ namespace LuckBurnTK
                             await _prefixController.UpdateSms(releaseSlotReq);
                         }
                         SMSPorts.TryRemove(sp.PortName, out _);
-                        // Dừng 10s
-                        Thread.Sleep(10000);
+                        // Dừng 20s
+                        Thread.Sleep(20000);
                         // Tiếp tục đốt
                         SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                     }
@@ -1262,13 +1268,14 @@ namespace LuckBurnTK
                             var portSMSExist = SMSPorts.FirstOrDefault(x => x.Key == sp.PortName).Value;
                             if (portSMSExist != null)
                             {
-
-                                bool greaterThan15s = (DateTime.Now - portSMSExist.start_time).Duration() > TimeSpan.FromSeconds(15);
+                                bool greaterThan15s = (DateTime.Now - portSMSExist.start_time).Duration() > TimeSpan.FromSeconds(20);
                                 if (greaterThan15s)
                                 {
                                     sp.DiscardInBuffer();
                                     sp.DiscardOutBuffer();
-                                    SendATCommand(sp, "AT+QCCID");
+                                    //SendATCommand(sp, "AT+QCCID");
+                                    // Tiếp tục đốt
+                                    SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                                 }
                             }
                             var portCallExist = RecordingPorts.FirstOrDefault(x => x.Key == sp.PortName).Value;
@@ -1279,10 +1286,12 @@ namespace LuckBurnTK
                                 if (greaterThanDuation)
                                 {
                                     SendATCommand(sp, "ATH");
-                                    Thread.Sleep(5000);
+                                    Thread.Sleep(10000);
                                     sp.DiscardInBuffer();
                                     sp.DiscardOutBuffer();
-                                    SendATCommand(sp, "AT+QCCID");
+                                    //SendATCommand(sp, "AT+QCCID");
+                                    // Tiếp tục đốt
+                                    SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                                 }
                             }
                         }
