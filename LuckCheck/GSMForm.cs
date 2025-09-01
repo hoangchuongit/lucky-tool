@@ -185,9 +185,10 @@ namespace LuckCheck
             UpdateComData(sp.PortName, dto =>
             {
                 dto.PhoneNumber = string.Empty;
+                dto.HSD = string.Empty;
                 dto.TKChinh = 0;
                 dto.Message101 = "";
-            }, "PhoneNumber", "TKChinh", "Message101");
+            }, "PhoneNumber", "HSD", "TKChinh", "Message101");
         }
 
         /// <summary>
@@ -209,9 +210,10 @@ namespace LuckCheck
                     {
                         dto.ICCID = string.Empty;
                         dto.PhoneNumber = string.Empty;
+                        dto.HSD = string.Empty;
                         dto.TKChinh = 0;
                         dto.Message101 = string.Empty;
-                    }, "ICCID", "PhoneNumber", "TKChinh", "Message101");
+                    }, "ICCID", "PhoneNumber", "HSD", "TKChinh", "Message101");
                 }
                 catch (Exception ex)
                 {
@@ -302,9 +304,11 @@ namespace LuckCheck
                     if (string.IsNullOrEmpty(phone)) return;
                     // Lấy thông tin tài khoản chính
                     int? tkchinh = Common.ExtractBalance(mess);
+                    // Lấy thông tin hạn sử dụng
+                    string hsd = Common.ExtractNgayKH(mess);
                     // Cập nhật tài khoản chính và số điện thoại trên gridview
                     int currentTKC = (int)(tkchinh.HasValue ? tkchinh : 0);
-                    UpdateComData(sp.PortName, dto => { dto.PhoneNumber = phone; dto.TKChinh = currentTKC; }, "PhoneNumber", "TKChinh");
+                    UpdateComData(sp.PortName, dto => { dto.PhoneNumber = phone; dto.HSD = hsd; dto.TKChinh = currentTKC; }, "PhoneNumber", "HSD", "TKChinh");
                 }
             }
             catch (Exception ex)
@@ -505,9 +509,10 @@ namespace LuckCheck
                             {
                                 dto.ICCID = string.Empty;
                                 dto.PhoneNumber = string.Empty;
+                                dto.HSD = string.Empty;
                                 dto.TKChinh = 0;
                                 dto.Message101 = "Reset cổng COM";
-                            }, "ICCID", "PhoneNumber", "TKChinh", "Message101");
+                            }, "ICCID", "PhoneNumber", "HSD", "TKChinh", "Message101");
                             SendATCommand(sp, "AT+QURCCFG=\"urcport\",\"uart1\"");
                             // Module được thiết lập để sử dụng chế độ "Auto Baud Rate Detection" (Tự động nhận diện tốc độ truyền).
                             SendATCommand(sp, "AT+IPR=0");
@@ -553,9 +558,10 @@ namespace LuckCheck
                             {
                                 dto.ICCID = string.Empty;
                                 dto.PhoneNumber = string.Empty;
+                                dto.HSD = string.Empty;
                                 dto.TKChinh = 0;
                                 dto.Message101 = "Khôi phục cài đặt gốc cổng COM";
-                            }, "ICCID", "PhoneNumber", "TKChinh", "Message101");
+                            }, "ICCID", "PhoneNumber", "HSD", "TKChinh", "Message101");
                             SendATCommand(sp, "AT&F", 60000);
                             //
                             SendATCommand(sp, "AT+QURCCFG=\"urcport\",\"uart1\"");
@@ -612,9 +618,10 @@ namespace LuckCheck
                         {
                             dto.ICCID = "COM ERROR";
                             dto.PhoneNumber = "COM ERROR";
+                            dto.HSD = "COM ERROR";
                             dto.TKChinh = 0;
                             dto.Message101 = "COM ERROR. Đảm bảo các cổng COM không có dấu chấm than. This PC > Manager > Device Manager > Ports (COM & LPT)";
-                        }, "ICCID", "PhoneNumber", "TKChinh", "Message101");
+                        }, "ICCID", "PhoneNumber", "HSD", "TKChinh", "Message101");
                     }
                 });
             }
@@ -682,9 +689,10 @@ namespace LuckCheck
                             {
                                 dto.ICCID = string.Empty;
                                 dto.PhoneNumber = string.Empty;
+                                dto.HSD = string.Empty;
                                 dto.TKChinh = 0;
                                 dto.Message101 = "Reset cổng COM";
-                            }, "ICCID", "PhoneNumber", "TKChinh", "Message101");
+                            }, "ICCID", "PhoneNumber", "HSD", "TKChinh", "Message101");
                             SendATCommand(sp, "AT+QURCCFG=\"urcport\",\"uart1\"");
                             // Module được thiết lập để sử dụng chế độ "Auto Baud Rate Detection" (Tự động nhận diện tốc độ truyền).
                             SendATCommand(sp, "AT+IPR=0");

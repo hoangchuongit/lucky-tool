@@ -160,5 +160,12 @@ namespace LuckCheck.Utils
             }
             return null; // Không hợp lệ
         }
+        
+        public static string ExtractNgayKH(string input)
+        {
+            var m = Regex.Match(input, @"hsd \s*(\d{2}/\d{2}/\d{4})", RegexOptions.IgnoreCase);
+            if (!m.Success) return null;
+            return m.Groups[1].Value;
+        }
     }
 }

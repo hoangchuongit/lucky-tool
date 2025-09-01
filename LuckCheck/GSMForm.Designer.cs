@@ -60,6 +60,7 @@
             this.repositoryItemComboBox1 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.ICCID = new DevExpress.XtraGrid.Columns.GridColumn();
             this.PhoneNumber = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.HSD = new DevExpress.XtraGrid.Columns.GridColumn();
             this.TKChinh = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Message101 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemTextEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
@@ -189,17 +190,15 @@
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager;
-            this.barDockControlTop.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.barDockControlTop.Size = new System.Drawing.Size(1438, 27);
+            this.barDockControlTop.Size = new System.Drawing.Size(1233, 27);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 868);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 806);
             this.barDockControlBottom.Manager = this.barManager;
-            this.barDockControlBottom.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.barDockControlBottom.Size = new System.Drawing.Size(1438, 0);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1233, 0);
             // 
             // barDockControlLeft
             // 
@@ -207,17 +206,15 @@
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 27);
             this.barDockControlLeft.Manager = this.barManager;
-            this.barDockControlLeft.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 841);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 779);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1438, 27);
+            this.barDockControlRight.Location = new System.Drawing.Point(1233, 27);
             this.barDockControlRight.Manager = this.barManager;
-            this.barDockControlRight.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 841);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 779);
             // 
             // PopupResetCom
             // 
@@ -257,15 +254,15 @@
             // gcCOM
             // 
             this.gcCOM.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gcCOM.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
+            this.gcCOM.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.gcCOM.Location = new System.Drawing.Point(0, 27);
             this.gcCOM.MainView = this.gvCOM;
-            this.gcCOM.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
+            this.gcCOM.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.gcCOM.Name = "gcCOM";
             this.gcCOM.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemComboBox1,
             this.repositoryItemTextEdit2});
-            this.gcCOM.Size = new System.Drawing.Size(1438, 841);
+            this.gcCOM.Size = new System.Drawing.Size(1233, 779);
             this.gcCOM.TabIndex = 0;
             this.gcCOM.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gvCOM});
@@ -279,9 +276,9 @@
             this.STT,
             this.ICCID,
             this.PhoneNumber,
+            this.HSD,
             this.TKChinh,
             this.Message101});
-            this.gvCOM.DetailHeight = 377;
             this.gvCOM.GridControl = this.gcCOM;
             this.gvCOM.Name = "gvCOM";
             this.gvCOM.OptionsClipboard.CopyColumnHeaders = DevExpress.Utils.DefaultBoolean.False;
@@ -304,8 +301,8 @@
             this.COM.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.COM.Caption = "COM";
             this.COM.FieldName = "COM";
-            this.COM.MaxWidth = 70;
-            this.COM.MinWidth = 70;
+            this.COM.MaxWidth = 60;
+            this.COM.MinWidth = 60;
             this.COM.Name = "COM";
             this.COM.OptionsColumn.AllowEdit = false;
             this.COM.OptionsColumn.AllowSize = false;
@@ -315,7 +312,7 @@
             this.COM.OptionsFilter.AllowFilter = false;
             this.COM.Visible = true;
             this.COM.VisibleIndex = 0;
-            this.COM.Width = 70;
+            this.COM.Width = 60;
             // 
             // STT
             // 
@@ -332,8 +329,8 @@
             this.STT.Caption = "No";
             this.STT.ColumnEdit = this.repositoryItemComboBox1;
             this.STT.FieldName = "STT";
-            this.STT.MaxWidth = 58;
-            this.STT.MinWidth = 58;
+            this.STT.MaxWidth = 50;
+            this.STT.MinWidth = 50;
             this.STT.Name = "STT";
             this.STT.OptionsColumn.AllowGroup = DevExpress.Utils.DefaultBoolean.False;
             this.STT.OptionsColumn.AllowMerge = DevExpress.Utils.DefaultBoolean.False;
@@ -346,7 +343,7 @@
             this.STT.OptionsFilter.AllowFilter = false;
             this.STT.Visible = true;
             this.STT.VisibleIndex = 1;
-            this.STT.Width = 58;
+            this.STT.Width = 50;
             // 
             // repositoryItemComboBox1
             // 
@@ -871,7 +868,7 @@
             this.ICCID.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.ICCID.Caption = "ICCID";
             this.ICCID.FieldName = "ICCID";
-            this.ICCID.MinWidth = 27;
+            this.ICCID.MinWidth = 23;
             this.ICCID.Name = "ICCID";
             this.ICCID.OptionsColumn.AllowEdit = false;
             this.ICCID.OptionsColumn.AllowSize = false;
@@ -881,7 +878,7 @@
             this.ICCID.OptionsFilter.AllowFilter = false;
             this.ICCID.Visible = true;
             this.ICCID.VisibleIndex = 2;
-            this.ICCID.Width = 150;
+            this.ICCID.Width = 129;
             // 
             // PhoneNumber
             // 
@@ -897,7 +894,7 @@
             this.PhoneNumber.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.PhoneNumber.Caption = "Số điện thoại";
             this.PhoneNumber.FieldName = "PhoneNumber";
-            this.PhoneNumber.MinWidth = 27;
+            this.PhoneNumber.MinWidth = 23;
             this.PhoneNumber.Name = "PhoneNumber";
             this.PhoneNumber.OptionsColumn.AllowEdit = false;
             this.PhoneNumber.OptionsColumn.AllowSize = false;
@@ -908,7 +905,31 @@
             this.PhoneNumber.OptionsFilter.FilterPopupMode = DevExpress.XtraGrid.Columns.FilterPopupMode.CheckedList;
             this.PhoneNumber.Visible = true;
             this.PhoneNumber.VisibleIndex = 3;
-            this.PhoneNumber.Width = 110;
+            this.PhoneNumber.Width = 94;
+            // 
+            // HSD
+            // 
+            this.HSD.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
+            this.HSD.AppearanceCell.Options.UseFont = true;
+            this.HSD.AppearanceCell.Options.UseTextOptions = true;
+            this.HSD.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.HSD.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold);
+            this.HSD.AppearanceHeader.FontStyleDelta = System.Drawing.FontStyle.Bold;
+            this.HSD.AppearanceHeader.Options.UseFont = true;
+            this.HSD.AppearanceHeader.Options.UseTextOptions = true;
+            this.HSD.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.HSD.Caption = "Hạn sử dụng";
+            this.HSD.FieldName = "HSD";
+            this.HSD.Name = "HSD";
+            this.HSD.OptionsColumn.AllowEdit = false;
+            this.HSD.OptionsColumn.AllowSize = false;
+            this.HSD.OptionsColumn.AllowSort = DevExpress.Utils.DefaultBoolean.False;
+            this.HSD.OptionsColumn.FixedWidth = true;
+            this.HSD.OptionsFilter.AllowAutoFilter = false;
+            this.HSD.OptionsFilter.AllowFilter = false;
+            this.HSD.Visible = true;
+            this.HSD.VisibleIndex = 4;
+            this.HSD.Width = 90;
             // 
             // TKChinh
             // 
@@ -926,7 +947,6 @@
             this.TKChinh.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.TKChinh.Caption = "TK Chính";
             this.TKChinh.FieldName = "TKChinh";
-            this.TKChinh.MinWidth = 23;
             this.TKChinh.Name = "TKChinh";
             this.TKChinh.OptionsColumn.AllowEdit = false;
             this.TKChinh.OptionsColumn.AllowSize = false;
@@ -935,8 +955,8 @@
             this.TKChinh.OptionsFilter.AllowAutoFilter = false;
             this.TKChinh.OptionsFilter.AllowFilter = false;
             this.TKChinh.Visible = true;
-            this.TKChinh.VisibleIndex = 4;
-            this.TKChinh.Width = 100;
+            this.TKChinh.VisibleIndex = 5;
+            this.TKChinh.Width = 86;
             // 
             // Message101
             // 
@@ -948,12 +968,11 @@
             this.Message101.AppearanceHeader.Options.UseFont = true;
             this.Message101.Caption = "Tin nhắn";
             this.Message101.FieldName = "Message101";
-            this.Message101.MinWidth = 23;
             this.Message101.Name = "Message101";
             this.Message101.OptionsColumn.AllowEdit = false;
             this.Message101.Visible = true;
-            this.Message101.VisibleIndex = 5;
-            this.Message101.Width = 925;
+            this.Message101.VisibleIndex = 6;
+            this.Message101.Width = 699;
             // 
             // repositoryItemTextEdit2
             // 
@@ -977,9 +996,9 @@
             // 
             // GSMForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1438, 868);
+            this.ClientSize = new System.Drawing.Size(1233, 806);
             this.Controls.Add(this.gcCOM);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
@@ -988,7 +1007,6 @@
             this.IconOptions.Image = ((System.Drawing.Image)(resources.GetObject("GSMForm.IconOptions.Image")));
             this.LookAndFeel.SkinName = "Office 2019 Colorful";
             this.LookAndFeel.UseDefaultLookAndFeel = false;
-            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "GSMForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Luck Check";
@@ -1033,5 +1051,6 @@
         private DevExpress.XtraBars.BarButtonItem PopupResetCom;
         private DevExpress.XtraBars.BarButtonItem PopupChangeIMEI;
         private DevExpress.XtraBars.BarButtonItem Popup101;
+        private DevExpress.XtraGrid.Columns.GridColumn HSD;
     }
 }

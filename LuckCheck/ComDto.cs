@@ -8,6 +8,7 @@ namespace LuckCheck.Model
         public string STT { get; set; }
         public string ICCID { get; set; }
         public string PhoneNumber { get; set; }
+        public string HSD { get; set; }
         public int TKChinh { get; set; }
         public string Message101 { get; set; }
     }

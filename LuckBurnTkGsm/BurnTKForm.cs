@@ -197,8 +197,8 @@ namespace LuckBurnTK
 
             MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
             //AppendLogToMemo(sp.PortName, MessageCOMs[sp.PortName]);
-            //if (sp.PortName == "COM273")
-            //Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
+            //if (sp.PortName == "COM278")
+            Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
             //logger.Info(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
 
             // Nếu cổng COM chưa nằm trong danh sách ghi âm thì bổ sung vào danh sách. Nếu đã có thì ghi nối tiếp dữ liệu
@@ -553,8 +553,8 @@ namespace LuckBurnTK
                 var prefixSmsRes = await _prefixController.GetPrefixNumber(prefixSmsReq);
                 if (prefixSmsRes == null)
                 {
-                    // Nếu null nghĩa là dịch vụ đang full các đầu số, chờ 30s sau thử lại
-                    Thread.Sleep(30000);
+                    // Nếu null nghĩa là dịch vụ đang full các đầu số, chờ 55s sau thử lại
+                    Thread.Sleep(55000);
                     // Gửi AT lấy số điện thoại và thông tin tài khoản chính
                     SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                     return;
@@ -710,8 +710,8 @@ namespace LuckBurnTK
                             await _prefixController.UpdateSms(releaseSlotReq);
                         }
                         SMSPorts.TryRemove(sp.PortName, out _);
-                        // Dừng 20s
-                        Thread.Sleep(20000);
+                        // Dừng 45s
+                        Thread.Sleep(45000);
                         // Tiếp tục đốt
                         SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                     }
@@ -733,8 +733,8 @@ namespace LuckBurnTK
                             await _prefixController.UpdateSms(releaseSlotReq);
                         }
                         SMSPorts.TryRemove(sp.PortName, out _);
-                        // Dừng 20s
-                        Thread.Sleep(20000);
+                        // Dừng 45s
+                        Thread.Sleep(45000);
                         // Tiếp tục đốt
                         SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                     }
@@ -757,8 +757,8 @@ namespace LuckBurnTK
                             if (checkUTF16) messData = Common.DecodeUnicode(messData);
                             MessageCOMs[sp.PortName] = string.Empty;
                             //Console.WriteLine(messData, "messData");
-                            // Dừng 15s
-                            Thread.Sleep(15000);
+                            // Dừng 20s
+                            Thread.Sleep(20000);
                             // Tiếp tục đốt
                             SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                         }
@@ -1268,7 +1268,7 @@ namespace LuckBurnTK
                             var portSMSExist = SMSPorts.FirstOrDefault(x => x.Key == sp.PortName).Value;
                             if (portSMSExist != null)
                             {
-                                bool greaterThan15s = (DateTime.Now - portSMSExist.start_time).Duration() > TimeSpan.FromSeconds(20);
+                                bool greaterThan15s = (DateTime.Now - portSMSExist.start_time).Duration() > TimeSpan.FromSeconds(45);
                                 if (greaterThan15s)
                                 {
                                     sp.DiscardInBuffer();
