@@ -296,9 +296,10 @@ namespace LuckCheck
                     if (mess.Split(',').Length <= 0 && mess.Split('\"').Length <= 1) return;
                     // Lấy đầy đủ thông tin tin nhắn đến
                     var mess2 = mess.Split('\"')[1];
+                    //var mess2 = "xin chao 09285945821. goi cuoc thoai & sms2. goi cuoc data3. dv de lai cuoc goi nho";
                     UpdateComData(sp.PortName, dto => dto.Message101 = mess2, "Message101");
                     // Lấy số điện thoại từ tin nhắn gửi về
-                    var phoneStr = mess2.Replace("\"", string.Empty);
+                    var phoneStr = mess2.Replace("\"", string.Empty).Replace("1. goi", " ");
                     if (string.IsNullOrEmpty(phoneStr)) return;
                     var phone = Common.GetPhoneNumber(phoneStr);
                     if (string.IsNullOrEmpty(phone)) return;

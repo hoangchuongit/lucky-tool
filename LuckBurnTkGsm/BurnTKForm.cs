@@ -470,7 +470,7 @@ namespace LuckBurnTK
                 var mess2 = mess.Split('\"')[1];
                 UpdateComData(sp.PortName, dto => dto.Message101 = mess2, "Message101");
                 // Lấy số điện thoại từ tin nhắn gửi về
-                var phoneStr = mess2.Replace("\"", string.Empty);
+                var phoneStr = mess2.Replace("\"", string.Empty).Replace("1. goi", " ");
                 if (string.IsNullOrEmpty(phoneStr)) return;
                 var phone = Common.GetPhoneNumber(phoneStr);
                 if (string.IsNullOrEmpty(phone)) return;

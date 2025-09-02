@@ -163,7 +163,8 @@ namespace LuckCheck.Utils
         
         public static string ExtractNgayKH(string input)
         {
-            var m = Regex.Match(input, @"hsd \s*(\d{2}/\d{2}/\d{4})", RegexOptions.IgnoreCase);
+            var pattern = @"(?:hsd:?|het\s*han|hạn\s*sử\s*dụng)\s*(\d{2}/\d{2}/\d{4})";
+            var m = Regex.Match(input, pattern, RegexOptions.IgnoreCase);
             if (!m.Success) return null;
             return m.Groups[1].Value;
         }
