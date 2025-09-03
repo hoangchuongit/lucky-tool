@@ -163,10 +163,14 @@ namespace LuckCheck.Utils
         
         public static string ExtractNgayKH(string input)
         {
-            var pattern = @"(?:hsd:?|het\s*han|hạn\s*sử\s*dụng)\s*(\d{2}/\d{2}/\d{4})";
+            var pattern = @"(?:\bhsd\b|het\s*han|han\s*su\s*dung(?:\s*den\s*ngay)?|dung\s*den)" +
+                  @"\s*:?\s*" +
+                  @"(?:\d{1,2}:\d{2}(?::\d{2})?\s+)?" + // giờ trước ngày (tuỳ chọn)
+                  @"(\d{2}[-/]\d{2}[-/]\d{4})";        // ngày
+
             var m = Regex.Match(input, pattern, RegexOptions.IgnoreCase);
             if (!m.Success) return null;
-            return m.Groups[1].Value;
+            return m.Groups[1].Value.Replace('-', '/');
         }
     }
 }

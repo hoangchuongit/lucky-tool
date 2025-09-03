@@ -356,7 +356,7 @@ namespace LuckCheck
                 if (content.Contains("+CMT:"))
                 {
                     var message = MessageCOMs[sp.PortName].AT_Command();
-                    logger.Info($"[{sp.PortName}] - MessageAll: {message}");
+                    //logger.Info($"[{sp.PortName}] - MessageAll: {message}");
                     int startIndex = message.IndexOf("+CMT");
                     if (startIndex == -1) return;
                     var messSplit = message.Substring(startIndex).Split(',');
@@ -371,9 +371,14 @@ namespace LuckCheck
                             var checkUTF16 = Common.IsValidUtf16(messData);
                             if (checkUTF16) messData = Common.DecodeUnicode(messData);
                             MessageCOMs[sp.PortName] = string.Empty;
-                            logger.Info($"[{sp.PortName}] - MessageAll: {messData}");
+                            //logger.Info($"[{sp.PortName}] - MessageAll: {messData}");
+                            // Lấy thông tin hạn sử dụng
+                            string hsd = Common.ExtractNgayKH(messData);
                             // Hiển thị tin nhắn trong Message
-                            UpdateComData(sp.PortName, dto => dto.Message101 = messData.ToString(), "Message101");
+                            if(string.IsNullOrEmpty(hsd))
+                                UpdateComData(sp.PortName, dto => dto.Message101 = messData.ToString(), "Message101");
+                            else 
+                                UpdateComData(sp.PortName, dto => { dto.Message101 = messData.ToString(); dto.HSD = hsd; }, "Message101", "HSD");
                         }
                     }
                 }
@@ -395,11 +400,11 @@ namespace LuckCheck
                 var message = MessageCOMs[sp.PortName];
                 if (message.Contains("RING") && message.Contains("+CLCC:") && message.Contains("1,4,0,0,"))
                 {
-                    logger.Info($"[{sp.PortName}] - MessageAll: {message}");
+                    //logger.Info($"[{sp.PortName}] - MessageAll: {message}");
                     var phoneCall = Common.ExtractValidPhoneNumberCall(message);
                     if (!string.IsNullOrEmpty(phoneCall))
                     {
-                        logger.Info($"[{sp.PortName}] - MessageAll: {message}");
+                        //logger.Info($"[{sp.PortName}] - MessageAll: {message}");
                         SendATCommand(sp, "ATH", 5000);
                         MessageCOMs[sp.PortName] = string.Empty;
                         // Hiển thị tin nhắn trong Message
