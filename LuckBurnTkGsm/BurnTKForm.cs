@@ -271,8 +271,13 @@ namespace LuckBurnTK
             if (sp.IsOpen) sp.Close();
             UpdateComData(sp.PortName, dto =>
             {
-                dto.PhoneNumber = string.Empty; dto.TKChinh = 0; dto.Message101 = ""; dto.Message = ""; dto.IsFinish = true;
-            }, "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish");
+                dto.PhoneNumber = string.Empty;
+                dto.TKChinh = 0;
+                dto.HSD = string.Empty;
+                dto.Message101 = ""; 
+                dto.Message = ""; 
+                dto.IsFinish = true;
+            }, "PhoneNumber", "TKChinh", "HSD", "Message101", "Message", "IsFinish");
         }
 
         /// <summary>
@@ -312,11 +317,12 @@ namespace LuckBurnTK
                         dto.ICCID = string.Empty;
                         dto.PhoneNumber = string.Empty;
                         dto.TKChinh = 0;
+                        dto.HSD = string.Empty;
                         dto.Message101 = string.Empty;
                         dto.Message = string.Empty;
                         dto.IsFinish = false;
                         dto.Telecom = string.Empty;
-                    }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish", "Telecom");
+                    }, "ICCID", "PhoneNumber", "TKChinh", "HSD", "Message101", "Message", "IsFinish", "Telecom");
                 }
                 catch (Exception ex)
                 {
@@ -360,7 +366,7 @@ namespace LuckBurnTK
                     UpdateComData(sp.PortName,
                         dto => dto.ICCID = mess.Replace("ATZ", "")
                                                 .Replace("AT+CSCS=\"GSM\"", "")
-                                                .Replace("AT+QCCID", "").Substring(0, 20),
+                                                .Replace("AT+QCCID", "").Replace("+QCCID: ", "").Replace("+QUSIM: 1", "").Substring(0, 20),
                         "ICCID");
                     // Đặt module về chế độ Text Mode(ASCII)
                     SendATCommand(sp, "AT+CMGF=1");
@@ -477,6 +483,8 @@ namespace LuckBurnTK
                 // Lấy thông tin tài khoản chính
                 var oldTKC = ComDataGrid.FirstOrDefault(x => x.COM == sp.PortName)?.TKChinh ?? 0;
                 int? tkchinh = Common.ExtractBalance(mess);
+                // Lấy thông tin hạn sử dụng
+                string hsd = Common.ExtractHanSD(mess);
                 currentTKC = (int)(tkchinh.HasValue ? tkchinh : 0);
                 //if (currentTKC == 0 || currentTKC == oldTKC)
                 //{
@@ -486,8 +494,8 @@ namespace LuckBurnTK
                 // Cập nhật tài khoản chính và số điện thoại trên gridview
                 UpdateComData(sp.PortName, dto =>
                 {
-                    dto.PhoneNumber = phone; dto.TKChinh = currentTKC; dto.Message = "Burning ..."; dto.IsFinish = false;
-                }, "PhoneNumber", "TKChinh", "Message", "IsFinish");
+                    dto.PhoneNumber = phone; dto.TKChinh = currentTKC; dto.HSD = hsd; dto.Message = "Burning ..."; dto.IsFinish = false;
+                }, "PhoneNumber", "TKChinh", "HSD", "Message", "IsFinish");
                 // Lấy thông tin nhà mạng
                 var telecom = ComDataGrid.FirstOrDefault(x => x.COM == sp.PortName).Telecom ?? "Other";
                 // Nếu trường hợp TKC nhỏ hơn mức min được burn thì dừng burn
@@ -761,6 +769,35 @@ namespace LuckBurnTK
                             Thread.Sleep(20000);
                             // Tiếp tục đốt
                             SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
+                        }
+                    }
+                }
+                else if (content.Contains("+CMT: \"123\"") || content.Contains("+CMT: \"+123\""))
+                {
+                    var message = MessageCOMs[sp.PortName].AT_Command();
+                    //logger.Info($"[{sp.PortName}] - MessageAll: {message}");
+                    int startIndex = message.IndexOf("+CMT");
+                    if (startIndex == -1) return;
+                    var messSplit = message.Substring(startIndex).Split(',');
+                    if (messSplit.Length >= 3)
+                    {
+                        var messContent = string.Join(",", messSplit.Skip(2)).Split('"');
+                        // Nếu chuỗi chia theo " không có độ dài lớn hơn 3 nghĩa là chưa đến tin nhắn chính
+                        if (messContent.Length >= 3 && !string.IsNullOrEmpty(messContent[2]))
+                        {
+                            var brandName = messSplit[0].Replace("+CMT: \"", "").Replace("\"", "").Trim();
+                            var messData = messContent[2];
+                            var checkUTF16 = Common.IsValidUtf16(messData);
+                            if (checkUTF16) messData = Common.DecodeUnicode(messData);
+                            MessageCOMs[sp.PortName] = string.Empty;
+                            //logger.Info($"[{sp.PortName}] - MessageAll: {messData}");
+                            // Lấy thông tin hạn sử dụng
+                            string hsd = Common.ExtractHanSD(messData);
+                            // Hiển thị tin nhắn trong Message
+                            if (string.IsNullOrEmpty(hsd))
+                                UpdateComData(sp.PortName, dto => dto.Message101 = messData.ToString(), "Message101");
+                            else
+                                UpdateComData(sp.PortName, dto => { dto.Message101 = messData.ToString(); dto.HSD = hsd; }, "Message101", "HSD");
                         }
                     }
                 }
@@ -1151,9 +1188,10 @@ namespace LuckBurnTK
                                 dto.ICCID = string.Empty;
                                 dto.PhoneNumber = string.Empty;
                                 dto.TKChinh = 0;
+                                dto.HSD = string.Empty;
                                 dto.Message101 = "Reset cổng COM";
                                 dto.Message = "";
-                            }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message");
+                            }, "ICCID", "PhoneNumber", "TKChinh", "HSD", "Message101", "Message");
                             // Reset COM
                             SendATCommand(sp, "AT+CFUN=1,1", 10000);
                             // Đưa Baudrate về tốc độ  115200
@@ -1203,9 +1241,10 @@ namespace LuckBurnTK
                                 dto.ICCID = string.Empty;
                                 dto.PhoneNumber = string.Empty;
                                 dto.TKChinh = 0;
+                                dto.HSD = string.Empty;
                                 dto.Message101 = "Khôi phục cài đặt gốc cổng COM";
                                 dto.Message = "";
-                            }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message");
+                            }, "ICCID", "PhoneNumber", "TKChinh","HSD", "Message101", "Message");
                             // Khôi phục các cài đặt AT command về cấu hình nhà sản xuất
                             SendATCommand(sp, "AT&F", 60000);
                             // Đưa Baudrate về tốc độ  115200
@@ -1304,11 +1343,12 @@ namespace LuckBurnTK
                             dto.ICCID = "COM ERROR";
                             dto.PhoneNumber = "COM ERROR";
                             dto.TKChinh = 0;
+                            dto.HSD = "COM ERROR";
                             dto.Message101 = "COM ERROR. Đảm bảo các cổng COM không có dấu chấm than. This PC > Manager > Device Manager > Ports (COM & LPT)";
                             dto.Message = "COM ERROR";
                             dto.IsFinish = true;
                             dto.Telecom = "COM ERROR";
-                        }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message", "IsFinish", "Telecom");
+                        }, "ICCID", "PhoneNumber", "TKChinh","HSD", "Message101", "Message", "IsFinish", "Telecom");
                     }
                 });
             }
@@ -1377,9 +1417,10 @@ namespace LuckBurnTK
                                 dto.ICCID = string.Empty;
                                 dto.PhoneNumber = string.Empty;
                                 dto.TKChinh = 0;
+                                dto.HSD = string.Empty;
                                 dto.Message101 = "Reset cổng COM";
                                 dto.Message = "";
-                            }, "ICCID", "PhoneNumber", "TKChinh", "Message101", "Message");
+                            }, "ICCID", "PhoneNumber", "TKChinh", "HSD", "Message101", "Message");
                             // Reset COM
                             SendATCommand(sp, "AT+CFUN=1,1", 10000);
                             // Đưa Baudrate về tốc độ  115200

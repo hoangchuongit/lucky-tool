@@ -306,7 +306,7 @@ namespace LuckOTP
                     UpdateComData(sp.PortName,
                         dto => dto.ICCID = mess.Replace("ATZ", "")
                                                 .Replace("AT+CSCS=\"GSM\"", "")
-                                                .Replace("AT+QCCID", "").Substring(0, 20),
+                                                .Replace("AT+QCCID", "").Replace("+QCCID: ", "").Replace("+QUSIM: 1", "").Substring(0, 20),
                         "ICCID");
                     // Đặt module về chế độ Text Mode(ASCII)
                     SendATCommand(sp, "AT+CMGF=1");

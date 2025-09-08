@@ -13,6 +13,7 @@ namespace LuckBurn.Model
         public string Message { get; set; }
         public bool IsFinish { get; set; }
         public string Telecom { get; set; }
+        public string HSD { get; set; }
     }
 
     public class FileToCom

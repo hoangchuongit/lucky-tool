@@ -11,7 +11,7 @@ namespace LuckBurnTK.Utils
 {
     public class Common
     {
-#if! DEBUG
+#if !DEBUG
         public static string UrlBurnAUTH = "https://luckburn.mobi/auth/";
         public static string UrlBurnAPI = "https://luckburn.mobi/api/";
 #else
@@ -160,6 +160,17 @@ namespace LuckBurnTK.Utils
             var m = Regex.Match(input, @"ngay kh:\s*(\d{2}/\d{2}/\d{4})", RegexOptions.IgnoreCase);
             if (!m.Success) return null;
             return m.Groups[1].Value;
+        }
+        public static string ExtractHanSD(string input)
+        {
+            var pattern = @"(?:\bhsd\b|het\s*han|han\s*su\s*dung(?:\s*den\s*ngay)?|dung\s*den)" +
+                  @"\s*:?\s*" +
+                  @"(?:\d{1,2}:\d{2}(?::\d{2})?\s+)?" + // giờ trước ngày (tuỳ chọn)
+                  @"(\d{2}[-/]\d{2}[-/]\d{4})";        // ngày
+
+            var m = Regex.Match(input, pattern, RegexOptions.IgnoreCase);
+            if (!m.Success) return null;
+            return m.Groups[1].Value.Replace('-', '/');
         }
 
         public static byte[] RemoveConnectHeader(byte[] buffer)

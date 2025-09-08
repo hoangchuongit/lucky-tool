@@ -259,7 +259,7 @@ namespace LuckCheck
                     UpdateComData(sp.PortName,
                         dto => dto.ICCID = mess.Replace("ATZ", "")
                                                 .Replace("AT+CSCS=\"GSM\"", "")
-                                                .Replace("AT+QCCID", "").Substring(0, 20),
+                                                .Replace("AT+QCCID", "").Replace("+QCCID: ", "").Replace("+QUSIM: 1", "").Substring(0, 20),
                         "ICCID");
                     //Đặt module về chế độ Text Mode(ASCII)
                     SendATCommand(sp, "AT+CMGF=1");
@@ -306,7 +306,7 @@ namespace LuckCheck
                     // Lấy thông tin tài khoản chính
                     int? tkchinh = Common.ExtractBalance(mess);
                     // Lấy thông tin hạn sử dụng
-                    string hsd = Common.ExtractNgayKH(mess);
+                    string hsd = Common.ExtractHanSD(mess);
                     // Cập nhật tài khoản chính và số điện thoại trên gridview
                     int currentTKC = (int)(tkchinh.HasValue ? tkchinh : 0);
                     UpdateComData(sp.PortName, dto => { dto.PhoneNumber = phone; dto.HSD = hsd; dto.TKChinh = currentTKC; }, "PhoneNumber", "HSD", "TKChinh");
@@ -373,7 +373,7 @@ namespace LuckCheck
                             MessageCOMs[sp.PortName] = string.Empty;
                             //logger.Info($"[{sp.PortName}] - MessageAll: {messData}");
                             // Lấy thông tin hạn sử dụng
-                            string hsd = Common.ExtractNgayKH(messData);
+                            string hsd = Common.ExtractHanSD(messData);
                             // Hiển thị tin nhắn trong Message
                             if(string.IsNullOrEmpty(hsd))
                                 UpdateComData(sp.PortName, dto => dto.Message101 = messData.ToString(), "Message101");

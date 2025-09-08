@@ -161,7 +161,7 @@ namespace LuckCheck.Utils
             return null; // Không hợp lệ
         }
         
-        public static string ExtractNgayKH(string input)
+        public static string ExtractHanSD(string input)
         {
             var pattern = @"(?:\bhsd\b|het\s*han|han\s*su\s*dung(?:\s*den\s*ngay)?|dung\s*den)" +
                   @"\s*:?\s*" +
