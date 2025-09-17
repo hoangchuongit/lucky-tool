@@ -80,6 +80,7 @@
             this.ICCID = new DevExpress.XtraGrid.Columns.GridColumn();
             this.PhoneNumber = new DevExpress.XtraGrid.Columns.GridColumn();
             this.TKChinh = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.HSD = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Message101 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Message = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemTextEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
@@ -88,7 +89,6 @@
             this.TimerNotification = new System.Windows.Forms.Timer(this.components);
             this.HelpUI = new DevExpress.Utils.VisualEffects.AdornerUIManager(this.components);
             this.guide1 = new DevExpress.Utils.VisualEffects.Guide();
-            this.HSD = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).BeginInit();
@@ -382,17 +382,15 @@
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
             this.barDockControlTop.Manager = this.barManager;
-            this.barDockControlTop.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.barDockControlTop.Size = new System.Drawing.Size(1438, 27);
+            this.barDockControlTop.Size = new System.Drawing.Size(1233, 27);
             // 
             // barDockControlBottom
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 854);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 791);
             this.barDockControlBottom.Manager = this.barManager;
-            this.barDockControlBottom.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.barDockControlBottom.Size = new System.Drawing.Size(1438, 29);
+            this.barDockControlBottom.Size = new System.Drawing.Size(1233, 29);
             // 
             // barDockControlLeft
             // 
@@ -400,17 +398,15 @@
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 27);
             this.barDockControlLeft.Manager = this.barManager;
-            this.barDockControlLeft.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 827);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 764);
             // 
             // barDockControlRight
             // 
             this.barDockControlRight.CausesValidation = false;
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1438, 27);
+            this.barDockControlRight.Location = new System.Drawing.Point(1233, 27);
             this.barDockControlRight.Manager = this.barManager;
-            this.barDockControlRight.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 827);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 764);
             // 
             // PopupResetCom
             // 
@@ -473,9 +469,8 @@
             this.panelControl1.Controls.Add(this.labelControl1);
             this.panelControl1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelControl1.Location = new System.Drawing.Point(0, 27);
-            this.panelControl1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.panelControl1.Name = "panelControl1";
-            this.panelControl1.Size = new System.Drawing.Size(1438, 56);
+            this.panelControl1.Size = new System.Drawing.Size(1233, 52);
             this.panelControl1.TabIndex = 4;
             // 
             // label1
@@ -483,10 +478,9 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.Font = new System.Drawing.Font("Cascadia Code", 10F, System.Drawing.FontStyle.Bold);
             this.label1.ForeColor = System.Drawing.Color.DarkRed;
-            this.label1.Location = new System.Drawing.Point(1010, 8);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(866, 7);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(414, 40);
+            this.label1.Size = new System.Drawing.Size(355, 37);
             this.label1.TabIndex = 6;
             this.label1.Text = "* Lưu lượng giới hạn trong khoảng thời gian 23h đến 5h sáng";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -495,8 +489,7 @@
             // 
             this.labelControl3.Appearance.Font = new System.Drawing.Font("Verdana", 18F, System.Drawing.FontStyle.Bold);
             this.labelControl3.Appearance.Options.UseFont = true;
-            this.labelControl3.Location = new System.Drawing.Point(278, 13);
-            this.labelControl3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.labelControl3.Location = new System.Drawing.Point(238, 12);
             this.labelControl3.Name = "labelControl3";
             this.labelControl3.Size = new System.Drawing.Size(298, 29);
             this.labelControl3.TabIndex = 5;
@@ -508,8 +501,7 @@
             this.labelControl2.Appearance.ForeColor = System.Drawing.Color.Red;
             this.labelControl2.Appearance.Options.UseFont = true;
             this.labelControl2.Appearance.Options.UseForeColor = true;
-            this.labelControl2.Location = new System.Drawing.Point(212, 13);
-            this.labelControl2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.labelControl2.Location = new System.Drawing.Point(182, 12);
             this.labelControl2.Name = "labelControl2";
             this.labelControl2.Size = new System.Drawing.Size(58, 29);
             this.labelControl2.TabIndex = 4;
@@ -530,11 +522,10 @@
             this.BtnStartBurn.ImageOptions.AllowGlyphSkinning = DevExpress.Utils.DefaultBoolean.False;
             this.BtnStartBurn.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("BtnStartBurn.ImageOptions.Image")));
             this.BtnStartBurn.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
-            this.BtnStartBurn.Location = new System.Drawing.Point(634, 8);
-            this.BtnStartBurn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.BtnStartBurn.Location = new System.Drawing.Point(543, 7);
             this.BtnStartBurn.Name = "BtnStartBurn";
-            this.BtnStartBurn.Padding = new System.Windows.Forms.Padding(6, 0, 0, 0);
-            this.BtnStartBurn.Size = new System.Drawing.Size(140, 40);
+            this.BtnStartBurn.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.BtnStartBurn.Size = new System.Drawing.Size(120, 37);
             this.BtnStartBurn.TabIndex = 2;
             this.BtnStartBurn.Text = "BURN";
             this.BtnStartBurn.ToolTip = "Khởi động lại burn cho các cổng COM đang dừng";
@@ -543,8 +534,7 @@
             // txtMinAccountControl
             // 
             this.txtMinAccountControl.EditValue = "";
-            this.txtMinAccountControl.Location = new System.Drawing.Point(57, 10);
-            this.txtMinAccountControl.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.txtMinAccountControl.Location = new System.Drawing.Point(49, 9);
             this.txtMinAccountControl.Name = "txtMinAccountControl";
             this.txtMinAccountControl.Properties.Appearance.Font = new System.Drawing.Font("Verdana", 18F, System.Drawing.FontStyle.Bold);
             this.txtMinAccountControl.Properties.Appearance.ForeColor = System.Drawing.Color.Red;
@@ -560,15 +550,14 @@
             this.txtMinAccountControl.Properties.Mask.UseMaskAsDisplayFormat = true;
             this.txtMinAccountControl.Properties.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
             this.txtMinAccountControl.Properties.MaskSettings.Set("mask", "n0");
-            this.txtMinAccountControl.Size = new System.Drawing.Size(147, 36);
+            this.txtMinAccountControl.Size = new System.Drawing.Size(126, 36);
             this.txtMinAccountControl.TabIndex = 1;
             // 
             // labelControl1
             // 
             this.labelControl1.Appearance.Font = new System.Drawing.Font("Verdana", 18F, System.Drawing.FontStyle.Bold);
             this.labelControl1.Appearance.Options.UseFont = true;
-            this.labelControl1.Location = new System.Drawing.Point(13, 13);
-            this.labelControl1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.labelControl1.Location = new System.Drawing.Point(11, 12);
             this.labelControl1.Name = "labelControl1";
             this.labelControl1.Size = new System.Drawing.Size(36, 29);
             this.labelControl1.TabIndex = 3;
@@ -577,15 +566,15 @@
             // gcCOM
             // 
             this.gcCOM.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gcCOM.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
-            this.gcCOM.Location = new System.Drawing.Point(0, 83);
+            this.gcCOM.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.gcCOM.Location = new System.Drawing.Point(0, 79);
             this.gcCOM.MainView = this.gvCOM;
-            this.gcCOM.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
+            this.gcCOM.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.gcCOM.Name = "gcCOM";
             this.gcCOM.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemComboBox1,
             this.repositoryItemTextEdit2});
-            this.gcCOM.Size = new System.Drawing.Size(1438, 771);
+            this.gcCOM.Size = new System.Drawing.Size(1233, 712);
             this.gcCOM.TabIndex = 0;
             this.gcCOM.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gvCOM});
@@ -599,11 +588,10 @@
             this.STT,
             this.ICCID,
             this.PhoneNumber,
-            this.TKChinh,
             this.HSD,
+            this.TKChinh,
             this.Message101,
             this.Message});
-            this.gvCOM.DetailHeight = 377;
             this.gvCOM.GridControl = this.gcCOM;
             this.gvCOM.Name = "gvCOM";
             this.gvCOM.OptionsClipboard.CopyColumnHeaders = DevExpress.Utils.DefaultBoolean.False;
@@ -627,8 +615,8 @@
             this.COM.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.COM.Caption = "COM";
             this.COM.FieldName = "COM";
-            this.COM.MaxWidth = 70;
-            this.COM.MinWidth = 70;
+            this.COM.MaxWidth = 60;
+            this.COM.MinWidth = 60;
             this.COM.Name = "COM";
             this.COM.OptionsColumn.AllowEdit = false;
             this.COM.OptionsColumn.AllowSize = false;
@@ -638,7 +626,7 @@
             this.COM.OptionsFilter.AllowFilter = false;
             this.COM.Visible = true;
             this.COM.VisibleIndex = 0;
-            this.COM.Width = 70;
+            this.COM.Width = 60;
             // 
             // STT
             // 
@@ -655,8 +643,8 @@
             this.STT.Caption = "No";
             this.STT.ColumnEdit = this.repositoryItemComboBox1;
             this.STT.FieldName = "STT";
-            this.STT.MaxWidth = 58;
-            this.STT.MinWidth = 58;
+            this.STT.MaxWidth = 50;
+            this.STT.MinWidth = 50;
             this.STT.Name = "STT";
             this.STT.OptionsColumn.AllowGroup = DevExpress.Utils.DefaultBoolean.False;
             this.STT.OptionsColumn.AllowMerge = DevExpress.Utils.DefaultBoolean.False;
@@ -669,7 +657,7 @@
             this.STT.OptionsFilter.AllowFilter = false;
             this.STT.Visible = true;
             this.STT.VisibleIndex = 1;
-            this.STT.Width = 58;
+            this.STT.Width = 50;
             // 
             // repositoryItemComboBox1
             // 
@@ -1194,7 +1182,7 @@
             this.ICCID.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.ICCID.Caption = "ICCID";
             this.ICCID.FieldName = "ICCID";
-            this.ICCID.MinWidth = 27;
+            this.ICCID.MinWidth = 23;
             this.ICCID.Name = "ICCID";
             this.ICCID.OptionsColumn.AllowEdit = false;
             this.ICCID.OptionsColumn.AllowSize = false;
@@ -1204,7 +1192,7 @@
             this.ICCID.OptionsFilter.AllowFilter = false;
             this.ICCID.Visible = true;
             this.ICCID.VisibleIndex = 2;
-            this.ICCID.Width = 175;
+            this.ICCID.Width = 150;
             // 
             // PhoneNumber
             // 
@@ -1220,7 +1208,7 @@
             this.PhoneNumber.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             this.PhoneNumber.Caption = "Số điện thoại";
             this.PhoneNumber.FieldName = "PhoneNumber";
-            this.PhoneNumber.MinWidth = 27;
+            this.PhoneNumber.MinWidth = 23;
             this.PhoneNumber.Name = "PhoneNumber";
             this.PhoneNumber.OptionsColumn.AllowEdit = false;
             this.PhoneNumber.OptionsColumn.AllowSize = false;
@@ -1231,7 +1219,7 @@
             this.PhoneNumber.OptionsFilter.FilterPopupMode = DevExpress.XtraGrid.Columns.FilterPopupMode.CheckedList;
             this.PhoneNumber.Visible = true;
             this.PhoneNumber.VisibleIndex = 3;
-            this.PhoneNumber.Width = 128;
+            this.PhoneNumber.Width = 110;
             // 
             // TKChinh
             // 
@@ -1249,7 +1237,6 @@
             this.TKChinh.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
             this.TKChinh.Caption = "TK Chính";
             this.TKChinh.FieldName = "TKChinh";
-            this.TKChinh.MinWidth = 23;
             this.TKChinh.Name = "TKChinh";
             this.TKChinh.OptionsColumn.AllowEdit = false;
             this.TKChinh.OptionsColumn.AllowSize = false;
@@ -1258,8 +1245,30 @@
             this.TKChinh.OptionsFilter.AllowAutoFilter = false;
             this.TKChinh.OptionsFilter.AllowFilter = false;
             this.TKChinh.Visible = true;
-            this.TKChinh.VisibleIndex = 4;
-            this.TKChinh.Width = 93;
+            this.TKChinh.VisibleIndex = 5;
+            this.TKChinh.Width = 80;
+            // 
+            // HSD
+            // 
+            this.HSD.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
+            this.HSD.AppearanceCell.Options.UseFont = true;
+            this.HSD.AppearanceCell.Options.UseTextOptions = true;
+            this.HSD.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.HSD.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold);
+            this.HSD.AppearanceHeader.FontStyleDelta = System.Drawing.FontStyle.Bold;
+            this.HSD.AppearanceHeader.Options.UseFont = true;
+            this.HSD.AppearanceHeader.Options.UseTextOptions = true;
+            this.HSD.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.HSD.Caption = "Hạn sử dụng";
+            this.HSD.FieldName = "HSD";
+            this.HSD.MinWidth = 17;
+            this.HSD.Name = "HSD";
+            this.HSD.OptionsColumn.AllowEdit = false;
+            this.HSD.OptionsColumn.AllowSize = false;
+            this.HSD.OptionsColumn.AllowSort = DevExpress.Utils.DefaultBoolean.False;
+            this.HSD.Visible = true;
+            this.HSD.VisibleIndex = 4;
+            this.HSD.Width = 100;
             // 
             // Message101
             // 
@@ -1271,12 +1280,11 @@
             this.Message101.AppearanceHeader.Options.UseFont = true;
             this.Message101.Caption = "Tin nhắn";
             this.Message101.FieldName = "Message101";
-            this.Message101.MinWidth = 23;
             this.Message101.Name = "Message101";
             this.Message101.OptionsColumn.AllowEdit = false;
             this.Message101.Visible = true;
             this.Message101.VisibleIndex = 6;
-            this.Message101.Width = 693;
+            this.Message101.Width = 576;
             // 
             // Message
             // 
@@ -1292,7 +1300,7 @@
             this.Message.AppearanceHeader.Options.UseFont = true;
             this.Message.Caption = "Trạng Thái";
             this.Message.FieldName = "Message";
-            this.Message.MinWidth = 27;
+            this.Message.MinWidth = 23;
             this.Message.Name = "Message";
             this.Message.OptionsColumn.AllowEdit = false;
             this.Message.OptionsColumn.AllowSize = false;
@@ -1301,7 +1309,7 @@
             this.Message.OptionsFilter.AllowFilter = false;
             this.Message.Visible = true;
             this.Message.VisibleIndex = 7;
-            this.Message.Width = 96;
+            this.Message.Width = 82;
             // 
             // repositoryItemTextEdit2
             // 
@@ -1337,32 +1345,11 @@
             this.HelpUI.Owner = this;
             this.HelpUI.QueryGuideFlyoutControl += new DevExpress.Utils.VisualEffects.QueryGuideFlyoutControlEventHandler(this.HelpUI_QueryGuideFlyoutControl);
             // 
-            // HSD
-            // 
-            this.HSD.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
-            this.HSD.AppearanceCell.Options.UseFont = true;
-            this.HSD.AppearanceCell.Options.UseTextOptions = true;
-            this.HSD.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.HSD.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold);
-            this.HSD.AppearanceHeader.FontStyleDelta = System.Drawing.FontStyle.Bold;
-            this.HSD.AppearanceHeader.Options.UseFont = true;
-            this.HSD.AppearanceHeader.Options.UseTextOptions = true;
-            this.HSD.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.HSD.Caption = "Hạn sử dụng";
-            this.HSD.FieldName = "HSD";
-            this.HSD.Name = "HSD";
-            this.HSD.OptionsColumn.AllowEdit = false;
-            this.HSD.OptionsColumn.AllowSize = false;
-            this.HSD.OptionsColumn.AllowSort = DevExpress.Utils.DefaultBoolean.False;
-            this.HSD.Visible = true;
-            this.HSD.VisibleIndex = 5;
-            this.HSD.Width = 100;
-            // 
             // BurnTKForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1438, 883);
+            this.ClientSize = new System.Drawing.Size(1233, 820);
             this.Controls.Add(this.gcCOM);
             this.Controls.Add(this.panelControl1);
             this.Controls.Add(this.barDockControlLeft);
@@ -1372,7 +1359,6 @@
             this.IconOptions.Image = ((System.Drawing.Image)(resources.GetObject("BurnTKForm.IconOptions.Image")));
             this.LookAndFeel.SkinName = "Office 2019 Colorful";
             this.LookAndFeel.UseDefaultLookAndFeel = false;
-            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "BurnTKForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Luck Burn";

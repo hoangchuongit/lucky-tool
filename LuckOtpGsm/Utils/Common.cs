@@ -43,13 +43,10 @@ namespace LuckOTP.Utils
             // Regular expression to match phone numbers
             // Matches 10 digits starting with 0 or 11 digits starting with 84
             string pattern = @"(?:0\d{9}|\d{9}|84\d{9})(?!\d)";
-
             // Create a Regex object
             Regex regex = new Regex(pattern);
-
             // Find matches
             Match match = regex.Match(input);
-
             // Check if a match is found
             if (match.Success)
             {
@@ -57,7 +54,6 @@ namespace LuckOTP.Utils
                 phone = phone.Length == 11 ? "0" + phone.Substring(2) : phone.Length == 9 ? "0" + phone : phone;
                 return phone;
             }
-
             return null;
         }
 

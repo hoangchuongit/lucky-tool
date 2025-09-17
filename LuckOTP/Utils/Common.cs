@@ -12,8 +12,8 @@ namespace LuckOTP.Utils
     public class Common
     {
 #if !DEBUG
-        public static string UrlBurnAUTH = "https://emailreal.com/auth/";
-        public static string UrlBurnAPI = "https://emailreal.com/api/";
+        public static string UrlBurnAUTH = "https://otp.luckburn.mobi/auth/";
+        public static string UrlBurnAPI = "https://otp.luckburn.mobi/api/";
 #else
         public static string UrlBurnAUTH = "http://localhost:3001/auth/";
         public static string UrlBurnAPI = "http://localhost:3000/";

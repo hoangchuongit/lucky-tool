@@ -152,7 +152,7 @@ namespace LuckCheck
 
             MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
             //AppendLogToMemo(sp.PortName, MessageCOMs[sp.PortName]);
-            //Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
+            Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
             //logger.Info(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
 
             // Có cuộc gọi đến
@@ -289,7 +289,7 @@ namespace LuckCheck
                 if (content.Contains("+CUSD:") && content.Contains("\nOK"))
                 {
                     // Tin nhắn gửi về từ SMS
-                    var mess = MessageCOMs[sp.PortName].AT_Command($"AT+CUSD=1,\"*101#\",15");
+                    var mess = MessageCOMs[sp.PortName].AT_Command($"AT+CUSD=1,\"*101#\",15").Replace($"AT+CUSD=1,\"*0#\",15", "");
                     MessageCOMs[sp.PortName] = string.Empty;
                     //logger.Info($"mess [{sp.PortName}]: {mess}");
                     mess = mess.Substring(mess.IndexOf("+CUSD")).ToLower().Replace("du lieu", " du lieu ");
@@ -809,6 +809,37 @@ namespace LuckCheck
             catch (Exception ex)
             {
                 logger.Error($"[{sp.PortName}] SendATCommand: {ex.Message}");
+            }
+        }
+
+        private void PopupSao0Thang_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            int[] selectedHandles = gvCOM.GetSelectedRows();
+            foreach (int handle in selectedHandles)
+            {
+                if (gvCOM.GetRow(handle) is ComDto row)
+                {
+                    var sp = SerialPorts.FirstOrDefault(x => x.PortName == row.COM);
+                    if (sp == null) continue;
+                    _ = Task.Run(() =>
+                    {
+                        try
+                        {
+                            if (!sp.IsOpen) sp.Open();
+                            UpdateComData(sp.PortName, dto =>
+                            {
+                                dto.TKChinh = 0; dto.Message101 = "";
+                            }, "TKChinh", "Message101");
+                            SendATCommand(sp, $"AT+CUSD=2");
+                            Thread.Sleep(2000);
+                            SendATCommand(sp, $"AT+CUSD=1,\"*0#\",15");
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Error($"Lỗi khi gửi lệnh tới {sp.PortName}: {ex.Message}");
+                        }
+                    });
+                }
             }
         }
     }

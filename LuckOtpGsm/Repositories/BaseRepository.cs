@@ -17,7 +17,7 @@ namespace LuckOTP.Repositories
                 var loginData = new { email = username, password = password };
                 var content = new StringContent(JsonConvert.SerializeObject(loginData), null, "application/json");
 
-                var response = await client.PostAsync("https://emailreal.com/auth/login", content);
+                var response = await client.PostAsync("https://otp.luckburn.mobi/auth/login", content);
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadAsStringAsync();

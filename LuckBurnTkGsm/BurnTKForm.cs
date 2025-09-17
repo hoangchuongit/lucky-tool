@@ -107,7 +107,6 @@ namespace LuckBurnTK
         {
             foreach (string port in portNames)
             {
-                //if (port != "COM218") continue;
                 var regexPattern = $@"\b{Regex.Escape(port)}\b";
                 var isValid = fullPortNames.FirstOrDefault(x => Regex.IsMatch(x["Caption"], regexPattern, RegexOptions.IgnoreCase));
                 if (isValid == null) continue;
