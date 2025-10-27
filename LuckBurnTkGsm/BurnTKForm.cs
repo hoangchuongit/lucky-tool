@@ -1311,7 +1311,6 @@ namespace LuckBurnTK
                                 {
                                     sp.DiscardInBuffer();
                                     sp.DiscardOutBuffer();
-                                    //SendATCommand(sp, "AT+QCCID");
                                     // Tiếp tục đốt
                                     SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                                 }
@@ -1327,7 +1326,6 @@ namespace LuckBurnTK
                                     Thread.Sleep(10000);
                                     sp.DiscardInBuffer();
                                     sp.DiscardOutBuffer();
-                                    //SendATCommand(sp, "AT+QCCID");
                                     // Tiếp tục đốt
                                     SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                                 }
