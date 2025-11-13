@@ -1,6 +1,0 @@
-pyautogui
-pygetwindow
-requests
-Faker
-psycopg2-binary
-pyinstaller

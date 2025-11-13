@@ -1,1 +1,0 @@
-pyinstaller --onefile --strip --icon=./icon.ico --name reg_gmail main.py
