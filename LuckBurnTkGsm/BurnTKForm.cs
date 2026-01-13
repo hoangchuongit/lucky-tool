@@ -52,6 +52,9 @@ namespace LuckBurnTK
 
         private readonly PrefixNumberController _prefixController;
 
+        /// Lock com để tránh timeout khi gửi lệnh AT
+        private readonly ConcurrentDictionary<string, SemaphoreSlim> _comLocks = new ConcurrentDictionary<string, SemaphoreSlim>();
+
         private readonly string ApiKey;
 
         private readonly string DateCurrent;
@@ -1039,7 +1042,13 @@ namespace LuckBurnTK
             {
                 var sp = SerialPorts.Find(x => x.PortName == item.COM);
                 if (sp == null) continue;
-                _ = Task.Run(() =>
+
+                var sem = _comLocks.GetOrAdd(item.COM, _ => new SemaphoreSlim(1, 1));
+
+                // Nếu COM đang bận → bỏ qua tick này
+                if (!sem.Wait(0)) continue;
+
+                _ = Task.Run(async () =>
                 {
                     try
                     {
@@ -1060,7 +1069,8 @@ namespace LuckBurnTK
                                 if (greaterThanDuation)
                                 {
                                     SendATCommand(sp, "ATH");
-                                    Thread.Sleep(10000);
+                                    //Thread.Sleep(10000);
+                                    await Task.Delay(10000);
                                     sp.DiscardInBuffer();
                                     sp.DiscardOutBuffer();
                                     // Tiếp tục đốt
@@ -1083,6 +1093,10 @@ namespace LuckBurnTK
                             dto.IsFinish = true;
                             dto.Telecom = "COM ERROR";
                         }, "ICCID", "PhoneNumber", "TKChinh", "HSD", "Message101", "Message", "IsFinish", "Telecom");
+                    }
+                    finally
+                    {
+                        sem.Release();
                     }
                 });
             }
