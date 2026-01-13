@@ -66,7 +66,6 @@
             this.BarBurnCom = new DevExpress.XtraBars.BarStaticItem();
             this.repositoryItemTextEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.panelControl1 = new DevExpress.XtraEditors.PanelControl();
-            this.label1 = new System.Windows.Forms.Label();
             this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
             this.BtnStartBurn = new DevExpress.XtraEditors.SimpleButton();
@@ -79,8 +78,8 @@
             this.repositoryItemComboBox1 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.ICCID = new DevExpress.XtraGrid.Columns.GridColumn();
             this.PhoneNumber = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.TKChinh = new DevExpress.XtraGrid.Columns.GridColumn();
             this.HSD = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.TKChinh = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Message101 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Message = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemTextEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
@@ -359,8 +358,8 @@
             // 
             this.TxtNotification.AllowHtmlText = DevExpress.Utils.DefaultBoolean.True;
             this.TxtNotification.AutoSize = DevExpress.XtraBars.BarStaticItemSize.Spring;
-            this.TxtNotification.Caption = "Những burn <color=Blue>\"Chờ đối soát\"</color> được xử lý sau 4h/lần, chậm nhất sa" +
-    "u 24h. Xin cảm ơn!";
+            this.TxtNotification.Caption = "Những burn <color=Blue>\"Chờ đối soát\"</color> được xử lý sau 1h/lần, chậm nhất sa" +
+    "u 24h!";
             this.TxtNotification.Id = 19;
             this.TxtNotification.ItemAppearance.Normal.Font = new System.Drawing.Font("Cascadia Code", 12F);
             this.TxtNotification.ItemAppearance.Normal.Options.UseFont = true;
@@ -461,7 +460,6 @@
             this.panelControl1.Appearance.BackColor = System.Drawing.Color.White;
             this.panelControl1.Appearance.Options.UseBackColor = true;
             this.panelControl1.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-            this.panelControl1.Controls.Add(this.label1);
             this.panelControl1.Controls.Add(this.labelControl3);
             this.panelControl1.Controls.Add(this.labelControl2);
             this.panelControl1.Controls.Add(this.BtnStartBurn);
@@ -473,23 +471,11 @@
             this.panelControl1.Size = new System.Drawing.Size(1233, 52);
             this.panelControl1.TabIndex = 4;
             // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.Font = new System.Drawing.Font("Cascadia Code", 10F, System.Drawing.FontStyle.Bold);
-            this.label1.ForeColor = System.Drawing.Color.DarkRed;
-            this.label1.Location = new System.Drawing.Point(866, 7);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(355, 37);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "* Lưu lượng giới hạn trong khoảng thời gian 23h đến 5h sáng";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // labelControl3
             // 
             this.labelControl3.Appearance.Font = new System.Drawing.Font("Verdana", 18F, System.Drawing.FontStyle.Bold);
             this.labelControl3.Appearance.Options.UseFont = true;
-            this.labelControl3.Location = new System.Drawing.Point(238, 12);
+            this.labelControl3.Location = new System.Drawing.Point(249, 12);
             this.labelControl3.Name = "labelControl3";
             this.labelControl3.Size = new System.Drawing.Size(298, 29);
             this.labelControl3.TabIndex = 5;
@@ -501,7 +487,7 @@
             this.labelControl2.Appearance.ForeColor = System.Drawing.Color.Red;
             this.labelControl2.Appearance.Options.UseFont = true;
             this.labelControl2.Appearance.Options.UseForeColor = true;
-            this.labelControl2.Location = new System.Drawing.Point(182, 12);
+            this.labelControl2.Location = new System.Drawing.Point(185, 12);
             this.labelControl2.Name = "labelControl2";
             this.labelControl2.Size = new System.Drawing.Size(58, 29);
             this.labelControl2.TabIndex = 4;
@@ -522,7 +508,7 @@
             this.BtnStartBurn.ImageOptions.AllowGlyphSkinning = DevExpress.Utils.DefaultBoolean.False;
             this.BtnStartBurn.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("BtnStartBurn.ImageOptions.Image")));
             this.BtnStartBurn.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
-            this.BtnStartBurn.Location = new System.Drawing.Point(543, 7);
+            this.BtnStartBurn.Location = new System.Drawing.Point(553, 8);
             this.BtnStartBurn.Name = "BtnStartBurn";
             this.BtnStartBurn.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.BtnStartBurn.Size = new System.Drawing.Size(120, 37);
@@ -534,7 +520,7 @@
             // txtMinAccountControl
             // 
             this.txtMinAccountControl.EditValue = "";
-            this.txtMinAccountControl.Location = new System.Drawing.Point(49, 9);
+            this.txtMinAccountControl.Location = new System.Drawing.Point(53, 9);
             this.txtMinAccountControl.Name = "txtMinAccountControl";
             this.txtMinAccountControl.Properties.Appearance.Font = new System.Drawing.Font("Verdana", 18F, System.Drawing.FontStyle.Bold);
             this.txtMinAccountControl.Properties.Appearance.ForeColor = System.Drawing.Color.Red;
@@ -1221,6 +1207,28 @@
             this.PhoneNumber.VisibleIndex = 3;
             this.PhoneNumber.Width = 110;
             // 
+            // HSD
+            // 
+            this.HSD.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
+            this.HSD.AppearanceCell.Options.UseFont = true;
+            this.HSD.AppearanceCell.Options.UseTextOptions = true;
+            this.HSD.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.HSD.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold);
+            this.HSD.AppearanceHeader.FontStyleDelta = System.Drawing.FontStyle.Bold;
+            this.HSD.AppearanceHeader.Options.UseFont = true;
+            this.HSD.AppearanceHeader.Options.UseTextOptions = true;
+            this.HSD.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.HSD.Caption = "Hạn sử dụng";
+            this.HSD.FieldName = "HSD";
+            this.HSD.MinWidth = 17;
+            this.HSD.Name = "HSD";
+            this.HSD.OptionsColumn.AllowEdit = false;
+            this.HSD.OptionsColumn.AllowSize = false;
+            this.HSD.OptionsColumn.AllowSort = DevExpress.Utils.DefaultBoolean.False;
+            this.HSD.Visible = true;
+            this.HSD.VisibleIndex = 4;
+            this.HSD.Width = 100;
+            // 
             // TKChinh
             // 
             this.TKChinh.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
@@ -1247,28 +1255,6 @@
             this.TKChinh.Visible = true;
             this.TKChinh.VisibleIndex = 5;
             this.TKChinh.Width = 80;
-            // 
-            // HSD
-            // 
-            this.HSD.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
-            this.HSD.AppearanceCell.Options.UseFont = true;
-            this.HSD.AppearanceCell.Options.UseTextOptions = true;
-            this.HSD.AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.HSD.AppearanceHeader.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold);
-            this.HSD.AppearanceHeader.FontStyleDelta = System.Drawing.FontStyle.Bold;
-            this.HSD.AppearanceHeader.Options.UseFont = true;
-            this.HSD.AppearanceHeader.Options.UseTextOptions = true;
-            this.HSD.AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.HSD.Caption = "Hạn sử dụng";
-            this.HSD.FieldName = "HSD";
-            this.HSD.MinWidth = 17;
-            this.HSD.Name = "HSD";
-            this.HSD.OptionsColumn.AllowEdit = false;
-            this.HSD.OptionsColumn.AllowSize = false;
-            this.HSD.OptionsColumn.AllowSort = DevExpress.Utils.DefaultBoolean.False;
-            this.HSD.Visible = true;
-            this.HSD.VisibleIndex = 4;
-            this.HSD.Width = 100;
             // 
             // Message101
             // 
@@ -1426,7 +1412,6 @@
         private DevExpress.XtraBars.Bar BarNotification;
         private DevExpress.XtraBars.BarStaticItem TxtNotification;
         private System.Windows.Forms.Timer TimerNotification;
-        private System.Windows.Forms.Label label1;
         private DevExpress.XtraBars.BarStaticItem BarPCCom;
         private DevExpress.XtraBars.BarStaticItem BarBurnCom;
         private DevExpress.Utils.VisualEffects.AdornerUIManager HelpUI;

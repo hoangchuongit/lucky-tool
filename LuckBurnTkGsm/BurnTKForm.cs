@@ -257,7 +257,7 @@ namespace LuckBurnTK
             //ListenEventUploadAmrFileToDevice(sp);
 
             // Lắng nghe phản hồi của tin nhắn SMS
-            ListenEventSmsResponse(sp);
+            //ListenEventSmsResponse(sp);
         }
 
         private void SerialPort_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
@@ -513,39 +513,39 @@ namespace LuckBurnTK
                 }
                 // Xử lý chuyển tiền
                 // Nếu là mạng Vinaphone và có đầu số như trên thì thực hiện 2Friends hoặc 9368
-                if (telecom == "Vinaphone" && tkchinh - minAccount >= 10000)
-                {
-                    // Lấy thông tin ngày kích hoạt
-                    string ngaykh = Common.ExtractNgayKH(mess);
-                    int? days = Common.DaysSinceHsd(ngaykh, DateCurrent);
-                    string[] VinaPrefixes = { "081", "082", "083", "084", "085", "088", "091", "094" };
-                    string prefix = phone.Substring(0, 3);
-                    bool isVinaphone = Array.Exists(VinaPrefixes, p => p == prefix);
-                    //Nếu đầu số là vinaphone và ngày kh đủ 180 ngày thì chuyển qua 2Friends, nếu đủ 90 ngày thì chuyển qua 9368
-                    if (isVinaphone && days.HasValue && days.Value >= 180)
-                    {
-                        var simPool = await _prefixController.GetSimTopupPool(new TranferMoneyReq()
-                        {
-                            phone_number = phone,
-                            amount = currentTKC,
-                            amount_left = minAccount,
-                            type = TranferMoneyEnum.TWO_FRIENDS.ToString()
-                        });
-                        if (simPool != null)
-                        {
-                            SMSPorts.TryAdd(sp.PortName, new TranferMoneySMSPort()
-                            {
-                                history_id = simPool.history_id.ToString(),
-                                message = simPool.message,
-                            });
-                            // Lấy thông tin mật khẩu của dịch vụ 2Friends của Vinaphone
-                            sp.WriteLine($"AT+CMGS=\"222\"");
-                            Thread.Sleep(500);
-                            SendATCommand(sp, $"DK{(char)26}", 500);
-                            return;
-                        }
-                    }
-                }
+                //if (telecom == "Vinaphone" && tkchinh - minAccount >= 10000)
+                //{
+                //    // Lấy thông tin ngày kích hoạt
+                //    string ngaykh = Common.ExtractNgayKH(mess);
+                //    int? days = Common.DaysSinceHsd(ngaykh, DateCurrent);
+                //    string[] VinaPrefixes = { "081", "082", "083", "084", "085", "088", "091", "094" };
+                //    string prefix = phone.Substring(0, 3);
+                //    bool isVinaphone = Array.Exists(VinaPrefixes, p => p == prefix);
+                //    //Nếu đầu số là vinaphone và ngày kh đủ 180 ngày thì chuyển qua 2Friends, nếu đủ 90 ngày thì chuyển qua 9368
+                //    if (isVinaphone && days.HasValue && days.Value >= 180)
+                //    {
+                //        var simPool = await _prefixController.GetSimTopupPool(new TranferMoneyReq()
+                //        {
+                //            phone_number = phone,
+                //            amount = currentTKC,
+                //            amount_left = minAccount,
+                //            type = TranferMoneyEnum.TWO_FRIENDS.ToString()
+                //        });
+                //        if (simPool != null)
+                //        {
+                //            SMSPorts.TryAdd(sp.PortName, new TranferMoneySMSPort()
+                //            {
+                //                history_id = simPool.history_id.ToString(),
+                //                message = simPool.message,
+                //            });
+                //            // Lấy thông tin mật khẩu của dịch vụ 2Friends của Vinaphone
+                //            sp.WriteLine($"AT+CMGS=\"222\"");
+                //            Thread.Sleep(500);
+                //            SendATCommand(sp, $"DK{(char)26}", 500);
+                //            return;
+                //        }
+                //    }
+                //}
 
                 //if (sp.PortName != "COM273") return;
 
