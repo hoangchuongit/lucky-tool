@@ -53,7 +53,7 @@ namespace LuckBurnTK
         private readonly PrefixNumberController _prefixController;
 
         /// Lock com để tránh timeout khi gửi lệnh AT
-        private readonly ConcurrentDictionary<string, SemaphoreSlim> _comLocks = new ConcurrentDictionary<string, SemaphoreSlim>();
+        private readonly ConcurrentDictionary<string, bool> _isCalling = new ConcurrentDictionary<string, bool>();
 
         private readonly string ApiKey;
 
@@ -1040,13 +1040,12 @@ namespace LuckBurnTK
             if (fullPortNames == null) return;
             foreach (var item in ComDataGrid)
             {
+                if (_isCalling.TryGetValue(item.COM, out var calling) && calling) continue;
+
                 var sp = SerialPorts.Find(x => x.PortName == item.COM);
                 if (sp == null) continue;
 
-                var sem = _comLocks.GetOrAdd(item.COM, _ => new SemaphoreSlim(1, 1));
-
-                // Nếu COM đang bận → bỏ qua tick này
-                if (!sem.Wait(0)) continue;
+                _isCalling[item.COM] = true;
 
                 _ = Task.Run(async () =>
                 {
@@ -1058,26 +1057,21 @@ namespace LuckBurnTK
                             sp.DiscardInBuffer();
                             sp.DiscardOutBuffer();
                             SendATCommand(sp, "AT+QCCID");
+                            return;
                         }
-                        else
-                        {
-                            var portCallExist = RecordingPorts.FirstOrDefault(x => x.Key == sp.PortName).Value;
-                            if (portCallExist != null)
-                            {
+                        var call = RecordingPorts.TryGetValue(sp.PortName, out var c) ? c : null;
+                        if (call == null) return;
+                        bool timeout = DateTime.Now - call.start_call > TimeSpan.FromSeconds(call.call_duration);
 
-                                bool greaterThanDuation = (DateTime.Now - portCallExist.start_call).Duration() > TimeSpan.FromSeconds(portCallExist.call_duration);
-                                if (greaterThanDuation)
-                                {
-                                    SendATCommand(sp, "ATH");
-                                    //Thread.Sleep(10000);
-                                    await Task.Delay(10000);
-                                    sp.DiscardInBuffer();
-                                    sp.DiscardOutBuffer();
-                                    // Tiếp tục đốt
-                                    SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
-                                }
-                            }
-                        }
+                        if (!timeout) return;
+
+                        SendATCommand(sp, "ATH");
+                        await Task.Delay(10000);
+
+                        sp.DiscardInBuffer();
+                        sp.DiscardOutBuffer();
+
+                        SendATCommand(sp, "AT+CUSD=1,\"*101#\",15");
                     }
                     catch (Exception ex)
                     {
@@ -1096,7 +1090,7 @@ namespace LuckBurnTK
                     }
                     finally
                     {
-                        sem.Release();
+                        _isCalling[item.COM] = false;
                     }
                 });
             }
