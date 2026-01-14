@@ -54,6 +54,7 @@ namespace LuckBurnTK
 
         /// Lock com để tránh timeout khi gửi lệnh AT
         private readonly ConcurrentDictionary<string, bool> _isCalling = new ConcurrentDictionary<string, bool>();
+        private readonly ConcurrentDictionary<string, int> _callingSkipCount = new ConcurrentDictionary<string, int>();
 
         private readonly string ApiKey;
 
@@ -305,6 +306,8 @@ namespace LuckBurnTK
                     {
                         RecordingPorts.TryRemove(sp.PortName, out _);
                         RecordingCOMs.TryRemove(sp.PortName, out _);
+                        _isCalling.TryRemove(sp.PortName, out _);
+                        _callingSkipCount.TryRemove(sp.PortName, out _);
                     }
                     UpdateComData(sp.PortName, dto =>
                     {
@@ -503,6 +506,8 @@ namespace LuckBurnTK
                 {
                     RecordingPorts.TryRemove(sp.PortName, out _);
                     RecordingCOMs.TryRemove(sp.PortName, out _);
+                    _isCalling.TryRemove(sp.PortName, out _);
+                    _callingSkipCount.TryRemove(sp.PortName, out _);
                 }
 
                 //if (sp.PortName != "COM273") return;
@@ -1040,7 +1045,13 @@ namespace LuckBurnTK
             if (fullPortNames == null) return;
             foreach (var item in ComDataGrid)
             {
-                if (_isCalling.TryGetValue(item.COM, out var calling) && calling) continue;
+                if (_isCalling.TryGetValue(item.COM, out var calling) && calling)
+                {
+                    int skip = _callingSkipCount.AddOrUpdate(item.COM, 1, (_, old) => old + 1);
+                    if (skip < 2) continue;
+                    logger.Warn($"[{item.COM}] bỏ qua quá 2 lần → cưỡng chế ATH");
+                    _callingSkipCount[item.COM] = 0;
+                }
 
                 var sp = SerialPorts.Find(x => x.PortName == item.COM);
                 if (sp == null) continue;
@@ -1091,6 +1102,7 @@ namespace LuckBurnTK
                     finally
                     {
                         _isCalling[item.COM] = false;
+                        _callingSkipCount[item.COM] = 0;
                     }
                 });
             }
