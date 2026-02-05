@@ -867,7 +867,7 @@ namespace LuckBurnTK
 
         private void BurnTKForm_Load(object sender, EventArgs e)
         {
-            Text = $"Luck Burn - {Application.ProductVersion}";
+            Text = $"Luck 7539 - {Application.ProductVersion}";
         }
 
         private void GvCOM_MouseDown(object sender, MouseEventArgs e)
