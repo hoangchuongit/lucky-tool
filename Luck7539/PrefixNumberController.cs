@@ -37,7 +37,7 @@ namespace LuckBurnTK
             {
                 string jsonData = JsonConvert.SerializeObject(req);
                 var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync("sms-call-center/get-prefix-number", content);
+                var response = await _httpClient.PostAsync("sms-call-center/get-prefix-number-7539", content);
                 if (response.IsSuccessStatusCode)
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();
