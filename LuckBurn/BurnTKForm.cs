@@ -198,7 +198,7 @@ namespace LuckBurnTK
             MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
             //AppendLogToMemo(sp.PortName, MessageCOMs[sp.PortName]);
             //if (sp.PortName == "COM278")
-            Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
+            //Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
             //logger.Info(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
 
             // Nếu cổng COM chưa nằm trong danh sách ghi âm thì bổ sung vào danh sách. Nếu đã có thì ghi nối tiếp dữ liệu
@@ -460,7 +460,7 @@ namespace LuckBurnTK
         private async Task SmsOrCallWithPrefix(SerialPort sp)
         {
             // Lấy số tiền min để lại trên tài khoản
-            int minAccount = int.Parse(txtMinAccountControl.Text.Replace(".", string.Empty));
+            int minAccount = (int)Convert.ToDecimal(txtMinAccountControl.EditValue);
             int currentTKC = 0;
             try
             {

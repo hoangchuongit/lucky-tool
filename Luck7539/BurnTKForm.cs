@@ -39,15 +39,9 @@ namespace LuckBurnTK
 
         private readonly PrefixNumberController _prefixController;
 
-        private readonly string ApiKey;
-
-        private readonly string DateCurrent;
-
-        public BurnTKForm(string apikey, string dateCurrent)
+        public BurnTKForm(string apikey)
         {
             InitializeComponent();
-            ApiKey = apikey;
-            DateCurrent = dateCurrent;
             _prefixController = new PrefixNumberController(apikey);
             InitializeControls();
         }
@@ -164,6 +158,8 @@ namespace LuckBurnTK
 
         private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
+            try
+            {
             SerialPort sp = (SerialPort)sender;
             byte[] buffer = new byte[sp.BytesToRead];
             int bytesRead = 0;
@@ -178,17 +174,10 @@ namespace LuckBurnTK
 
             MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
             //AppendLogToMemo(sp.PortName, MessageCOMs[sp.PortName]);
-            //if (sp.PortName == "COM278")
+            //if (sp.PortName != "COM83") return;
             //Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
             //logger.Info(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
 
-
-            // Có cuộc gọi đến thì cancel
-            if (MessageCOMs[sp.PortName].Contains("RING"))
-            {
-                SendATCommand(sp, "ATH");
-                MessageCOMs[sp.PortName] = string.Empty;
-            }
 
             // Lắng nghe trạng thái sim đã sẵn sàng để làm việc chưa?
             ListenEventSIMStatus(sp);
@@ -210,6 +199,12 @@ namespace LuckBurnTK
 
             // Lắng nghe phản hồi của tin nhắn SMS
             ListenEventSmsResponse(sp);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private void SerialPort_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
@@ -406,7 +401,7 @@ namespace LuckBurnTK
         private async Task SmsOrCallWithPrefix(SerialPort sp)
         {
             // Lấy số tiền min để lại trên tài khoản
-            int minAccount = int.Parse(txtMinAccountControl.Text.Replace(".", string.Empty));
+            int minAccount = (int)Convert.ToDecimal(txtMinAccountControl.EditValue);
             int currentTKC = 0;
             try
             {
