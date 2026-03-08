@@ -26,61 +26,6 @@ namespace LuckBurnTK
             ViewReport();
         }
 
-        private void BtnXuatExcel_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                // Kiểm tra nếu không có dữ liệu thì yêu cầu tải dữ liệu trước
-                if (gvReport.RowCount == 0)
-                {
-                    XtraMessageBox.Show("Không có dữ liệu để xuất. Vui lòng ấn nút Xem để tải dữ liệu trước.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                using (SaveFileDialog saveDialog = new SaveFileDialog())
-                {
-                    saveDialog.Filter = "Excel files (*.xlsx)|*.xlsx";
-                    saveDialog.FileName = $"Luck_Burn_{DateTime.Now:dd_MM_yyyy}.xlsx";
-
-                    if (saveDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        // Hiển thị thông báo đang xuất
-                        Cursor = Cursors.WaitCursor;
-                        Application.DoEvents();
-
-                        // Cấu hình xuất file Excel
-                        XlsxExportOptionsEx options = new XlsxExportOptionsEx
-                        {
-                            SheetName = $"Luck_Burn",
-                            ExportType = ExportType.WYSIWYG, // Giữ nguyên định dạng hiển thị
-                            AllowGrouping = DevExpress.Utils.DefaultBoolean.True, // Xuất luôn phần nhóm
-                            ShowGridLines = true, // Hiển thị đường lưới
-                            AllowFixedColumnHeaderPanel = DevExpress.Utils.DefaultBoolean.False
-                        };
-
-                        gvReport.BestFitColumns();
-                        // Xuất dữ liệu từ GridView
-                        gvReport.ExportToXlsx(saveDialog.FileName, options);
-
-                        // Trả lại con trỏ bình thường
-                        Cursor = Cursors.Default;
-
-                        // Thông báo thành công
-                        XtraMessageBox.Show("Xuất Excel thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                        // Mở file Excel sau khi xuất
-                        if (XtraMessageBox.Show("Bạn có muốn mở file Excel?", "Mở file báo cáo", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                            Process.Start(saveDialog.FileName);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Cursor = Cursors.Default;
-                XtraMessageBox.Show($"Lỗi xuất Excel: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
         private async void ViewReport()
         {
             try

@@ -33,7 +33,6 @@ namespace LuckBurnTK
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Report));
             this.panelControl1 = new DevExpress.XtraEditors.PanelControl();
             this.txtFromDate = new DevExpress.XtraEditors.DateEdit();
-            this.btnXuatExcel = new DevExpress.XtraEditors.SimpleButton();
             this.btnXemBaoCao = new DevExpress.XtraEditors.SimpleButton();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.panelControl2 = new DevExpress.XtraEditors.PanelControl();
@@ -109,7 +108,6 @@ namespace LuckBurnTK
             this.panelControl1.Appearance.Options.UseBackColor = true;
             this.panelControl1.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             this.panelControl1.Controls.Add(this.txtFromDate);
-            this.panelControl1.Controls.Add(this.btnXuatExcel);
             this.panelControl1.Controls.Add(this.btnXemBaoCao);
             this.panelControl1.Controls.Add(this.labelControl1);
             this.panelControl1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -136,27 +134,6 @@ namespace LuckBurnTK
             this.txtFromDate.Properties.VistaDisplayMode = DevExpress.Utils.DefaultBoolean.False;
             this.txtFromDate.Size = new System.Drawing.Size(120, 22);
             this.txtFromDate.TabIndex = 6;
-            // 
-            // btnXuatExcel
-            // 
-            this.btnXuatExcel.Appearance.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnXuatExcel.Appearance.Options.UseFont = true;
-            this.btnXuatExcel.Appearance.Options.UseTextOptions = true;
-            this.btnXuatExcel.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            this.btnXuatExcel.Appearance.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            this.btnXuatExcel.AppearanceHovered.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
-            this.btnXuatExcel.AppearanceHovered.Options.UseFont = true;
-            this.btnXuatExcel.ButtonStyle = DevExpress.XtraEditors.Controls.BorderStyles.HotFlat;
-            this.btnXuatExcel.ImageOptions.AllowGlyphSkinning = DevExpress.Utils.DefaultBoolean.False;
-            this.btnXuatExcel.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnXuatExcel.ImageOptions.Image")));
-            this.btnXuatExcel.ImageOptions.Location = DevExpress.XtraEditors.ImageLocation.MiddleLeft;
-            this.btnXuatExcel.Location = new System.Drawing.Point(338, 6);
-            this.btnXuatExcel.Name = "btnXuatExcel";
-            this.btnXuatExcel.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.btnXuatExcel.Size = new System.Drawing.Size(120, 22);
-            this.btnXuatExcel.TabIndex = 3;
-            this.btnXuatExcel.Text = "Xuất Excel";
-            this.btnXuatExcel.Click += new System.EventHandler(this.BtnXuatExcel_Click);
             // 
             // btnXemBaoCao
             // 
@@ -1127,7 +1104,6 @@ namespace LuckBurnTK
         private DevExpress.XtraEditors.PanelControl panelControl1;
         private DevExpress.XtraEditors.SimpleButton btnXemBaoCao;
         private DevExpress.XtraEditors.LabelControl labelControl1;
-        private DevExpress.XtraEditors.SimpleButton btnXuatExcel;
         private DevExpress.XtraEditors.DateEdit txtFromDate;
         private DevExpress.XtraEditors.PanelControl panelControl2;
         private DevExpress.XtraEditors.PanelControl panelControl11;
