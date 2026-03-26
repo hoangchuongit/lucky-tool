@@ -11,7 +11,7 @@ namespace LuckBurnTK.Utils
 {
     public class Common
     {
-#if !DEBUG
+#if DEBUG
         public static string UrlBurnAUTH = "https://luckburn.mobi/auth/";
         public static string UrlBurnAPI = "https://luckburn.mobi/api/";
 #else
