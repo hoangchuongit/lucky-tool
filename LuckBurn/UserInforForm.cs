@@ -29,7 +29,7 @@ namespace LuckBurnTK
         {
             try
             {
-                HttpResponseMessage response = await _httpClient.GetAsync("auth/get-info");
+                HttpResponseMessage response = await _httpClient.GetAsync("get-info");
                 if (response.IsSuccessStatusCode)
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();

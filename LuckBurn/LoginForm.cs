@@ -31,7 +31,7 @@ namespace LuckBurnTK
 
         private void LoginForm_Load(object sender, EventArgs e)
         {
-            Text = $"Luck Burn - {Application.ProductVersion}";
+            Text = $"Metahub - {Application.ProductVersion}";
         }
 
         private async void BtnLogin_Click(object sender, EventArgs e)

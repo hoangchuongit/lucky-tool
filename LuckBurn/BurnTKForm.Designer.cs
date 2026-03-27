@@ -1347,7 +1347,7 @@
             this.LookAndFeel.UseDefaultLookAndFeel = false;
             this.Name = "BurnTKForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Luck Burn";
+            this.Text = "MetaHub";
             this.Load += new System.EventHandler(this.BurnTKForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.barManager)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).EndInit();

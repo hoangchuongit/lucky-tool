@@ -1189,7 +1189,7 @@ namespace LuckBurnTK
                         var sms = SMSPorts.FirstOrDefault(x => x.Key == sp.PortName).Value;
                         if (sms != null)
                         {
-                            bool greaterThan15s = (DateTime.Now - sms.start_time).Duration() > TimeSpan.FromSeconds(45);
+                            bool greaterThan15s = (DateTime.Now - sms.start_time).Duration() > TimeSpan.FromSeconds(75);
                             if (greaterThan15s)
                             {
                                 sp.DiscardInBuffer();
@@ -1260,7 +1260,7 @@ namespace LuckBurnTK
 
         private void BurnTKForm_Load(object sender, EventArgs e)
         {
-            Text = $"Luck Burn - {Application.ProductVersion}";
+            Text = $"Metahub - {Application.ProductVersion}";
         }
 
         private void BarBtnRule_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)

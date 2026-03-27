@@ -153,7 +153,7 @@
             this.MinimizeBox = false;
             this.Name = "LoginForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Luck Burn";
+            this.Text = "Metahub";
             this.Load += new System.EventHandler(this.LoginForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.chkRememberMe.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtPassword.Properties)).EndInit();
