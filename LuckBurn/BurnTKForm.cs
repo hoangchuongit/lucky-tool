@@ -312,6 +312,8 @@ namespace LuckBurnTK
                         _isCalling.TryRemove(sp.PortName, out _);
                         _callingSkipCount.TryRemove(sp.PortName, out _);
                     }
+                    // loại bỏ dữ liệu sms cũ của cổng COM
+                    if (SMSPorts.ContainsKey(sp.PortName)) SMSPorts.TryRemove(sp.PortName, out _);
                     UpdateComData(sp.PortName, dto =>
                     {
                         dto.ICCID = string.Empty;
@@ -512,6 +514,8 @@ namespace LuckBurnTK
                     _isCalling.TryRemove(sp.PortName, out _);
                     _callingSkipCount.TryRemove(sp.PortName, out _);
                 }
+                // loại bỏ dữ liệu sms cũ của cổng COM
+                if (SMSPorts.ContainsKey(sp.PortName)) SMSPorts.TryRemove(sp.PortName, out _);
 
                 //if (sp.PortName != "COM273") return;
 
@@ -1189,13 +1193,14 @@ namespace LuckBurnTK
                         var sms = SMSPorts.FirstOrDefault(x => x.Key == sp.PortName).Value;
                         if (sms != null)
                         {
-                            bool greaterThan15s = (DateTime.Now - sms.start_time).Duration() > TimeSpan.FromSeconds(75);
-                            if (greaterThan15s)
+                            bool greaterThan75s = (DateTime.Now - sms.start_time).Duration() > TimeSpan.FromSeconds(75);
+                            if (greaterThan75s)
                             {
                                 sp.DiscardInBuffer();
                                 sp.DiscardOutBuffer();
                                 // Tiếp tục đốt
                                 SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
+                                return;
                             }
                         }
 
@@ -1213,6 +1218,7 @@ namespace LuckBurnTK
                             sp.DiscardOutBuffer();
 
                             SendATCommand(sp, "AT+CUSD=1,\"*101#\",15");
+                            return;
                         }
                     }
                     catch (Exception ex)
