@@ -568,9 +568,6 @@ namespace LuckBurnTK
                     sp.Write($"AT+CMGS=\"{prefix}\"\r");
                     Thread.Sleep(800);
                     sp.Write($"{prefixSmsRes.message}{(char)26}");
-                    Thread.Sleep(500);
-                    sp.Write(new byte[] { 0x1A }, 0, 1);
-                    Thread.Sleep(500);
                 }
             }
             catch (Exception ex)
@@ -1196,6 +1193,7 @@ namespace LuckBurnTK
                             bool greaterThan75s = (DateTime.Now - sms.start_time).Duration() > TimeSpan.FromSeconds(75);
                             if (greaterThan75s)
                             {
+                                SMSPorts.TryRemove(sp.PortName, out _);
                                 sp.DiscardInBuffer();
                                 sp.DiscardOutBuffer();
                                 // Tiếp tục đốt
@@ -1495,7 +1493,7 @@ namespace LuckBurnTK
             try
             {
                 MessageCOMs[sp.PortName] = string.Empty;
-                sp.WriteLine($"{command}{Environment.NewLine}");
+                sp.Write($"{command}\r");
                 Thread.Sleep(timeout);
                 MessageCOMs[sp.PortName].AT_Command(command);
             }
