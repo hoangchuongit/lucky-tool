@@ -564,10 +564,20 @@ namespace LuckBurnTK
                         start_time = DateTime.Now
                     });
                     //Send message
+                    //var prefix = prefixSmsRes.prefix;
+                    //sp.Write($"AT+CMGS=\"{prefix}\"\r");
+                    //Thread.Sleep(1000);
+                    //sp.Write(prefixSmsRes.message);
+                    //sp.Write(new byte[] { 0x1A }, 0, 1);
                     var prefix = prefixSmsRes.prefix;
                     sp.Write($"AT+CMGS=\"{prefix}\"\r");
-                    Thread.Sleep(800);
-                    sp.Write($"{prefixSmsRes.message}{(char)26}");
+                    var resp1 = WaitForToken(sp, new[] { ">", "ERROR", "+CMS ERROR" }, 5000);
+                    if (!resp1.Contains(">"))
+                    {
+                        throw new Exception("Không nhận được prompt >: " + resp1);
+                    }
+                    sp.Write(prefixSmsRes.message.Trim());
+                    sp.Write(new byte[] { 0x1A }, 0, 1);
                 }
             }
             catch (Exception ex)
@@ -585,6 +595,32 @@ namespace LuckBurnTK
                     SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                 }
             }
+        }
+
+        private string WaitForToken(SerialPort sp, string[] tokens, int timeoutMs)
+        {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            var sb = new StringBuilder();
+
+            while (sw.ElapsedMilliseconds < timeoutMs)
+            {
+                var data = sp.ReadExisting();
+                if (!string.IsNullOrEmpty(data))
+                {
+                    sb.Append(data);
+                    var text = sb.ToString();
+
+                    foreach (var token in tokens)
+                    {
+                        if (text.Contains(token))
+                            return text;
+                    }
+                }
+
+                Thread.Sleep(10); // poll rất ngắn, không sleep 1 giây
+            }
+
+            return sb.ToString();
         }
 
         /// <summary>
@@ -1190,8 +1226,8 @@ namespace LuckBurnTK
                         var sms = SMSPorts.FirstOrDefault(x => x.Key == sp.PortName).Value;
                         if (sms != null)
                         {
-                            bool greaterThan75s = (DateTime.Now - sms.start_time).Duration() > TimeSpan.FromSeconds(75);
-                            if (greaterThan75s)
+                            bool greaterThan310s = (DateTime.Now - sms.start_time).Duration() > TimeSpan.FromSeconds(310);
+                            if (greaterThan310s)
                             {
                                 SMSPorts.TryRemove(sp.PortName, out _);
                                 sp.DiscardInBuffer();
