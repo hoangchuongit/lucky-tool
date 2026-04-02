@@ -105,7 +105,7 @@ namespace LuckCheck
                     ICCID = string.Empty,
                     PhoneNumber = string.Empty,
                     TKChinh = 0,
-                    Message101 = string.Empty,
+                    Message = string.Empty,
                 };
                 ComDataGrid.Add(data);
             }
@@ -132,7 +132,7 @@ namespace LuckCheck
             }
             catch (Exception ex)
             {
-                UpdateComData(sp.PortName, dto => dto.Message101 = $"Error InitializeModem: {ex.Message}", "Message101");
+                UpdateComData(sp.PortName, dto => dto.Message = $"Error InitializeModem: {ex.Message}", "Message");
             }
         }
 
@@ -187,8 +187,8 @@ namespace LuckCheck
                 dto.PhoneNumber = string.Empty;
                 dto.HSD = string.Empty;
                 dto.TKChinh = 0;
-                dto.Message101 = "";
-            }, "PhoneNumber", "HSD", "TKChinh", "Message101");
+                dto.Message = "";
+            }, "PhoneNumber", "HSD", "TKChinh", "Message");
         }
 
         /// <summary>
@@ -212,13 +212,13 @@ namespace LuckCheck
                         dto.PhoneNumber = string.Empty;
                         dto.HSD = string.Empty;
                         dto.TKChinh = 0;
-                        dto.Message101 = string.Empty;
-                    }, "ICCID", "PhoneNumber", "HSD", "TKChinh", "Message101");
+                        dto.Message = string.Empty;
+                    }, "ICCID", "PhoneNumber", "HSD", "TKChinh", "Message");
                 }
                 catch (Exception ex)
                 {
                     logger.Error($"Tháo SIM thất bại: {ex.Message}");
-                    UpdateComData(sp.PortName, dto => dto.Message101 = "Tháo sim thất bại!", "Message101");
+                    UpdateComData(sp.PortName, dto => dto.Message = "Tháo sim thất bại!", "Message");
                 }
             }
 
@@ -237,7 +237,7 @@ namespace LuckCheck
                 catch (Exception ex)
                 {
                     logger.Error($"Cắm SIM thất bại: {ex.Message}");
-                    UpdateComData(sp.PortName, dto => dto.Message101 = "Cắm sim thất bại!", "Message101");
+                    UpdateComData(sp.PortName, dto => dto.Message = "Cắm sim thất bại!", "Message");
                 }
             }
 
@@ -297,7 +297,7 @@ namespace LuckCheck
                     // Lấy đầy đủ thông tin tin nhắn đến
                     var mess2 = mess.Split('\"')[1];
                     //var mess2 = "xin chao 09285945821. goi cuoc thoai & sms2. goi cuoc data3. dv de lai cuoc goi nho";
-                    UpdateComData(sp.PortName, dto => dto.Message101 = mess2, "Message101");
+                    UpdateComData(sp.PortName, dto => dto.Message = mess2, "Message");
                     // Lấy số điện thoại từ tin nhắn gửi về
                     var phoneStr = mess2.Replace("\"", string.Empty).Replace("1. goi", " ");
                     if (string.IsNullOrEmpty(phoneStr)) return;
@@ -331,14 +331,14 @@ namespace LuckCheck
                 {
                     var mess = MessageCOMs[sp.PortName].AT_Command("AT+EGMR=");
                     MessageCOMs[sp.PortName] = string.Empty;
-                    UpdateComData(sp.PortName, dto => dto.Message101 = "Thay đổi IMEI cổng COM thành công. Chờ 5s.", "Message101");
+                    UpdateComData(sp.PortName, dto => dto.Message = "Thay đổi IMEI cổng COM thành công. Chờ 5s.", "Message");
                     Thread.Sleep(5000);
                     SendATCommand(sp, "AT+QCCID");
                 }
             }
             catch (Exception)
             {
-                UpdateComData(sp.PortName, dto => dto.Message101 = "Thay đổi IMEI thất bại. thử lại sau 10s.", "Message101");
+                UpdateComData(sp.PortName, dto => dto.Message = "Thay đổi IMEI thất bại. thử lại sau 10s.", "Message");
                 Thread.Sleep(10000);
                 SendATCommand(sp, "AT+EGMR=1,7,\"" + Common.GenerateIMEI() + "\"\r\n");
             }
@@ -376,16 +376,16 @@ namespace LuckCheck
                             string hsd = Common.ExtractHanSD(messData);
                             // Hiển thị tin nhắn trong Message
                             if(string.IsNullOrEmpty(hsd))
-                                UpdateComData(sp.PortName, dto => dto.Message101 = messData.ToString(), "Message101");
+                                UpdateComData(sp.PortName, dto => dto.Message = messData.ToString(), "Message");
                             else 
-                                UpdateComData(sp.PortName, dto => { dto.Message101 = messData.ToString(); dto.HSD = hsd; }, "Message101", "HSD");
+                                UpdateComData(sp.PortName, dto => { dto.Message = messData.ToString(); dto.HSD = hsd; }, "Message", "HSD");
                         }
                     }
                 }
             }
             catch (Exception)
             {
-                UpdateComData(sp.PortName, dto => { dto.Message101 = ""; }, "Message101", "IsFinish");
+                UpdateComData(sp.PortName, dto => { dto.Message = ""; }, "Message", "IsFinish");
             }
         }
 
@@ -408,14 +408,14 @@ namespace LuckCheck
                         SendATCommand(sp, "ATH", 5000);
                         MessageCOMs[sp.PortName] = string.Empty;
                         // Hiển thị tin nhắn trong Message
-                        UpdateComData(sp.PortName, dto => dto.Message101 = $"Số điện thoại gọi đến: {phoneCall}", "Message101");
+                        UpdateComData(sp.PortName, dto => dto.Message = $"Số điện thoại gọi đến: {phoneCall}", "Message");
                     }
                 }
             }
             catch (Exception ex)
             {
                 logger.Error($"[{sp.PortName}] - ListenEventCallResponse Error: {ex.Message}");
-                UpdateComData(sp.PortName, dto => dto.Message101 = $"Lỗi: Nhận cuộc gọi thất bại: {ex.Message}", "Message");
+                UpdateComData(sp.PortName, dto => dto.Message = $"Lỗi: Nhận cuộc gọi thất bại: {ex.Message}", "Message");
             }
         }
 
@@ -484,7 +484,7 @@ namespace LuckCheck
                         {
                             if (!sp.IsOpen) sp.Open();
                             SendATCommand(sp, "AT+EGMR=1,7,\"" + Common.GenerateIMEI() + "\"\r\n");
-                            UpdateComData(sp.PortName, dto => dto.Message101 = "Đổi IMEI cổng COM...", "Message101");
+                            UpdateComData(sp.PortName, dto => dto.Message = "Đổi IMEI cổng COM...", "Message");
                         }
                         catch (Exception ex)
                         {
@@ -517,8 +517,8 @@ namespace LuckCheck
                                 dto.PhoneNumber = string.Empty;
                                 dto.HSD = string.Empty;
                                 dto.TKChinh = 0;
-                                dto.Message101 = "Reset cổng COM";
-                            }, "ICCID", "PhoneNumber", "HSD", "TKChinh", "Message101");
+                                dto.Message = "Reset cổng COM";
+                            }, "ICCID", "PhoneNumber", "HSD", "TKChinh", "Message");
                             SendATCommand(sp, "AT+QURCCFG=\"urcport\",\"uart1\"");
                             // Module được thiết lập để sử dụng chế độ "Auto Baud Rate Detection" (Tự động nhận diện tốc độ truyền).
                             SendATCommand(sp, "AT+IPR=0");
@@ -566,8 +566,8 @@ namespace LuckCheck
                                 dto.PhoneNumber = string.Empty;
                                 dto.HSD = string.Empty;
                                 dto.TKChinh = 0;
-                                dto.Message101 = "Khôi phục cài đặt gốc cổng COM";
-                            }, "ICCID", "PhoneNumber", "HSD", "TKChinh", "Message101");
+                                dto.Message = "Khôi phục cài đặt gốc cổng COM";
+                            }, "ICCID", "PhoneNumber", "HSD", "TKChinh", "Message");
                             SendATCommand(sp, "AT&F", 60000);
                             //
                             SendATCommand(sp, "AT+QURCCFG=\"urcport\",\"uart1\"");
@@ -626,8 +626,8 @@ namespace LuckCheck
                             dto.PhoneNumber = "COM ERROR";
                             dto.HSD = "COM ERROR";
                             dto.TKChinh = 0;
-                            dto.Message101 = "COM ERROR. Đảm bảo các cổng COM không có dấu chấm than. This PC > Manager > Device Manager > Ports (COM & LPT)";
-                        }, "ICCID", "PhoneNumber", "HSD", "TKChinh", "Message101");
+                            dto.Message = "COM ERROR. Đảm bảo các cổng COM không có dấu chấm than. This PC > Manager > Device Manager > Ports (COM & LPT)";
+                        }, "ICCID", "PhoneNumber", "HSD", "TKChinh", "Message");
                     }
                 });
             }
@@ -663,8 +663,8 @@ namespace LuckCheck
                             if (!sp.IsOpen) sp.Open();
                             UpdateComData(sp.PortName, dto =>
                             {
-                                dto.TKChinh = 0; dto.Message101 = "";
-                            }, "TKChinh", "Message101");
+                                dto.TKChinh = 0; dto.Message = "";
+                            }, "TKChinh", "Message");
                             SendATCommand(sp, $"AT+CUSD=1,\"*101#\",15");
                         }
                         catch (Exception ex)
@@ -697,8 +697,8 @@ namespace LuckCheck
                                 dto.PhoneNumber = string.Empty;
                                 dto.HSD = string.Empty;
                                 dto.TKChinh = 0;
-                                dto.Message101 = "Reset cổng COM";
-                            }, "ICCID", "PhoneNumber", "HSD", "TKChinh", "Message101");
+                                dto.Message = "Reset cổng COM";
+                            }, "ICCID", "PhoneNumber", "HSD", "TKChinh", "Message");
                             SendATCommand(sp, "AT+QURCCFG=\"urcport\",\"uart1\"");
                             // Module được thiết lập để sử dụng chế độ "Auto Baud Rate Detection" (Tự động nhận diện tốc độ truyền).
                             SendATCommand(sp, "AT+IPR=0");
@@ -742,7 +742,7 @@ namespace LuckCheck
                         try
                         {
                             if (!sp.IsOpen) sp.Open();
-                            UpdateComData(sp.PortName, dto => dto.Message101 = "Đổi IMEI cổng COM...", "Message101");
+                            UpdateComData(sp.PortName, dto => dto.Message = "Đổi IMEI cổng COM...", "Message");
                             SendATCommand(sp, "AT+EGMR=1,7,\"" + Common.GenerateIMEI() + "\"\r\n");
                         }
                         catch (Exception ex)
@@ -828,8 +828,8 @@ namespace LuckCheck
                             if (!sp.IsOpen) sp.Open();
                             UpdateComData(sp.PortName, dto =>
                             {
-                                dto.TKChinh = 0; dto.Message101 = "";
-                            }, "TKChinh", "Message101");
+                                dto.TKChinh = 0; dto.Message = "";
+                            }, "TKChinh", "Message");
                             SendATCommand(sp, $"AT+CUSD=2");
                             Thread.Sleep(2000);
                             SendATCommand(sp, $"AT+CUSD=1,\"*0#\",15");
