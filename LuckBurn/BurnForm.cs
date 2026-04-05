@@ -21,12 +21,9 @@ using static LuckBurnTK.Models.PrefixNumberDto;
 
 namespace LuckBurnTK
 {
-    public partial class BurnTKForm : XtraForm
+    public partial class BurnForm : XtraForm
     {
         private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
-        private readonly GuideFlyoutPanel panel;
-        private readonly int countLessons;
 
         /// Danh sách cổng COM
         private readonly List<SerialPort> SerialPorts = new List<SerialPort>();
@@ -61,11 +58,9 @@ namespace LuckBurnTK
 
         private readonly string ApiKey;
 
-        public BurnTKForm(string apikey)
+        public BurnForm(string apikey)
         {
             InitializeComponent();
-            countLessons = 5;
-            panel = new GuideFlyoutPanel(this, countLessons);
             ApiKey = apikey;
             _prefixController = new PrefixNumberController(apikey);
             InitializeControls();
@@ -742,57 +737,6 @@ namespace LuckBurnTK
         }
 
         /// <summary>
-        /// Khi có file upload lên thiết bị
-        /// </summary>
-        /// <param name="sp"></param>
-        private void ListenEventUploadAmrFileToDevice(SerialPort sp)
-        {
-            try
-            {
-                if (MessageCOMs[sp.PortName].Contains("+QFOPEN:") && MessageCOMs[sp.PortName].Contains("\nOK"))
-                {
-                    var mess = MessageCOMs[sp.PortName];
-                    MessageCOMs[sp.PortName] = string.Empty;
-
-                    string[] parts = mess.AT_Command("+QFOPEN").Split(':');
-                    int fd = int.Parse(parts[2].Trim());
-                    var fileToCOM = FileToCOMs[sp.PortName];
-                    fileToCOM.fd = fd;
-                    SendATCommand(sp, $"AT+QFWRITE={fd},{fileToCOM.data.Length},20\r\n");
-                }
-                else if (MessageCOMs[sp.PortName].Contains("+CME ERROR:") && MessageCOMs[sp.PortName].Contains("AT+QFOPEN="))
-                {
-                    var mess = MessageCOMs[sp.PortName];
-                    MessageCOMs[sp.PortName] = string.Empty;
-                    SendATCommand(sp, "AT+CFUN=1,1", 10000);
-                    var fileToCOM = FileToCOMs[sp.PortName];
-                    sp.DiscardInBuffer();
-                    sp.DiscardOutBuffer();
-                    SendATCommand(sp, $"AT+QFOPEN=\"RAM:content.amr\",0,{fileToCOM.data.Length}");
-                }
-                else if (MessageCOMs[sp.PortName].Contains("CONNECT") && MessageCOMs[sp.PortName].Contains("+QFWRITE"))
-                {
-                    //var mess = MessageCOMs[sp.PortName];
-                    //MessageCOMs[sp.PortName] = string.Empty;
-                    var fileToCOM = FileToCOMs[sp.PortName];
-                    sp.Write(fileToCOM.data, 0, fileToCOM.data.Length);
-                }
-                else if (MessageCOMs[sp.PortName].Contains("CONNECT") && MessageCOMs[sp.PortName].Contains("+QFWRITE:") && MessageCOMs[sp.PortName].Contains("\nOK"))
-                {
-                    var mess = MessageCOMs[sp.PortName];
-                    MessageCOMs[sp.PortName] = string.Empty;
-                    var fileToCOM = FileToCOMs[sp.PortName];
-                    SendATCommand(sp, $"AT+QFCLOSE={fileToCOM.fd}");
-                    FileToCOMs.TryRemove(sp.PortName, out _);
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error($"Error ListenEventUploadAmrFileToDevice: {ex.Message}");
-            }
-        }
-
-        /// <summary>
         /// Xử lý cuộc gọi đến tổng đài (tổng đài nhấc máy, ngắt máy,...)
         /// </summary>
         /// <param name="sp"></param>
@@ -1300,13 +1244,7 @@ namespace LuckBurnTK
 
         private void BurnTKForm_Load(object sender, EventArgs e)
         {
-            Text = $"Metahub - {Application.ProductVersion}";
-        }
-
-        private void BarBtnRule_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
-        {
-            var termForm = new TermForm();
-            termForm.ShowDialog();
+            Text = $"{Common.Title} - {Application.ProductVersion}";
         }
 
         private void GvCOM_MouseDown(object sender, MouseEventArgs e)
@@ -1459,21 +1397,6 @@ namespace LuckBurnTK
             LoadNotification();
         }
 
-        //private void AppendLogToMemo(string port, string message)
-        //{
-        //    if (MemoLog.InvokeRequired)
-        //    {
-        //        MemoLog.BeginInvoke(new Action(() =>
-        //        {
-        //            MemoLog.AppendText($"{port}: {message}\r\n");
-        //        }));
-        //    }
-        //    else
-        //    {
-        //        MemoLog.AppendText($"{port}: {message}\r\n");
-        //    }
-        //}
-
         private IEnumerable<Dictionary<string, string>> CheckComOnline()
         {
             var fullPortNames = Common.GetFullPortNames();
@@ -1538,77 +1461,5 @@ namespace LuckBurnTK
                 logger.Error($"[{sp.PortName}] SendATCommand: {ex.Message}");
             }
         }
-
-        #region Hướng dẫn sử dụng cho người dùng
-
-        private void HelpUI_QueryGuideFlyoutControl(object sender, DevExpress.Utils.VisualEffects.QueryGuideFlyoutControlEventArgs e)
-        {
-            e.Control = panel;
-        }
-
-        private void BarBtnHDSD_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
-        {
-            HelpUI.ShowGuides = DevExpress.Utils.DefaultBoolean.True;
-            SetLesson(panel.CurrentLessonIndex);
-        }
-
-        public void SetLesson(int index)
-        {
-            if (index < 0 || index > countLessons - 1) return;
-            switch (index)
-            {
-                case 0:
-                    FirstLesson(); break;
-                case 1:
-                    SecondLesson(); break;
-                case 2:
-                    ThirdLesson(); break;
-                case 3:
-                    FourthLesson(); break;
-                case 4:
-                    FifthLesson(); break;
-            }
-        }
-
-        public void EndTutorial()
-        {
-            HelpUI.ShowGuides = DevExpress.Utils.DefaultBoolean.False;
-        }
-
-        private void FirstLesson()
-        {
-            panel.LabelText = $"<b><size=10>Hạn mức nhỏ nhất</size></b><br><br>Giữ lại số tiền tương ứng trong tài khoản chính của thuê bao. Đảm bảo số dư tài khoản chính không nhỏ hơn hạn mức giữ lại</color>.";
-            guide1.TargetElement = txtMinAccountControl;
-        }
-
-        private void SecondLesson()
-        {
-            panel.LabelText = $"<b><size=10>Nút Burn</size></b><br><br>Khởi động Burn cho tất cả các thuê bao có trạng thái <color=red>\"Stop Burn\"</color>.";
-            guide1.TargetElement = BtnStartBurn;
-        }
-
-        private void ThirdLesson()
-        {
-            panel.LabelText = $"<b><size=10>Danh sách cổng COMs</size></b>" +
-                $"<br><br>Hiển thị thông tin thuê bao trên từng cổng COM.\n" +
-                $"Nếu các cột hiển thị <color=red>\"COM ERROR\"</color>, kiểm tra kết nối của các cổng COM với PC\n" +
-                $"<b>This PC > Manager > Device Manager > Ports (COM & LPT)</b>\n" +
-                $"Nếu hiển thị màu vàng với dấu chấm than thì hãy rút cổng COM trên PC ra và cắm lại, sau đó khởi động lại phần mềm.";
-            guide1.TargetElement = gcCOM;
-        }
-
-        private void FourthLesson()
-        {
-            panel.LabelText = $"<b><size=10>Thông báo</size></b><br><br>Hiển thị thông báo của hệ thống, tin khuyến mãi, phiên bản cập nhật...";
-            guide1.TargetElement = TxtNotification;
-        }
-
-        private void FifthLesson()
-        {
-            panel.LabelText = $"<b><size=10>PC COMs Online</size></b><br><br>Hiển thị số cổng COM đang kết nối với hệ thống. Nếu số cổng COM ít hơn ở danh sách, hãy kiểm tra lại kết nối của PC với cổng COM.";
-            guide1.TargetElement = BarPCCom;
-        }
-
-        #endregion Hướng dẫn sử dụng cho người dùng
     }
 }
