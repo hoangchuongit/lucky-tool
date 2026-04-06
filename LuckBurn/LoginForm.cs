@@ -1,5 +1,6 @@
 ﻿using DevExpress.XtraEditors;
 using LuckBurnTK.Utils;
+using LuckCheck;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
@@ -57,7 +58,11 @@ namespace LuckBurnTK
 
             try
             {
-                Cursor.Current = Cursors.WaitCursor;
+                if (email.Equals("admin"))
+                {
+                    XtraMessageBox.Show("Tài khoản không được phép sử dụng!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
                 var loginData = new { email, password };
                 string jsonData = JsonConvert.SerializeObject(loginData);
@@ -76,8 +81,19 @@ namespace LuckBurnTK
                     Properties.Settings.Default.RememberMe = chkRememberMe.Checked;
                     Properties.Settings.Default.Save();
                     Hide();
-                    var mainForm = new BurnForm(result.api_key.ToString());
-                    mainForm.ShowDialog();
+                    if (cbType.SelectedIndex == 0)
+                    {
+                        var checkToolForm = new CheckToolForm();
+                        checkToolForm.ShowDialog();
+                    }
+                    else if (cbType.SelectedIndex == 1)
+                    {
+                    }
+                    else if (cbType.SelectedIndex == 2)
+                    {
+                        var mainForm = new BurnForm(result.api_key.ToString());
+                        mainForm.ShowDialog();
+                    }
                     Close();
                 }
                 else
@@ -98,10 +114,6 @@ namespace LuckBurnTK
                 XtraMessageBox.Show($"Lỗi kết nối: {ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            finally
-            {
-                Cursor.Current = Cursors.Default;
-            }
         }
 
         protected override void OnLoad(EventArgs e)
@@ -119,7 +131,7 @@ namespace LuckBurnTK
                 txtEmail.Focus();
         }
 
-        private async void btnDangKy_Click(object sender, EventArgs e)
+        private async void BtnDangKy_Click(object sender, EventArgs e)
         {
             string email = txtEmail.Text.Trim();
             string password = txtPassword.Text.Trim();
@@ -142,7 +154,11 @@ namespace LuckBurnTK
 
             try
             {
-                Cursor.Current = Cursors.WaitCursor;
+                if (email.Equals("admin"))
+                {
+                    XtraMessageBox.Show("Tài khoản không được phép đăng ký!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
                 var loginData = new { email, password };
                 string jsonData = JsonConvert.SerializeObject(loginData);
@@ -158,7 +174,7 @@ namespace LuckBurnTK
                 {
                     string errorMessage = "Đăng ký thất bại. ";
                     if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                        errorMessage += "Tài khoản hoặc mật khẩu không đúng!";
+                        errorMessage += "Tài khoản hoặc mật khẩu đã được đăng ký!";
                     else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
                         errorMessage += "Dữ liệu đăng ký không hợp lệ!";
                     else
@@ -171,10 +187,6 @@ namespace LuckBurnTK
             {
                 XtraMessageBox.Show($"Lỗi kết nối: {ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                Cursor.Current = Cursors.Default;
             }
         }
     }

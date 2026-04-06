@@ -73,7 +73,6 @@ namespace LuckCheck
         {
             foreach (string port in portNames)
             {
-                //if (port != "COM14") return;
                 var regexPattern = $@"\b{Regex.Escape(port)}\b";
                 var isValid = fullPortNames.FirstOrDefault(x => Regex.IsMatch(x["Caption"], regexPattern, RegexOptions.IgnoreCase));
                 if (isValid == null) continue;
@@ -116,15 +115,24 @@ namespace LuckCheck
             {
                 if (sp == null) return;
                 if (!sp.IsOpen) sp.Open();
-                SendATCommand(sp, "AT+IPR=115200");
                 // Khởi động lại modem mà không thay đổi các cài đặt, chỉ tái thiết lập kết nối hoặc trạng thái của modem.
                 SendATCommand(sp, "ATZ");
+                // Đưa Baudrate về tốc độ  115200
+                SendATCommand(sp, "AT+IPR=115200");
                 // Đặt mã ký tự về ASCII
                 SendATCommand(sp, "AT+CSCS=\"GSM\"");
                 // Bật hoặc tắt chức năng Phát hiện thẻ SIM
                 SendATCommand(sp, "AT+QSIMDET=1,0");
                 // Kích hoạt chế độ thông báo sự kiện SIM
                 SendATCommand(sp, "AT+QSIMSTAT=1");
+                // bật Presentation of Calling Line (điều chỉnh trạng thái caller).
+                SendATCommand(sp, "AT+COLP=1");
+                // bật báo trạng thái hiện tại của cuộc gọi.
+                SendATCommand(sp, "AT+CLCC=1");
+                // cấu hình để modem báo các mã lỗi cuộc gọi như BUSY, NO CARRIER, v.v.
+                SendATCommand(sp, "ATX3");
+                // Lưu thay đổi
+                SendATCommand(sp, "AT&W");
                 // lấy ICCID của sim
                 SendATCommand(sp, "AT+QCCID");
             }

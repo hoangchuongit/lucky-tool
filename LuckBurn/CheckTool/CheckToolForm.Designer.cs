@@ -220,7 +220,7 @@
             // 
             // PopupResetCom
             // 
-            this.PopupResetCom.Caption = "Khởi động cổng COM";
+            this.PopupResetCom.Caption = "Khởi động lại";
             this.PopupResetCom.Id = 27;
             this.PopupResetCom.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("PopupResetCom.ImageOptions.Image")));
             this.PopupResetCom.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("PopupResetCom.ImageOptions.LargeImage")));
@@ -229,7 +229,7 @@
             // 
             // PopupChangeIMEI
             // 
-            this.PopupChangeIMEI.Caption = "Thay đổi IMEI cổng COM";
+            this.PopupChangeIMEI.Caption = "Thay đổi IMEI";
             this.PopupChangeIMEI.Id = 28;
             this.PopupChangeIMEI.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("PopupChangeIMEI.ImageOptions.Image")));
             this.PopupChangeIMEI.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("PopupChangeIMEI.ImageOptions.LargeImage")));
@@ -238,7 +238,7 @@
             // 
             // Popup101
             // 
-            this.Popup101.Caption = "*101#";
+            this.Popup101.Caption = "USSD *101#";
             this.Popup101.Id = 29;
             this.Popup101.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("Popup101.ImageOptions.Image")));
             this.Popup101.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("Popup101.ImageOptions.LargeImage")));
@@ -247,7 +247,7 @@
             // 
             // PopupSao0Thang
             // 
-            this.PopupSao0Thang.Caption = "*0#";
+            this.PopupSao0Thang.Caption = "USSD *0#";
             this.PopupSao0Thang.Id = 30;
             this.PopupSao0Thang.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("PopupSao0Thang.ImageOptions.Image")));
             this.PopupSao0Thang.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("PopupSao0Thang.ImageOptions.LargeImage")));

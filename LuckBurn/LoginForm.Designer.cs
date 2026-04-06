@@ -38,7 +38,7 @@
             this.panelControl1 = new DevExpress.XtraEditors.PanelControl();
             this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
             this.cbType = new DevExpress.XtraEditors.ComboBoxEdit();
-            this.btnDangKy = new DevExpress.XtraEditors.SimpleButton();
+            this.BtnDangKy = new DevExpress.XtraEditors.SimpleButton();
             ((System.ComponentModel.ISupportInitialize)(this.chkRememberMe.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtPassword.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtEmail.Properties)).BeginInit();
@@ -134,7 +134,7 @@
             this.panelControl1.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             this.panelControl1.Controls.Add(this.labelControl3);
             this.panelControl1.Controls.Add(this.cbType);
-            this.panelControl1.Controls.Add(this.btnDangKy);
+            this.panelControl1.Controls.Add(this.BtnDangKy);
             this.panelControl1.Controls.Add(this.txtEmail);
             this.panelControl1.Controls.Add(this.labelControl2);
             this.panelControl1.Controls.Add(this.txtPassword);
@@ -176,20 +176,20 @@
             this.cbType.Size = new System.Drawing.Size(260, 30);
             this.cbType.TabIndex = 16;
             // 
-            // btnDangKy
+            // BtnDangKy
             // 
-            this.btnDangKy.Appearance.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDangKy.Appearance.Options.UseFont = true;
-            this.btnDangKy.AppearanceHovered.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.btnDangKy.AppearanceHovered.Options.UseBackColor = true;
-            this.btnDangKy.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton1.ImageOptions.Image")));
-            this.btnDangKy.Location = new System.Drawing.Point(20, 203);
-            this.btnDangKy.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
-            this.btnDangKy.Name = "btnDangKy";
-            this.btnDangKy.Size = new System.Drawing.Size(125, 30);
-            this.btnDangKy.TabIndex = 15;
-            this.btnDangKy.Text = "ĐĂNG KÝ";
-            this.btnDangKy.Click += new System.EventHandler(this.btnDangKy_Click);
+            this.BtnDangKy.Appearance.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnDangKy.Appearance.Options.UseFont = true;
+            this.BtnDangKy.AppearanceHovered.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.BtnDangKy.AppearanceHovered.Options.UseBackColor = true;
+            this.BtnDangKy.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton1.ImageOptions.Image")));
+            this.BtnDangKy.Location = new System.Drawing.Point(20, 203);
+            this.BtnDangKy.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
+            this.BtnDangKy.Name = "BtnDangKy";
+            this.BtnDangKy.Size = new System.Drawing.Size(125, 30);
+            this.BtnDangKy.TabIndex = 15;
+            this.BtnDangKy.Text = "ĐĂNG KÝ";
+            this.BtnDangKy.Click += new System.EventHandler(this.BtnDangKy_Click);
             // 
             // LoginForm
             // 
@@ -229,7 +229,7 @@
         private DevExpress.XtraEditors.TextEdit txtPassword;
         private DevExpress.XtraEditors.TextEdit txtEmail;
         private DevExpress.XtraEditors.PanelControl panelControl1;
-        private DevExpress.XtraEditors.SimpleButton btnDangKy;
+        private DevExpress.XtraEditors.SimpleButton BtnDangKy;
         private DevExpress.XtraEditors.ComboBoxEdit cbType;
         private DevExpress.XtraEditors.LabelControl labelControl3;
     }

@@ -165,8 +165,6 @@ namespace LuckBurnTK
                 SendATCommand(sp, "ATX3");
                 // Lưu thay đổi
                 SendATCommand(sp, "AT&W");
-                // Modem
-                //SendATCommand(sp, "ATI");
                 // lấy ICCID của sim
                 SendATCommand(sp, "AT+QCCID");
             }
