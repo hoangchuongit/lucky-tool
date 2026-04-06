@@ -1,5 +1,4 @@
-﻿using DevExpress.Data.Extensions;
-using DevExpress.XtraEditors;
+﻿using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using LuckCheck.Model;
@@ -17,7 +16,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Input;
 
 namespace LuckCheck
 {
@@ -123,10 +121,29 @@ namespace LuckCheck
                 SendATCommand(sp, "ATZ");
                 // Đặt mã ký tự về ASCII
                 SendATCommand(sp, "AT+CSCS=\"GSM\"");
+                // Đặt chế độ quét mạng tự động
+                SendATCommand(sp, "AT+QCFG=\"nwscanmode\",0,1");
                 // Bật hoặc tắt chức năng Phát hiện thẻ SIM
                 SendATCommand(sp, "AT+QSIMDET=1,0");
                 // Kích hoạt chế độ thông báo sự kiện SIM
                 SendATCommand(sp, "AT+QSIMSTAT=1");
+
+                //// Bật báo lỗi bằng chữ thay vì mã số
+                //SendATCommand(sp, "AT+CMEE=2");
+                //SendATCommand(sp, "AT+QCFG=\"nwscanmode\"");
+                //SendATCommand(sp, "AT+CREG?");
+                //SendATCommand(sp, "AT+CGREG?");
+                //SendATCommand(sp, "AT+CEREG?");
+
+
+                //SendATCommand(sp, "AT+CPIN?");
+                //SendATCommand(sp, "AT+CSQ");
+                //SendATCommand(sp, "AT+COPS?");
+                //SendATCommand(sp, "AT+QNWINFO");
+                //SendATCommand(sp, "AT+CEER");
+                //SendATCommand(sp, "AT+CFUN?");
+                //SendATCommand(sp, "AT+COPS=0");
+
                 // lấy ICCID của sim
                 SendATCommand(sp, "AT+QCCID");
             }
@@ -152,7 +169,8 @@ namespace LuckCheck
 
             MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
             //AppendLogToMemo(sp.PortName, MessageCOMs[sp.PortName]);
-            Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
+            if (sp.PortName == "COM140")
+                Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
             //logger.Info(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
 
             // Có cuộc gọi đến
@@ -532,6 +550,8 @@ namespace LuckCheck
                             SendATCommand(sp, "AT+CFUN=1,1", 10000);
                             // Đặt mã ký tự về ASCII
                             SendATCommand(sp, "AT+CSCS=\"GSM\"");
+                            // Đặt chế độ quét mạng tự động
+                            SendATCommand(sp, "AT+QCFG=\"nwscanmode\",0,1");
                             // Đặt module về chế độ Text Mode (ASCII)
                             SendATCommand(sp, "AT+CMGF=1");
                             // Nhận tin nhắn dưới dạng văn bản
@@ -568,7 +588,7 @@ namespace LuckCheck
                                 dto.TKChinh = 0;
                                 dto.Message101 = "Khôi phục cài đặt gốc cổng COM";
                             }, "ICCID", "PhoneNumber", "HSD", "TKChinh", "Message101");
-                            SendATCommand(sp, "AT&F", 60000);
+                            SendATCommand(sp, "AT&F0", 500);
                             //
                             SendATCommand(sp, "AT+QURCCFG=\"urcport\",\"uart1\"");
                             // Module được thiết lập để sử dụng chế độ "Auto Baud Rate Detection" (Tự động nhận diện tốc độ truyền).
@@ -581,6 +601,8 @@ namespace LuckCheck
                             SendATCommand(sp, "AT&W");
                             // Đặt mã ký tự về ASCII
                             SendATCommand(sp, "AT+CSCS=\"GSM\"");
+                            // Đặt chế độ quét mạng tự động
+                            SendATCommand(sp, "AT+QCFG=\"nwscanmode\",0,1");
                             // Đặt module về chế độ Text Mode (ASCII)
                             SendATCommand(sp, "AT+CMGF=1");
                             // Nhận tin nhắn dưới dạng văn bản
@@ -712,6 +734,8 @@ namespace LuckCheck
                             SendATCommand(sp, "AT+CFUN=1,1", 10000);
                             // Đặt mã ký tự về ASCII
                             SendATCommand(sp, "AT+CSCS=\"GSM\"");
+                            // Đặt chế độ quét mạng tự động
+                            SendATCommand(sp, "AT+QCFG=\"nwscanmode\",0,1");
                             // Đặt module về chế độ Text Mode (ASCII)
                             SendATCommand(sp, "AT+CMGF=1");
                             // Nhận tin nhắn dưới dạng văn bản
@@ -802,7 +826,7 @@ namespace LuckCheck
             try
             {
                 MessageCOMs[sp.PortName] = string.Empty;
-                sp.WriteLine($"{command}{Environment.NewLine}");
+                sp.Write($"{command}\r");
                 Thread.Sleep(timeout);
                 MessageCOMs[sp.PortName].AT_Command(command);
             }
