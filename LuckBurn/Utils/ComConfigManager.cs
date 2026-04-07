@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace LuckBurnTK.Utils
+namespace LuckBurn.Utils
 {
     public class ComConfig
     {

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace LuckBurnTK.Properties {
+namespace LuckBurn.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -80,6 +80,18 @@ namespace LuckBurnTK.Properties {
             }
             set {
                 this["MinAccount"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int CBType {
+            get {
+                return ((int)(this["CBType"]));
+            }
+            set {
+                this["CBType"] = value;
             }
         }
     }

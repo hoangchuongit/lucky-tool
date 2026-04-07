@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LuckBurnTK.Models
+namespace LuckBurn.Models
 {
     public class PrefixNumberDto
     {

@@ -1,4 +1,4 @@
-﻿namespace LuckBurnTK
+﻿namespace LuckBurn
 {
     partial class LoginForm
     {
@@ -161,7 +161,7 @@
             // 
             // cbType
             // 
-            this.cbType.EditValue = "Nhận SMS (Hỗ trợ Voice To Text có phí)";
+            this.cbType.EditValue = "Nhận SMS";
             this.cbType.Location = new System.Drawing.Point(20, 141);
             this.cbType.Name = "cbType";
             this.cbType.Properties.Appearance.Font = new System.Drawing.Font("Verdana", 8F);
@@ -170,9 +170,8 @@
             this.cbType.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cbType.Properties.Items.AddRange(new object[] {
-            "Nhận SMS (Hỗ trợ Voice To Text có phí)",
-            "Phát sinh cước thường",
-            "Phát sinh cước cao"});
+            "Nhận SMS",
+            "Phát sinh cước"});
             this.cbType.Size = new System.Drawing.Size(260, 30);
             this.cbType.TabIndex = 16;
             // 
@@ -182,7 +181,7 @@
             this.BtnDangKy.Appearance.Options.UseFont = true;
             this.BtnDangKy.AppearanceHovered.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.BtnDangKy.AppearanceHovered.Options.UseBackColor = true;
-            this.BtnDangKy.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton1.ImageOptions.Image")));
+            this.BtnDangKy.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("BtnDangKy.ImageOptions.Image")));
             this.BtnDangKy.Location = new System.Drawing.Point(20, 203);
             this.BtnDangKy.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
             this.BtnDangKy.Name = "BtnDangKy";

@@ -1,13 +1,13 @@
 ﻿using DevExpress.XtraEditors;
-using LuckBurnTK.Utils;
+using LuckBurn.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Text;
 using System.Windows.Forms;
-using static LuckBurnTK.Models.PrefixNumberDto;
+using static LuckBurn.Models.PrefixNumberDto;
 
-namespace LuckBurnTK
+namespace LuckBurn
 {
     public partial class UserInforForm : XtraForm
     {

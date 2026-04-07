@@ -7,13 +7,13 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace LuckBurnTK.Utils
+namespace LuckBurn.Utils
 {
     public class Common
     {
 #if !DEBUG
-        public static string UrlBurnAUTH = "https://luckburn.mobi/auth/";
-        public static string UrlBurnAPI = "https://luckburn.mobi/api/";
+        public static string UrlBurnAUTH = "https://gmeta.io.vn/auth/";
+        public static string UrlBurnAPI = "https://gmeta.io.vn/api/";
 #else
         public static string UrlBurnAUTH = "http://localhost:3000/";
         public static string UrlBurnAPI = "http://localhost:3001/";

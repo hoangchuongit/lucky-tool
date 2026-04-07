@@ -1,5 +1,5 @@
 ﻿using DevExpress.XtraEditors;
-using LuckBurnTK.Utils;
+using LuckBurn.Utils;
 using LuckCheck;
 using Newtonsoft.Json;
 using System;
@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Windows.Forms;
 
-namespace LuckBurnTK
+namespace LuckBurn
 {
     public partial class LoginForm : XtraForm
     {
@@ -79,6 +79,7 @@ namespace LuckBurnTK
                     Properties.Settings.Default.UserEmail = chkRememberMe.Checked ? email : string.Empty;
                     Properties.Settings.Default.UserPassword = chkRememberMe.Checked ? password : string.Empty;
                     Properties.Settings.Default.RememberMe = chkRememberMe.Checked;
+                    Properties.Settings.Default.CBType = cbType.SelectedIndex;
                     Properties.Settings.Default.Save();
                     Hide();
                     if (cbType.SelectedIndex == 0)
@@ -86,10 +87,10 @@ namespace LuckBurnTK
                         var checkToolForm = new CheckToolForm();
                         checkToolForm.ShowDialog();
                     }
+                    //else if (cbType.SelectedIndex == 1)
+                    //{
+                    //}
                     else if (cbType.SelectedIndex == 1)
-                    {
-                    }
-                    else if (cbType.SelectedIndex == 2)
                     {
                         var mainForm = new BurnForm(result.api_key.ToString());
                         mainForm.ShowDialog();
@@ -125,6 +126,7 @@ namespace LuckBurnTK
                 txtEmail.Text = Properties.Settings.Default.UserEmail;
                 txtPassword.Text = Properties.Settings.Default.UserPassword;
                 chkRememberMe.Checked = true;
+                cbType.SelectedIndex = Properties.Settings.Default.CBType;
                 txtPassword.Focus();
             }
             else
@@ -151,6 +153,9 @@ namespace LuckBurnTK
                 txtPassword.Focus();
                 return;
             }
+
+            BtnDangKy.Enabled = false;
+            btnLogin.Enabled = false;
 
             try
             {
@@ -187,6 +192,11 @@ namespace LuckBurnTK
             {
                 XtraMessageBox.Show($"Lỗi kết nối: {ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                BtnDangKy.Enabled = true;
+                btnLogin.Enabled = true;
             }
         }
     }

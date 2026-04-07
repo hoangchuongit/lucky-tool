@@ -1,7 +1,7 @@
 ﻿using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
-using LuckBurnTK.Utils;
+using LuckBurn.Utils;
 using LuckCheck.Model;
 using System;
 using System.Collections.Concurrent;
@@ -121,6 +121,8 @@ namespace LuckCheck
                 SendATCommand(sp, "AT+IPR=115200");
                 // Đặt mã ký tự về ASCII
                 SendATCommand(sp, "AT+CSCS=\"GSM\"");
+                // Đặt chế độ quét mạng tự động
+                SendATCommand(sp, "AT+QCFG=\"nwscanmode\",0,1");
                 // Bật hoặc tắt chức năng Phát hiện thẻ SIM
                 SendATCommand(sp, "AT+QSIMDET=1,0");
                 // Kích hoạt chế độ thông báo sự kiện SIM
@@ -538,6 +540,8 @@ namespace LuckCheck
                             SendATCommand(sp, "AT+CFUN=1,1", 10000);
                             // Đặt mã ký tự về ASCII
                             SendATCommand(sp, "AT+CSCS=\"GSM\"");
+                            // Đặt chế độ quét mạng tự động
+                            SendATCommand(sp, "AT+QCFG=\"nwscanmode\",0,1");
                             // Đặt module về chế độ Text Mode (ASCII)
                             SendATCommand(sp, "AT+CMGF=1");
                             // Nhận tin nhắn dưới dạng văn bản
@@ -574,7 +578,7 @@ namespace LuckCheck
                                 dto.TKChinh = 0;
                                 dto.Message101 = "Khôi phục cài đặt gốc cổng COM";
                             }, "ICCID", "PhoneNumber", "HSD", "TKChinh", "Message101");
-                            SendATCommand(sp, "AT&F", 60000);
+                            SendATCommand(sp, "AT&F0", 500);
                             //
                             SendATCommand(sp, "AT+QURCCFG=\"urcport\",\"uart1\"");
                             // Module được thiết lập để sử dụng chế độ "Auto Baud Rate Detection" (Tự động nhận diện tốc độ truyền).
@@ -587,6 +591,8 @@ namespace LuckCheck
                             SendATCommand(sp, "AT&W");
                             // Đặt mã ký tự về ASCII
                             SendATCommand(sp, "AT+CSCS=\"GSM\"");
+                            // Đặt chế độ quét mạng tự động
+                            SendATCommand(sp, "AT+QCFG=\"nwscanmode\",0,1");
                             // Đặt module về chế độ Text Mode (ASCII)
                             SendATCommand(sp, "AT+CMGF=1");
                             // Nhận tin nhắn dưới dạng văn bản
@@ -718,6 +724,8 @@ namespace LuckCheck
                             SendATCommand(sp, "AT+CFUN=1,1", 10000);
                             // Đặt mã ký tự về ASCII
                             SendATCommand(sp, "AT+CSCS=\"GSM\"");
+                            // Đặt chế độ quét mạng tự động
+                            SendATCommand(sp, "AT+QCFG=\"nwscanmode\",0,1");
                             // Đặt module về chế độ Text Mode (ASCII)
                             SendATCommand(sp, "AT+CMGF=1");
                             // Nhận tin nhắn dưới dạng văn bản

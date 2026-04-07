@@ -2,7 +2,7 @@
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using LuckBurn.Model;
-using LuckBurnTK.Utils;
+using LuckBurn.Utils;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -17,9 +17,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static LuckBurnTK.Models.PrefixNumberDto;
+using static LuckBurn.Models.PrefixNumberDto;
 
-namespace LuckBurnTK
+namespace LuckBurn
 {
     public partial class BurnForm : XtraForm
     {
@@ -47,13 +47,11 @@ namespace LuckBurnTK
         private readonly ConcurrentDictionary<string, CancellationTokenSource> RecordingTokens
             = new ConcurrentDictionary<string, CancellationTokenSource>();
 
-        /// Danh sách các cổng COM đang upload file đến thiết bị
-        private readonly ConcurrentDictionary<string, FileToCom> FileToCOMs = new ConcurrentDictionary<string, FileToCom>();
-
         private readonly PrefixNumberController _prefixController;
 
         /// Lock com để tránh timeout khi gửi lệnh AT
         private readonly ConcurrentDictionary<string, bool> _isCalling = new ConcurrentDictionary<string, bool>();
+
         private readonly ConcurrentDictionary<string, int> _callingSkipCount = new ConcurrentDictionary<string, int>();
 
         private readonly string ApiKey;
@@ -153,6 +151,8 @@ namespace LuckBurnTK
                 SendATCommand(sp, "AT+IPR=115200");
                 // Đặt mã ký tự về ASCII
                 SendATCommand(sp, "AT+CSCS=\"GSM\"");
+                // Đặt chế độ quét mạng tự động
+                SendATCommand(sp, "AT+QCFG=\"nwscanmode\",0,1");
                 // Bật hoặc tắt chức năng Phát hiện thẻ SIM
                 SendATCommand(sp, "AT+QSIMDET=1,0");
                 // Kích hoạt chế độ thông báo sự kiện SIM
@@ -191,7 +191,7 @@ namespace LuckBurnTK
             MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
             //AppendLogToMemo(sp.PortName, MessageCOMs[sp.PortName]);
             //if (sp.PortName == "COM278")
-            //Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
+            Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
             //logger.Info(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
 
             // Nếu cổng COM chưa nằm trong danh sách ghi âm thì bổ sung vào danh sách. Nếu đã có thì ghi nối tiếp dữ liệu
@@ -481,11 +481,6 @@ namespace LuckBurnTK
                 // Lấy thông tin hạn sử dụng
                 string hsd = Common.ExtractHanSD(mess);
                 currentTKC = (int)(tkchinh.HasValue ? tkchinh : 0);
-                //if (currentTKC == 0 || currentTKC == oldTKC)
-                //{
-                //    UpdateComData(sp.PortName, dto => { dto.Message = $"Stop burn"; dto.IsFinish = true; }, "Message", "IsFinish");
-                //    return;
-                //}
                 // Cập nhật tài khoản chính và số điện thoại trên gridview
                 UpdateComData(sp.PortName, dto =>
                 {
@@ -556,12 +551,6 @@ namespace LuckBurnTK
                         history_id = prefixSmsRes.history_id.ToString(),
                         start_time = DateTime.Now
                     });
-                    //Send message
-                    //var prefix = prefixSmsRes.prefix;
-                    //sp.Write($"AT+CMGS=\"{prefix}\"\r");
-                    //Thread.Sleep(1000);
-                    //sp.Write(prefixSmsRes.message);
-                    //sp.Write(new byte[] { 0x1A }, 0, 1);
                     var prefix = prefixSmsRes.prefix;
                     sp.Write($"AT+CMGS=\"{prefix}\"\r");
                     var resp1 = WaitForToken(sp, new[] { ">", "ERROR", "+CMS ERROR" }, 5000);
@@ -707,30 +696,6 @@ namespace LuckBurnTK
             catch (Exception)
             {
                 UpdateComData(sp.PortName, dto => { dto.Message = $"Stop burn"; dto.IsFinish = true; }, "Message", "IsFinish");
-            }
-        }
-
-        /// <summary>
-        /// Upload content đến thiết bị
-        /// </summary>
-        /// <param name="sp"></param>
-        private void UploadFileToDevice(SerialPort sp)
-        {
-            var count = 0;
-            while (count < 2)
-            {
-                try
-                {
-                }
-                catch (Exception)
-                {
-                    count += 1;
-                }
-            }
-            if (count >= 2)
-            {
-                SendATCommand(sp, "AT+CFUN=1,1", 10000);
-                UploadFileToDevice(sp);
             }
         }
 
@@ -1044,13 +1009,15 @@ namespace LuckBurnTK
                                 dto.Message = "";
                             }, "ICCID", "PhoneNumber", "TKChinh", "HSD", "Message101", "Message");
                             // Reset COM
-                            SendATCommand(sp, "AT+CFUN=1,1", 10000);
+                            SendATCommand(sp, "AT+CFUN=1,1", 15000);
                             // Đưa Baudrate về tốc độ  115200
                             SendATCommand(sp, "AT+IPR=115200");
                             // Đảm bảo các URC như RING, +CLIP, +CPIN, SIM hot-swap... được gửi qua UART chính thay vì qua USB AT port.
                             SendATCommand(sp, "AT+QURCCFG=\"urcport\",\"uart1\"");
                             // Đặt mã ký tự về ASCII
                             SendATCommand(sp, "AT+CSCS=\"GSM\"");
+                            // Đặt chế độ quét mạng tự động
+                            SendATCommand(sp, "AT+QCFG=\"nwscanmode\",0,1");
                             // Bật hoặc tắt chức năng Phát hiện thẻ SIM
                             SendATCommand(sp, "AT+QSIMDET=1,0");
                             // Kích hoạt chế độ thông báo sự kiện SIM
@@ -1104,6 +1071,8 @@ namespace LuckBurnTK
                             SendATCommand(sp, "AT+QURCCFG=\"urcport\",\"uart1\"");
                             // Đặt mã ký tự về ASCII
                             SendATCommand(sp, "AT+CSCS=\"GSM\"");
+                            // Đặt chế độ quét mạng tự động
+                            SendATCommand(sp, "AT+QCFG=\"nwscanmode\",0,1");
                             // Bật hoặc tắt chức năng Phát hiện thẻ SIM
                             SendATCommand(sp, "AT+QSIMDET=1,0");
                             // Kích hoạt chế độ thông báo sự kiện SIM
@@ -1290,6 +1259,8 @@ namespace LuckBurnTK
                             SendATCommand(sp, "AT+QURCCFG=\"urcport\",\"uart1\"");
                             // Đặt mã ký tự về ASCII
                             SendATCommand(sp, "AT+CSCS=\"GSM\"");
+                            // Đặt chế độ quét mạng tự động
+                            SendATCommand(sp, "AT+QCFG=\"nwscanmode\",0,1");
                             // Bật hoặc tắt chức năng Phát hiện thẻ SIM
                             SendATCommand(sp, "AT+QSIMDET=1,0");
                             // Kích hoạt chế độ thông báo sự kiện SIM

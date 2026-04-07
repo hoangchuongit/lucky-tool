@@ -2,7 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 
-namespace LuckBurnTK.Utils
+namespace LuckBurn.Utils
 {
     public static class SecureConfig
     {

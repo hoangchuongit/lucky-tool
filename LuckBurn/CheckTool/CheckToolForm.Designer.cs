@@ -889,7 +889,7 @@
             this.ICCID.OptionsFilter.AllowFilter = false;
             this.ICCID.Visible = true;
             this.ICCID.VisibleIndex = 2;
-            this.ICCID.Width = 129;
+            this.ICCID.Width = 180;
             // 
             // PhoneNumber
             // 
@@ -916,7 +916,7 @@
             this.PhoneNumber.OptionsFilter.FilterPopupMode = DevExpress.XtraGrid.Columns.FilterPopupMode.CheckedList;
             this.PhoneNumber.Visible = true;
             this.PhoneNumber.VisibleIndex = 3;
-            this.PhoneNumber.Width = 94;
+            this.PhoneNumber.Width = 150;
             // 
             // HSD
             // 
@@ -940,7 +940,7 @@
             this.HSD.OptionsFilter.AllowFilter = false;
             this.HSD.Visible = true;
             this.HSD.VisibleIndex = 4;
-            this.HSD.Width = 90;
+            this.HSD.Width = 100;
             // 
             // TKChinh
             // 
@@ -967,7 +967,7 @@
             this.TKChinh.OptionsFilter.AllowFilter = false;
             this.TKChinh.Visible = true;
             this.TKChinh.VisibleIndex = 5;
-            this.TKChinh.Width = 86;
+            this.TKChinh.Width = 100;
             // 
             // Message101
             // 
@@ -983,7 +983,7 @@
             this.Message101.OptionsColumn.AllowEdit = false;
             this.Message101.Visible = true;
             this.Message101.VisibleIndex = 6;
-            this.Message101.Width = 699;
+            this.Message101.Width = 568;
             // 
             // repositoryItemTextEdit2
             // 

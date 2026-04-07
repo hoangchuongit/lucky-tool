@@ -116,34 +116,27 @@ namespace LuckCheck
             {
                 if (sp == null) return;
                 if (!sp.IsOpen) sp.Open();
-                SendATCommand(sp, "AT+IPR=115200");
                 // Khởi động lại modem mà không thay đổi các cài đặt, chỉ tái thiết lập kết nối hoặc trạng thái của modem.
                 SendATCommand(sp, "ATZ");
+                // Đưa Baudrate về tốc độ  115200
+                SendATCommand(sp, "AT+IPR=115200");
                 // Đặt mã ký tự về ASCII
                 SendATCommand(sp, "AT+CSCS=\"GSM\"");
-                // Đặt chế độ quét mạng tự động
-                SendATCommand(sp, "AT+QCFG=\"nwscanmode\",0,1");
                 // Bật hoặc tắt chức năng Phát hiện thẻ SIM
                 SendATCommand(sp, "AT+QSIMDET=1,0");
                 // Kích hoạt chế độ thông báo sự kiện SIM
                 SendATCommand(sp, "AT+QSIMSTAT=1");
-
-                //// Bật báo lỗi bằng chữ thay vì mã số
-                //SendATCommand(sp, "AT+CMEE=2");
-                //SendATCommand(sp, "AT+QCFG=\"nwscanmode\"");
-                //SendATCommand(sp, "AT+CREG?");
-                //SendATCommand(sp, "AT+CGREG?");
-                //SendATCommand(sp, "AT+CEREG?");
-
-
-                //SendATCommand(sp, "AT+CPIN?");
-                //SendATCommand(sp, "AT+CSQ");
-                //SendATCommand(sp, "AT+COPS?");
-                //SendATCommand(sp, "AT+QNWINFO");
-                //SendATCommand(sp, "AT+CEER");
-                //SendATCommand(sp, "AT+CFUN?");
-                //SendATCommand(sp, "AT+COPS=0");
-
+                // bật Presentation of Calling Line (điều chỉnh trạng thái caller).
+                SendATCommand(sp, "AT+COLP=1");
+                // bật báo trạng thái hiện tại của cuộc gọi.
+                SendATCommand(sp, "AT+CLCC=1");
+                // cấu hình để modem báo các mã lỗi cuộc gọi như BUSY, NO CARRIER, v.v.
+                SendATCommand(sp, "ATX3");
+                // Đặt chế độ quét mạng tự động
+                SendATCommand(sp, "AT+QCFG=\"nwscanmode\",0,1");
+                SendATCommand(sp, "AT+CEREG?");
+                // Lưu thay đổi
+                SendATCommand(sp, "AT&W");
                 // lấy ICCID của sim
                 SendATCommand(sp, "AT+QCCID");
             }
@@ -169,7 +162,7 @@ namespace LuckCheck
 
             MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
             //AppendLogToMemo(sp.PortName, MessageCOMs[sp.PortName]);
-            if (sp.PortName == "COM140")
+            if (sp.PortName == "COM139")
                 Console.WriteLine(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
             //logger.Info(sp.PortName + " ---------- " + MessageCOMs[sp.PortName]);
 

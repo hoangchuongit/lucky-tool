@@ -1,4 +1,4 @@
-﻿namespace LuckBurnTK
+﻿namespace LuckBurn
 {
     partial class UserInforForm
     {

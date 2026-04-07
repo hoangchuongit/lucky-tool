@@ -1,5 +1,5 @@
 ﻿using DevExpress.XtraEditors;
-using LuckBurnTK.Utils;
+using LuckBurn.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Windows.Forms;
 
-namespace LuckBurnTK
+namespace LuckBurn
 {
     public partial class ChangePassForm : XtraForm
     {

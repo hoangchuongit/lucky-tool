@@ -1,5 +1,5 @@
 ﻿using DevExpress.Pdf.Native.BouncyCastle.Ocsp;
-using LuckBurnTK.Utils;
+using LuckBurn.Utils;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -7,9 +7,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using static LuckBurnTK.Models.PrefixNumberDto;
+using static LuckBurn.Models.PrefixNumberDto;
 
-namespace LuckBurnTK
+namespace LuckBurn
 {
     public class PrefixNumberController
     {

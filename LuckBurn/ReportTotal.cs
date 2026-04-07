@@ -2,9 +2,9 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
-using static LuckBurnTK.Models.PrefixNumberDto;
+using static LuckBurn.Models.PrefixNumberDto;
 
-namespace LuckBurnTK
+namespace LuckBurn
 {
     public partial class ReportTotal : XtraForm
     {

@@ -7,8 +7,8 @@
     <ProjectGuid>{91A880D1-C985-4D61-9414-D7CBCF38F030}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LuckBurnTK</RootNamespace>
-    <AssemblyName>MetahubBurn</AssemblyName>
+    <RootNamespace>LuckBurn</RootNamespace>
+    <AssemblyName>LuckTools</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
