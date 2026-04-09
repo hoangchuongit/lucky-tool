@@ -151,8 +151,6 @@ namespace LuckBurn
                 SendATCommand(sp, "AT+IPR=115200");
                 // Đặt mã ký tự về ASCII
                 SendATCommand(sp, "AT+CSCS=\"GSM\"");
-                // Đặt chế độ quét mạng tự động
-                SendATCommand(sp, "AT+QCFG=\"nwscanmode\",0,1");
                 // Bật hoặc tắt chức năng Phát hiện thẻ SIM
                 SendATCommand(sp, "AT+QSIMDET=1,0");
                 // Kích hoạt chế độ thông báo sự kiện SIM

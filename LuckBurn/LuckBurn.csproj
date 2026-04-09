@@ -154,13 +154,13 @@
     <Compile Include="ChangePassForm.Designer.cs">
       <DependentUpon>ChangePassForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CheckTool\ComDto.cs" />
     <Compile Include="CheckTool\CheckToolForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CheckTool\CheckToolForm.Designer.cs">
       <DependentUpon>CheckToolForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="CheckTool\ComDto.cs" />
     <Compile Include="UserInforForm.cs">
       <SubType>Form</SubType>
     </Compile>
