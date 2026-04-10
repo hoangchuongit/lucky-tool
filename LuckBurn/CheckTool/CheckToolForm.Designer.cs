@@ -67,6 +67,10 @@
             this.repositoryItemTextEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.TimerCheckSim = new System.Windows.Forms.Timer(this.components);
             this.popupMenu1 = new DevExpress.XtraBars.PopupMenu(this.components);
+            this.barSubItem2 = new DevExpress.XtraBars.BarSubItem();
+            this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
+            this.barButtonItem2 = new DevExpress.XtraBars.BarButtonItem();
+            this.barButtonItem3 = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gcCOM)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvCOM)).BeginInit();
@@ -95,8 +99,12 @@
             this.PopupChangeIMEI,
             this.Popup101,
             this.PopupSao0Thang,
-            this.barSubItem1});
-            this.barManager.MaxItemId = 34;
+            this.barSubItem1,
+            this.barSubItem2,
+            this.barButtonItem1,
+            this.barButtonItem2,
+            this.barButtonItem3});
+            this.barManager.MaxItemId = 39;
             this.barManager.OptionsStubGlyphs.Font = new System.Drawing.Font("Verdana", 8F);
             this.barManager.OptionsStubGlyphs.UseFont = true;
             // 
@@ -107,7 +115,8 @@
             this.mainToolBar.DockRow = 0;
             this.mainToolBar.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.mainToolBar.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem1)});
+            new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem1),
+            new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem2)});
             this.mainToolBar.OptionsBar.AllowQuickCustomization = false;
             this.mainToolBar.OptionsBar.DisableClose = true;
             this.mainToolBar.OptionsBar.DisableCustomization = true;
@@ -1009,6 +1018,39 @@
             this.popupMenu1.Manager = this.barManager;
             this.popupMenu1.Name = "popupMenu1";
             // 
+            // barSubItem2
+            // 
+            this.barSubItem2.Caption = "Phát sinh Data 4G";
+            this.barSubItem2.Id = 35;
+            this.barSubItem2.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barSubItem2.ImageOptions.Image")));
+            this.barSubItem2.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barSubItem2.ImageOptions.LargeImage")));
+            this.barSubItem2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(((DevExpress.XtraBars.BarLinkUserDefines)((DevExpress.XtraBars.BarLinkUserDefines.Caption | DevExpress.XtraBars.BarLinkUserDefines.PaintStyle))), this.barButtonItem1, "Phát sinh 1MB", false, true, true, 0, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem2),
+            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem3)});
+            this.barSubItem2.Name = "barSubItem2";
+            this.barSubItem2.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph;
+            // 
+            // barButtonItem1
+            // 
+            this.barButtonItem1.Caption = "Phát sinh 1MB";
+            this.barButtonItem1.Id = 36;
+            this.barButtonItem1.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barButtonItem1.ImageOptions.Image")));
+            this.barButtonItem1.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItem1.ImageOptions.LargeImage")));
+            this.barButtonItem1.Name = "barButtonItem1";
+            // 
+            // barButtonItem2
+            // 
+            this.barButtonItem2.Caption = "Phát sinh 5MB";
+            this.barButtonItem2.Id = 37;
+            this.barButtonItem2.Name = "barButtonItem2";
+            // 
+            // barButtonItem3
+            // 
+            this.barButtonItem3.Caption = "Phát sinh 10MB";
+            this.barButtonItem3.Id = 38;
+            this.barButtonItem3.Name = "barButtonItem3";
+            // 
             // CheckToolForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1068,5 +1110,9 @@
         private DevExpress.XtraGrid.Columns.GridColumn HSD;
         private DevExpress.XtraBars.BarButtonItem PopupSao0Thang;
         private DevExpress.XtraBars.BarSubItem barSubItem1;
+        private DevExpress.XtraBars.BarSubItem barSubItem2;
+        private DevExpress.XtraBars.BarButtonItem barButtonItem1;
+        private DevExpress.XtraBars.BarButtonItem barButtonItem2;
+        private DevExpress.XtraBars.BarButtonItem barButtonItem3;
     }
 }
