@@ -30,14 +30,18 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CheckToolForm));
-            DevExpress.Utils.SuperToolTip superToolTip1 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem1 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip2 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem2 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip3 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem3 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip4 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem4 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip9 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem9 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip10 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem10 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip11 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem11 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip12 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem12 = new DevExpress.Utils.ToolTipItem();
+            // [MỚI] SuperTooltip cho nút Phát sinh Data 4G
+            DevExpress.Utils.SuperToolTip superToolTip13 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem13 = new DevExpress.Utils.ToolTipItem();
+
             this.barManager = new DevExpress.XtraBars.BarManager(this.components);
             this.mainToolBar = new DevExpress.XtraBars.Bar();
             this.barSubItem1 = new DevExpress.XtraBars.BarSubItem();
@@ -46,6 +50,8 @@
             this.btnChangeIMEI = new DevExpress.XtraBars.BarButtonItem();
             this.btnResetCom = new DevExpress.XtraBars.BarButtonItem();
             this.btnRestoreSettings = new DevExpress.XtraBars.BarButtonItem();
+            // [MỚI] Nút Phát sinh Data 4G trên toolbar
+            this.btnPhatSinhData4G = new DevExpress.XtraBars.BarButtonItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
@@ -54,6 +60,8 @@
             this.PopupChangeIMEI = new DevExpress.XtraBars.BarButtonItem();
             this.Popup101 = new DevExpress.XtraBars.BarButtonItem();
             this.PopupSao0Thang = new DevExpress.XtraBars.BarButtonItem();
+            // [MỚI] Popup menu item Phát sinh Data 4G
+            this.PopupPhatSinhData4G = new DevExpress.XtraBars.BarButtonItem();
             this.gcCOM = new DevExpress.XtraGrid.GridControl();
             this.gvCOM = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.COM = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -67,10 +75,6 @@
             this.repositoryItemTextEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.TimerCheckSim = new System.Windows.Forms.Timer(this.components);
             this.popupMenu1 = new DevExpress.XtraBars.PopupMenu(this.components);
-            this.barSubItem2 = new DevExpress.XtraBars.BarSubItem();
-            this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem2 = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem3 = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gcCOM)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvCOM)).BeginInit();
@@ -100,11 +104,11 @@
             this.Popup101,
             this.PopupSao0Thang,
             this.barSubItem1,
-            this.barSubItem2,
-            this.barButtonItem1,
-            this.barButtonItem2,
-            this.barButtonItem3});
-            this.barManager.MaxItemId = 39;
+            // [MỚI]
+            this.btnPhatSinhData4G,
+            this.PopupPhatSinhData4G});
+            // [MỚI] MaxItemId tăng lên để tránh xung đột ID
+            this.barManager.MaxItemId = 42;
             this.barManager.OptionsStubGlyphs.Font = new System.Drawing.Font("Verdana", 8F);
             this.barManager.OptionsStubGlyphs.UseFont = true;
             // 
@@ -116,7 +120,11 @@
             this.mainToolBar.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.mainToolBar.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem1),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem2)});
+            // [MỚI] Nút Phát sinh Data 4G xuất hiện ngay trên toolbar, dễ thấy
+            new DevExpress.XtraBars.LinkPersistInfo(
+                DevExpress.XtraBars.BarLinkUserDefines.PaintStyle,
+                this.btnPhatSinhData4G,
+                DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.mainToolBar.OptionsBar.AllowQuickCustomization = false;
             this.mainToolBar.OptionsBar.DisableClose = true;
             this.mainToolBar.OptionsBar.DisableCustomization = true;
@@ -124,17 +132,17 @@
             this.mainToolBar.OptionsBar.DrawDragBorder = false;
             this.mainToolBar.Text = "Main Toolbar";
             // 
-            // barSubItem1
+            // barSubItem1  (Cài đặt)
             // 
             this.barSubItem1.Caption = "Cài đặt";
             this.barSubItem1.Id = 32;
             this.barSubItem1.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barSubItem1.ImageOptions.Image")));
             this.barSubItem1.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barSubItem1.ImageOptions.LargeImage")));
             this.barSubItem1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnResetComPort, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnUpdateComPort, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnChangeIMEI, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnResetCom, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnResetComPort,    DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnUpdateComPort,   DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnChangeIMEI,      DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnResetCom,        DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnRestoreSettings, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.barSubItem1.Name = "barSubItem1";
             this.barSubItem1.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph;
@@ -148,9 +156,9 @@
             this.btnResetComPort.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnResetComPort.ItemAppearance.Normal.Options.UseFont = true;
             this.btnResetComPort.Name = "btnResetComPort";
-            toolTipItem1.Text = "Đặt lại số thứ tự cổng COM";
-            superToolTip1.Items.Add(toolTipItem1);
-            this.btnResetComPort.SuperTip = superToolTip1;
+            toolTipItem9.Text = "Đặt lại số thứ tự cổng COM";
+            superToolTip9.Items.Add(toolTipItem9);
+            this.btnResetComPort.SuperTip = superToolTip9;
             this.btnResetComPort.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnResetComPort_ItemClick);
             // 
             // btnUpdateComPort
@@ -162,9 +170,9 @@
             this.btnUpdateComPort.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnUpdateComPort.ItemAppearance.Normal.Options.UseFont = true;
             this.btnUpdateComPort.Name = "btnUpdateComPort";
-            toolTipItem2.Text = "Cập nhật lại số thứ tự cổng COM";
-            superToolTip2.Items.Add(toolTipItem2);
-            this.btnUpdateComPort.SuperTip = superToolTip2;
+            toolTipItem10.Text = "Cập nhật lại số thứ tự cổng COM";
+            superToolTip10.Items.Add(toolTipItem10);
+            this.btnUpdateComPort.SuperTip = superToolTip10;
             this.btnUpdateComPort.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnUpdateComPort_ItemClick);
             // 
             // btnChangeIMEI
@@ -187,9 +195,9 @@
             this.btnResetCom.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnResetCom.ItemAppearance.Normal.Options.UseFont = true;
             this.btnResetCom.Name = "btnResetCom";
-            toolTipItem3.Text = "Reset lại cổng COM";
-            superToolTip3.Items.Add(toolTipItem3);
-            this.btnResetCom.SuperTip = superToolTip3;
+            toolTipItem11.Text = "Reset lại cổng COM";
+            superToolTip11.Items.Add(toolTipItem11);
+            this.btnResetCom.SuperTip = superToolTip11;
             this.btnResetCom.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnResetCom_ItemClick);
             // 
             // btnRestoreSettings
@@ -201,10 +209,27 @@
             this.btnRestoreSettings.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnRestoreSettings.ItemAppearance.Normal.Options.UseFont = true;
             this.btnRestoreSettings.Name = "btnRestoreSettings";
-            toolTipItem4.Text = "Khôi phục lại cài đặt mặc định";
-            superToolTip4.Items.Add(toolTipItem4);
-            this.btnRestoreSettings.SuperTip = superToolTip4;
+            toolTipItem12.Text = "Khôi phục lại cài đặt mặc định";
+            superToolTip12.Items.Add(toolTipItem12);
+            this.btnRestoreSettings.SuperTip = superToolTip12;
             this.btnRestoreSettings.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnRestoreSettings_ItemClick);
+            // 
+            // [MỚI] btnPhatSinhData4G — nút trên toolbar
+            // 
+            this.btnPhatSinhData4G.Caption = "Phát sinh Data 4G";
+            this.btnPhatSinhData4G.Id = 40;
+            // Không dùng resource image để không phụ thuộc resx; gán icon sau nếu cần.
+            this.btnPhatSinhData4G.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnPhatSinhData4G.ItemAppearance.Normal.ForeColor = System.Drawing.Color.DarkBlue;
+            this.btnPhatSinhData4G.ItemAppearance.Normal.Options.UseFont = true;
+            this.btnPhatSinhData4G.ItemAppearance.Normal.Options.UseForeColor = true;
+            this.btnPhatSinhData4G.Name = "btnPhatSinhData4G";
+            this.btnPhatSinhData4G.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph;
+            toolTipItem13.Text = "Tải file qua 4G để phát sinh data cho các SIM được chọn (checkbox).\n" +
+                                                "Nếu không chọn row nào → áp dụng cho tất cả cổng COM.";
+            superToolTip13.Items.Add(toolTipItem13);
+            this.btnPhatSinhData4G.SuperTip = superToolTip13;
+            this.btnPhatSinhData4G.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnPhatSinhData4G_ItemClick);
             // 
             // barDockControlTop
             // 
@@ -274,6 +299,17 @@
             this.PopupSao0Thang.Name = "PopupSao0Thang";
             this.PopupSao0Thang.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.PopupSao0Thang_ItemClick);
             // 
+            // [MỚI] PopupPhatSinhData4G — mục trong right-click menu
+            // 
+            this.PopupPhatSinhData4G.Caption = "Phát sinh Data 4G";
+            this.PopupPhatSinhData4G.Id = 41;
+            this.PopupPhatSinhData4G.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold);
+            this.PopupPhatSinhData4G.ItemAppearance.Normal.ForeColor = System.Drawing.Color.DarkBlue;
+            this.PopupPhatSinhData4G.ItemAppearance.Normal.Options.UseFont = true;
+            this.PopupPhatSinhData4G.ItemAppearance.Normal.Options.UseForeColor = true;
+            this.PopupPhatSinhData4G.Name = "PopupPhatSinhData4G";
+            this.PopupPhatSinhData4G.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.PopupPhatSinhData4G_ItemClick);
+            // 
             // gcCOM
             // 
             this.gcCOM.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -305,8 +341,17 @@
             this.gvCOM.GridControl = this.gcCOM;
             this.gvCOM.Name = "gvCOM";
             this.gvCOM.OptionsClipboard.CopyColumnHeaders = DevExpress.Utils.DefaultBoolean.False;
+            // ─── [MỚI] Checkbox row select ────────────────────────────────────
+            // MultiSelect = true  : bắt buộc
+            // MultiSelectMode = CheckBoxRowSelect :
+            //   • Mỗi row có checkbox ở cột đầu tiên (trước cột COM)
+            //   • Header có checkbox "Chọn tất cả / Bỏ chọn tất cả"
+            //   • Click vào checkbox hoặc vào row đều toggle trạng thái check
+            //   • gvCOM.GetSelectedRows() trả về đúng những row được check
+            // ─────────────────────────────────────────────────────────────────
             this.gvCOM.OptionsSelection.MultiSelect = true;
-            this.gvCOM.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CellSelect;
+            this.gvCOM.OptionsSelection.MultiSelectMode =
+                DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.gvCOM.OptionsView.ShowGroupPanel = false;
             this.gvCOM.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GvCOM_MouseDown);
             // 
@@ -368,513 +413,63 @@
             this.STT.VisibleIndex = 1;
             this.STT.Width = 50;
             // 
-            // repositoryItemComboBox1
+            // repositoryItemComboBox1  (STT 1–500)
             // 
             this.repositoryItemComboBox1.AutoHeight = false;
             this.repositoryItemComboBox1.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.repositoryItemComboBox1.DropDownRows = 10;
             this.repositoryItemComboBox1.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-            "13",
-            "14",
-            "15",
-            "16",
-            "17",
-            "18",
-            "19",
-            "20",
-            "21",
-            "22",
-            "23",
-            "24",
-            "25",
-            "26",
-            "27",
-            "28",
-            "29",
-            "30",
-            "31",
-            "32",
-            "33",
-            "34",
-            "35",
-            "36",
-            "37",
-            "38",
-            "39",
-            "40",
-            "41",
-            "42",
-            "43",
-            "44",
-            "45",
-            "46",
-            "47",
-            "48",
-            "49",
-            "50",
-            "51",
-            "52",
-            "53",
-            "54",
-            "55",
-            "56",
-            "57",
-            "58",
-            "59",
-            "60",
-            "61",
-            "62",
-            "63",
-            "64",
-            "65",
-            "66",
-            "67",
-            "68",
-            "69",
-            "70",
-            "71",
-            "72",
-            "73",
-            "74",
-            "75",
-            "76",
-            "77",
-            "78",
-            "79",
-            "80",
-            "81",
-            "82",
-            "83",
-            "84",
-            "85",
-            "86",
-            "87",
-            "88",
-            "89",
-            "90",
-            "91",
-            "92",
-            "93",
-            "94",
-            "95",
-            "96",
-            "97",
-            "98",
-            "99",
-            "100",
-            "101",
-            "102",
-            "103",
-            "104",
-            "105",
-            "106",
-            "107",
-            "108",
-            "109",
-            "110",
-            "111",
-            "112",
-            "113",
-            "114",
-            "115",
-            "116",
-            "117",
-            "118",
-            "119",
-            "120",
-            "121",
-            "122",
-            "123",
-            "124",
-            "125",
-            "126",
-            "127",
-            "128",
-            "129",
-            "130",
-            "131",
-            "132",
-            "133",
-            "134",
-            "135",
-            "136",
-            "137",
-            "138",
-            "139",
-            "140",
-            "141",
-            "142",
-            "143",
-            "144",
-            "145",
-            "146",
-            "147",
-            "148",
-            "149",
-            "150",
-            "151",
-            "152",
-            "153",
-            "154",
-            "155",
-            "156",
-            "157",
-            "158",
-            "159",
-            "160",
-            "161",
-            "162",
-            "163",
-            "164",
-            "165",
-            "166",
-            "167",
-            "168",
-            "169",
-            "170",
-            "171",
-            "172",
-            "173",
-            "174",
-            "175",
-            "176",
-            "177",
-            "178",
-            "179",
-            "180",
-            "181",
-            "182",
-            "183",
-            "184",
-            "185",
-            "186",
-            "187",
-            "188",
-            "189",
-            "190",
-            "191",
-            "192",
-            "193",
-            "194",
-            "195",
-            "196",
-            "197",
-            "198",
-            "199",
-            "200",
-            "201",
-            "202",
-            "203",
-            "204",
-            "205",
-            "206",
-            "207",
-            "208",
-            "209",
-            "210",
-            "211",
-            "212",
-            "213",
-            "214",
-            "215",
-            "216",
-            "217",
-            "218",
-            "219",
-            "220",
-            "221",
-            "222",
-            "223",
-            "224",
-            "225",
-            "226",
-            "227",
-            "228",
-            "229",
-            "230",
-            "231",
-            "232",
-            "233",
-            "234",
-            "235",
-            "236",
-            "237",
-            "238",
-            "239",
-            "240",
-            "241",
-            "242",
-            "243",
-            "244",
-            "245",
-            "246",
-            "247",
-            "248",
-            "249",
-            "250",
-            "251",
-            "252",
-            "253",
-            "254",
-            "255",
-            "256",
-            "257",
-            "258",
-            "259",
-            "260",
-            "261",
-            "262",
-            "263",
-            "264",
-            "265",
-            "266",
-            "267",
-            "268",
-            "269",
-            "270",
-            "271",
-            "272",
-            "273",
-            "274",
-            "275",
-            "276",
-            "277",
-            "278",
-            "279",
-            "280",
-            "281",
-            "282",
-            "283",
-            "284",
-            "285",
-            "286",
-            "287",
-            "288",
-            "289",
-            "290",
-            "291",
-            "292",
-            "293",
-            "294",
-            "295",
-            "296",
-            "297",
-            "298",
-            "299",
-            "300",
-            "301",
-            "302",
-            "303",
-            "304",
-            "305",
-            "306",
-            "307",
-            "308",
-            "309",
-            "310",
-            "311",
-            "312",
-            "313",
-            "314",
-            "315",
-            "316",
-            "317",
-            "318",
-            "319",
-            "320",
-            "321",
-            "322",
-            "323",
-            "324",
-            "325",
-            "326",
-            "327",
-            "328",
-            "329",
-            "330",
-            "331",
-            "332",
-            "333",
-            "334",
-            "335",
-            "336",
-            "337",
-            "338",
-            "339",
-            "340",
-            "341",
-            "342",
-            "343",
-            "344",
-            "345",
-            "346",
-            "347",
-            "348",
-            "349",
-            "350",
-            "351",
-            "352",
-            "353",
-            "354",
-            "355",
-            "356",
-            "357",
-            "358",
-            "359",
-            "360",
-            "361",
-            "362",
-            "363",
-            "364",
-            "365",
-            "366",
-            "367",
-            "368",
-            "369",
-            "370",
-            "371",
-            "372",
-            "373",
-            "374",
-            "375",
-            "376",
-            "377",
-            "378",
-            "379",
-            "380",
-            "381",
-            "382",
-            "383",
-            "384",
-            "385",
-            "386",
-            "387",
-            "388",
-            "389",
-            "390",
-            "391",
-            "392",
-            "393",
-            "394",
-            "395",
-            "396",
-            "397",
-            "398",
-            "399",
-            "400",
-            "401",
-            "402",
-            "403",
-            "404",
-            "405",
-            "406",
-            "407",
-            "408",
-            "409",
-            "410",
-            "411",
-            "412",
-            "413",
-            "414",
-            "415",
-            "416",
-            "417",
-            "418",
-            "419",
-            "420",
-            "421",
-            "422",
-            "423",
-            "424",
-            "425",
-            "426",
-            "427",
-            "428",
-            "429",
-            "430",
-            "431",
-            "432",
-            "433",
-            "434",
-            "435",
-            "436",
-            "437",
-            "438",
-            "439",
-            "440",
-            "441",
-            "442",
-            "443",
-            "444",
-            "445",
-            "446",
-            "447",
-            "448",
-            "449",
-            "450",
-            "451",
-            "452",
-            "453",
-            "454",
-            "455",
-            "456",
-            "457",
-            "458",
-            "459",
-            "460",
-            "461",
-            "462",
-            "463",
-            "464",
-            "465",
-            "466",
-            "467",
-            "468",
-            "469",
-            "470",
-            "471",
-            "472",
-            "473",
-            "474",
-            "475",
-            "476",
-            "477",
-            "478",
-            "479",
-            "480",
-            "481",
-            "482",
-            "483",
-            "484",
-            "485",
-            "486",
-            "487",
-            "488",
-            "489",
-            "490",
-            "491",
-            "492",
-            "493",
-            "494",
-            "495",
-            "496",
-            "497",
-            "498",
-            "499",
-            "500"});
+            "1","2","3","4","5","6","7","8","9","10",
+            "11","12","13","14","15","16","17","18","19","20",
+            "21","22","23","24","25","26","27","28","29","30",
+            "31","32","33","34","35","36","37","38","39","40",
+            "41","42","43","44","45","46","47","48","49","50",
+            "51","52","53","54","55","56","57","58","59","60",
+            "61","62","63","64","65","66","67","68","69","70",
+            "71","72","73","74","75","76","77","78","79","80",
+            "81","82","83","84","85","86","87","88","89","90",
+            "91","92","93","94","95","96","97","98","99","100",
+            "101","102","103","104","105","106","107","108","109","110",
+            "111","112","113","114","115","116","117","118","119","120",
+            "121","122","123","124","125","126","127","128","129","130",
+            "131","132","133","134","135","136","137","138","139","140",
+            "141","142","143","144","145","146","147","148","149","150",
+            "151","152","153","154","155","156","157","158","159","160",
+            "161","162","163","164","165","166","167","168","169","170",
+            "171","172","173","174","175","176","177","178","179","180",
+            "181","182","183","184","185","186","187","188","189","190",
+            "191","192","193","194","195","196","197","198","199","200",
+            "201","202","203","204","205","206","207","208","209","210",
+            "211","212","213","214","215","216","217","218","219","220",
+            "221","222","223","224","225","226","227","228","229","230",
+            "231","232","233","234","235","236","237","238","239","240",
+            "241","242","243","244","245","246","247","248","249","250",
+            "251","252","253","254","255","256","257","258","259","260",
+            "261","262","263","264","265","266","267","268","269","270",
+            "271","272","273","274","275","276","277","278","279","280",
+            "281","282","283","284","285","286","287","288","289","290",
+            "291","292","293","294","295","296","297","298","299","300",
+            "301","302","303","304","305","306","307","308","309","310",
+            "311","312","313","314","315","316","317","318","319","320",
+            "321","322","323","324","325","326","327","328","329","330",
+            "331","332","333","334","335","336","337","338","339","340",
+            "341","342","343","344","345","346","347","348","349","350",
+            "351","352","353","354","355","356","357","358","359","360",
+            "361","362","363","364","365","366","367","368","369","370",
+            "371","372","373","374","375","376","377","378","379","380",
+            "381","382","383","384","385","386","387","388","389","390",
+            "391","392","393","394","395","396","397","398","399","400",
+            "401","402","403","404","405","406","407","408","409","410",
+            "411","412","413","414","415","416","417","418","419","420",
+            "421","422","423","424","425","426","427","428","429","430",
+            "431","432","433","434","435","436","437","438","439","440",
+            "441","442","443","444","445","446","447","448","449","450",
+            "451","452","453","454","455","456","457","458","459","460",
+            "461","462","463","464","465","466","467","468","469","470",
+            "471","472","473","474","475","476","477","478","479","480",
+            "481","482","483","484","485","486","487","488","489","490",
+            "491","492","493","494","495","496","497","498","499","500"});
             this.repositoryItemComboBox1.Name = "repositoryItemComboBox1";
             // 
             // ICCID
@@ -1008,48 +603,17 @@
             this.TimerCheckSim.Interval = 15000;
             this.TimerCheckSim.Tick += new System.EventHandler(this.TimerCheckSim_Tick);
             // 
-            // popupMenu1
+            // popupMenu1  (right-click menu)
             // 
             this.popupMenu1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(this.Popup101),
             new DevExpress.XtraBars.LinkPersistInfo(this.PopupSao0Thang),
             new DevExpress.XtraBars.LinkPersistInfo(this.PopupResetCom),
-            new DevExpress.XtraBars.LinkPersistInfo(this.PopupChangeIMEI)});
+            new DevExpress.XtraBars.LinkPersistInfo(this.PopupChangeIMEI),
+            // [MỚI] Phát sinh Data 4G trong right-click menu
+            new DevExpress.XtraBars.LinkPersistInfo(this.PopupPhatSinhData4G)});
             this.popupMenu1.Manager = this.barManager;
             this.popupMenu1.Name = "popupMenu1";
-            // 
-            // barSubItem2
-            // 
-            this.barSubItem2.Caption = "Phát sinh Data 4G";
-            this.barSubItem2.Id = 35;
-            this.barSubItem2.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barSubItem2.ImageOptions.Image")));
-            this.barSubItem2.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barSubItem2.ImageOptions.LargeImage")));
-            this.barSubItem2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(((DevExpress.XtraBars.BarLinkUserDefines)((DevExpress.XtraBars.BarLinkUserDefines.Caption | DevExpress.XtraBars.BarLinkUserDefines.PaintStyle))), this.barButtonItem1, "Phát sinh 1MB", false, true, true, 0, null, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem2),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem3)});
-            this.barSubItem2.Name = "barSubItem2";
-            this.barSubItem2.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph;
-            // 
-            // barButtonItem1
-            // 
-            this.barButtonItem1.Caption = "Phát sinh 1MB";
-            this.barButtonItem1.Id = 36;
-            this.barButtonItem1.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barButtonItem1.ImageOptions.Image")));
-            this.barButtonItem1.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItem1.ImageOptions.LargeImage")));
-            this.barButtonItem1.Name = "barButtonItem1";
-            // 
-            // barButtonItem2
-            // 
-            this.barButtonItem2.Caption = "Phát sinh 5MB";
-            this.barButtonItem2.Id = 37;
-            this.barButtonItem2.Name = "barButtonItem2";
-            // 
-            // barButtonItem3
-            // 
-            this.barButtonItem3.Caption = "Phát sinh 10MB";
-            this.barButtonItem3.Id = 38;
-            this.barButtonItem3.Name = "barButtonItem3";
             // 
             // CheckToolForm
             // 
@@ -1076,7 +640,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.popupMenu1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
@@ -1110,9 +673,8 @@
         private DevExpress.XtraGrid.Columns.GridColumn HSD;
         private DevExpress.XtraBars.BarButtonItem PopupSao0Thang;
         private DevExpress.XtraBars.BarSubItem barSubItem1;
-        private DevExpress.XtraBars.BarSubItem barSubItem2;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem1;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem2;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem3;
+        // [MỚI]
+        private DevExpress.XtraBars.BarButtonItem btnPhatSinhData4G;
+        private DevExpress.XtraBars.BarButtonItem PopupPhatSinhData4G;
     }
 }

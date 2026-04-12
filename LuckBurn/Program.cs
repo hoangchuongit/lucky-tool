@@ -38,7 +38,7 @@ namespace LuckBurn
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new CheckToolForm());
+            Application.Run(new LoginForm());
         }
 
         private static void RemoveFileInFolderRecord()

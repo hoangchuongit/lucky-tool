@@ -301,8 +301,10 @@ namespace LuckBurn
                 MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
             }
 
-            Console.WriteLine($"{sp.PortName} ---------- {MessageCOMs[sp.PortName]}");
-
+#if DEBUG
+            if(sp.PortName== "COM142")
+                Console.WriteLine($"{sp.PortName} ---------- {MessageCOMs[sp.PortName]}");
+#endif
             // ── Cập nhật buffer ghi âm (thuần memory, không sleep - giữ trong DataReceived) ──
             // Phải xử lý tại đây để không mất byte audio giữa các lần DataReceived fire
             string currentMsg;
