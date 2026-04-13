@@ -1011,17 +1011,6 @@ namespace LuckBurn
             }
         }
 
-        /// <summary>
-        /// [CẢI TIẾN] BeginInvoke (async) thay vì Invoke (sync).
-        /// Giữ lại cho các trường hợp cần marshal trực tiếp lên UI thread.
-        /// </summary>
-        private void InvokeIfRequired(Action action)
-        {
-            if (gcCOM.IsDisposed || !gcCOM.IsHandleCreated) return;
-            if (gcCOM.InvokeRequired) gcCOM.BeginInvoke(action);
-            else action();
-        }
-
         // ─────────────────────────────────────────────────────────────────────
         //  AT COMMAND
         // ─────────────────────────────────────────────────────────────────────

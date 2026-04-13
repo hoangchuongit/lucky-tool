@@ -2,45 +2,30 @@
 {
     partial class CheckToolForm
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
-            {
                 components.Dispose();
-            }
             base.Dispose(disposing);
         }
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CheckToolForm));
-            DevExpress.Utils.SuperToolTip superToolTip9 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem9 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip10 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem10 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip11 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem11 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip12 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem12 = new DevExpress.Utils.ToolTipItem();
-            // [MỚI] SuperTooltip cho nút Phát sinh Data 4G
-            DevExpress.Utils.SuperToolTip superToolTip13 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem13 = new DevExpress.Utils.ToolTipItem();
+            System.ComponentModel.ComponentResourceManager resources =
+                new System.ComponentModel.ComponentResourceManager(typeof(CheckToolForm));
+            DevExpress.Utils.SuperToolTip superToolTip1 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem1 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip2 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem2 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip3 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem3 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip4 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem4 = new DevExpress.Utils.ToolTipItem();
 
             this.barManager = new DevExpress.XtraBars.BarManager(this.components);
             this.mainToolBar = new DevExpress.XtraBars.Bar();
@@ -50,18 +35,13 @@
             this.btnChangeIMEI = new DevExpress.XtraBars.BarButtonItem();
             this.btnResetCom = new DevExpress.XtraBars.BarButtonItem();
             this.btnRestoreSettings = new DevExpress.XtraBars.BarButtonItem();
-            // [MỚI] Nút Phát sinh Data 4G trên toolbar
             this.btnPhatSinhData4G = new DevExpress.XtraBars.BarButtonItem();
+            this.PopupSao0Thang = new DevExpress.XtraBars.BarButtonItem();
+            this.Popup101 = new DevExpress.XtraBars.BarButtonItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
-            this.PopupResetCom = new DevExpress.XtraBars.BarButtonItem();
-            this.PopupChangeIMEI = new DevExpress.XtraBars.BarButtonItem();
-            this.Popup101 = new DevExpress.XtraBars.BarButtonItem();
-            this.PopupSao0Thang = new DevExpress.XtraBars.BarButtonItem();
-            // [MỚI] Popup menu item Phát sinh Data 4G
-            this.PopupPhatSinhData4G = new DevExpress.XtraBars.BarButtonItem();
             this.gcCOM = new DevExpress.XtraGrid.GridControl();
             this.gvCOM = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.COM = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -72,21 +52,16 @@
             this.HSD = new DevExpress.XtraGrid.Columns.GridColumn();
             this.TKChinh = new DevExpress.XtraGrid.Columns.GridColumn();
             this.Message101 = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.repositoryItemTextEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.TimerCheckSim = new System.Windows.Forms.Timer(this.components);
-            this.popupMenu1 = new DevExpress.XtraBars.PopupMenu(this.components);
+
             ((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gcCOM)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvCOM)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.popupMenu1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // barManager
-            // 
-            this.barManager.Bars.AddRange(new DevExpress.XtraBars.Bar[] {
-            this.mainToolBar});
+
+            // ── barManager ──────────────────────────────────────────────────
+            this.barManager.Bars.AddRange(new DevExpress.XtraBars.Bar[] { this.mainToolBar });
             this.barManager.DockControls.Add(this.barDockControlTop);
             this.barManager.DockControls.Add(this.barDockControlBottom);
             this.barManager.DockControls.Add(this.barDockControlLeft);
@@ -94,224 +69,170 @@
             this.barManager.DockWindowTabFont = new System.Drawing.Font("Verdana", 8F);
             this.barManager.Form = this;
             this.barManager.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
-            this.btnUpdateComPort,
-            this.btnResetComPort,
-            this.btnResetCom,
-            this.btnRestoreSettings,
-            this.btnChangeIMEI,
-            this.PopupResetCom,
-            this.PopupChangeIMEI,
-            this.Popup101,
-            this.PopupSao0Thang,
-            this.barSubItem1,
-            // [MỚI]
-            this.btnPhatSinhData4G,
-            this.PopupPhatSinhData4G});
-            // [MỚI] MaxItemId tăng lên để tránh xung đột ID
+                this.btnUpdateComPort,
+                this.btnResetComPort,
+                this.btnResetCom,
+                this.btnRestoreSettings,
+                this.btnChangeIMEI,
+                this.Popup101,
+                this.PopupSao0Thang,
+                this.barSubItem1,
+                this.btnPhatSinhData4G});
             this.barManager.MaxItemId = 42;
             this.barManager.OptionsStubGlyphs.Font = new System.Drawing.Font("Verdana", 8F);
             this.barManager.OptionsStubGlyphs.UseFont = true;
-            // 
-            // mainToolBar
-            // 
+
+            // ── mainToolBar ─────────────────────────────────────────────────
             this.mainToolBar.BarName = "Main Toolbar";
             this.mainToolBar.DockCol = 0;
             this.mainToolBar.DockRow = 0;
             this.mainToolBar.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.mainToolBar.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem1),
-            // [MỚI] Nút Phát sinh Data 4G xuất hiện ngay trên toolbar, dễ thấy
-            new DevExpress.XtraBars.LinkPersistInfo(
-                DevExpress.XtraBars.BarLinkUserDefines.PaintStyle,
-                this.btnPhatSinhData4G,
-                DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
+                new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem1),
+                new DevExpress.XtraBars.LinkPersistInfo(
+                    DevExpress.XtraBars.BarLinkUserDefines.PaintStyle,
+                    this.btnPhatSinhData4G,
+                    DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+                new DevExpress.XtraBars.LinkPersistInfo(this.PopupSao0Thang),
+                new DevExpress.XtraBars.LinkPersistInfo(this.Popup101)});
             this.mainToolBar.OptionsBar.AllowQuickCustomization = false;
             this.mainToolBar.OptionsBar.DisableClose = true;
             this.mainToolBar.OptionsBar.DisableCustomization = true;
             this.mainToolBar.OptionsBar.DrawBorder = false;
             this.mainToolBar.OptionsBar.DrawDragBorder = false;
             this.mainToolBar.Text = "Main Toolbar";
-            // 
-            // barSubItem1  (Cài đặt)
-            // 
+
+            // ── barSubItem1  (Cài đặt) ──────────────────────────────────────
             this.barSubItem1.Caption = "Cài đặt";
             this.barSubItem1.Id = 32;
             this.barSubItem1.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barSubItem1.ImageOptions.Image")));
             this.barSubItem1.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barSubItem1.ImageOptions.LargeImage")));
             this.barSubItem1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnResetComPort,    DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnUpdateComPort,   DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnChangeIMEI,      DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnResetCom,        DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnRestoreSettings, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
+                new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnResetComPort,    DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+                new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnUpdateComPort,   DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+                new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnChangeIMEI,      DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+                new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnResetCom,        DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
+                new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnRestoreSettings, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.barSubItem1.Name = "barSubItem1";
             this.barSubItem1.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph;
-            // 
-            // btnResetComPort
-            // 
+
+            // ── btnResetComPort ─────────────────────────────────────────────
             this.btnResetComPort.Caption = "Đặt lại STT";
             this.btnResetComPort.Id = 4;
             this.btnResetComPort.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnResetComPort.ImageOptions.Image")));
             this.btnResetComPort.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnResetComPort.ImageOptions.LargeImage")));
-            this.btnResetComPort.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnResetComPort.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F);
             this.btnResetComPort.ItemAppearance.Normal.Options.UseFont = true;
             this.btnResetComPort.Name = "btnResetComPort";
-            toolTipItem9.Text = "Đặt lại số thứ tự cổng COM";
-            superToolTip9.Items.Add(toolTipItem9);
-            this.btnResetComPort.SuperTip = superToolTip9;
+            toolTipItem1.Text = "Đặt lại số thứ tự cổng COM";
+            superToolTip1.Items.Add(toolTipItem1);
+            this.btnResetComPort.SuperTip = superToolTip1;
             this.btnResetComPort.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnResetComPort_ItemClick);
-            // 
-            // btnUpdateComPort
-            // 
+
+            // ── btnUpdateComPort ────────────────────────────────────────────
             this.btnUpdateComPort.Caption = "Cập nhật STT";
             this.btnUpdateComPort.Id = 3;
             this.btnUpdateComPort.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdateComPort.ImageOptions.Image")));
             this.btnUpdateComPort.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnUpdateComPort.ImageOptions.LargeImage")));
-            this.btnUpdateComPort.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnUpdateComPort.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F);
             this.btnUpdateComPort.ItemAppearance.Normal.Options.UseFont = true;
             this.btnUpdateComPort.Name = "btnUpdateComPort";
-            toolTipItem10.Text = "Cập nhật lại số thứ tự cổng COM";
-            superToolTip10.Items.Add(toolTipItem10);
-            this.btnUpdateComPort.SuperTip = superToolTip10;
+            toolTipItem2.Text = "Cập nhật lại số thứ tự cổng COM";
+            superToolTip2.Items.Add(toolTipItem2);
+            this.btnUpdateComPort.SuperTip = superToolTip2;
             this.btnUpdateComPort.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnUpdateComPort_ItemClick);
-            // 
-            // btnChangeIMEI
-            // 
+
+            // ── btnChangeIMEI ───────────────────────────────────────────────
             this.btnChangeIMEI.Caption = "Thay đổi IMEI";
             this.btnChangeIMEI.Id = 11;
             this.btnChangeIMEI.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnChangeIMEI.ImageOptions.Image")));
             this.btnChangeIMEI.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnChangeIMEI.ImageOptions.LargeImage")));
-            this.btnChangeIMEI.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnChangeIMEI.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F);
             this.btnChangeIMEI.ItemAppearance.Normal.Options.UseFont = true;
             this.btnChangeIMEI.Name = "btnChangeIMEI";
             this.btnChangeIMEI.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnChangeIMEI_ItemClick);
-            // 
-            // btnResetCom
-            // 
+
+            // ── btnResetCom ─────────────────────────────────────────────────
             this.btnResetCom.Caption = "Khởi động lại";
             this.btnResetCom.Id = 5;
             this.btnResetCom.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnResetCom.ImageOptions.Image")));
             this.btnResetCom.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnResetCom.ImageOptions.LargeImage")));
-            this.btnResetCom.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnResetCom.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F);
             this.btnResetCom.ItemAppearance.Normal.Options.UseFont = true;
             this.btnResetCom.Name = "btnResetCom";
-            toolTipItem11.Text = "Reset lại cổng COM";
-            superToolTip11.Items.Add(toolTipItem11);
-            this.btnResetCom.SuperTip = superToolTip11;
+            toolTipItem3.Text = "Khởi động lại cổng COM đã chọn (hoặc tất cả nếu không chọn)";
+            superToolTip3.Items.Add(toolTipItem3);
+            this.btnResetCom.SuperTip = superToolTip3;
             this.btnResetCom.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnResetCom_ItemClick);
-            // 
-            // btnRestoreSettings
-            // 
+
+            // ── btnRestoreSettings ──────────────────────────────────────────
             this.btnRestoreSettings.Caption = "Khôi phục cài đặt gốc";
             this.btnRestoreSettings.Id = 6;
             this.btnRestoreSettings.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnRestoreSettings.ImageOptions.Image")));
             this.btnRestoreSettings.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnRestoreSettings.ImageOptions.LargeImage")));
-            this.btnRestoreSettings.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRestoreSettings.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F);
             this.btnRestoreSettings.ItemAppearance.Normal.Options.UseFont = true;
             this.btnRestoreSettings.Name = "btnRestoreSettings";
-            toolTipItem12.Text = "Khôi phục lại cài đặt mặc định";
-            superToolTip12.Items.Add(toolTipItem12);
-            this.btnRestoreSettings.SuperTip = superToolTip12;
+            toolTipItem4.Text = "Khôi phục cài đặt gốc cho cổng COM đã chọn (hoặc tất cả)";
+            superToolTip4.Items.Add(toolTipItem4);
+            this.btnRestoreSettings.SuperTip = superToolTip4;
             this.btnRestoreSettings.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnRestoreSettings_ItemClick);
-            // 
-            // [MỚI] btnPhatSinhData4G — nút trên toolbar
-            // 
+
+            // ── btnPhatSinhData4G ───────────────────────────────────────────
             this.btnPhatSinhData4G.Caption = "Phát sinh Data 4G";
             this.btnPhatSinhData4G.Id = 40;
-            // Không dùng resource image để không phụ thuộc resx; gán icon sau nếu cần.
-            this.btnPhatSinhData4G.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPhatSinhData4G.ItemAppearance.Normal.ForeColor = System.Drawing.Color.DarkBlue;
+            this.btnPhatSinhData4G.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnPhatSinhData4G.ImageOptions.Image")));
+            this.btnPhatSinhData4G.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnPhatSinhData4G.ImageOptions.LargeImage")));
+            this.btnPhatSinhData4G.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold);
             this.btnPhatSinhData4G.ItemAppearance.Normal.Options.UseFont = true;
-            this.btnPhatSinhData4G.ItemAppearance.Normal.Options.UseForeColor = true;
             this.btnPhatSinhData4G.Name = "btnPhatSinhData4G";
             this.btnPhatSinhData4G.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph;
-            toolTipItem13.Text = "Tải file qua 4G để phát sinh data cho các SIM được chọn (checkbox).\n" +
-                                                "Nếu không chọn row nào → áp dụng cho tất cả cổng COM.";
-            superToolTip13.Items.Add(toolTipItem13);
-            this.btnPhatSinhData4G.SuperTip = superToolTip13;
             this.btnPhatSinhData4G.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnPhatSinhData4G_ItemClick);
-            // 
-            // barDockControlTop
-            // 
-            this.barDockControlTop.CausesValidation = false;
-            this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
-            this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
-            this.barDockControlTop.Manager = this.barManager;
-            this.barDockControlTop.Size = new System.Drawing.Size(1233, 27);
-            // 
-            // barDockControlBottom
-            // 
-            this.barDockControlBottom.CausesValidation = false;
-            this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 806);
-            this.barDockControlBottom.Manager = this.barManager;
-            this.barDockControlBottom.Size = new System.Drawing.Size(1233, 0);
-            // 
-            // barDockControlLeft
-            // 
-            this.barDockControlLeft.CausesValidation = false;
-            this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.barDockControlLeft.Location = new System.Drawing.Point(0, 27);
-            this.barDockControlLeft.Manager = this.barManager;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 779);
-            // 
-            // barDockControlRight
-            // 
-            this.barDockControlRight.CausesValidation = false;
-            this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.barDockControlRight.Location = new System.Drawing.Point(1233, 27);
-            this.barDockControlRight.Manager = this.barManager;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 779);
-            // 
-            // PopupResetCom
-            // 
-            this.PopupResetCom.Caption = "Khởi động lại";
-            this.PopupResetCom.Id = 27;
-            this.PopupResetCom.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("PopupResetCom.ImageOptions.Image")));
-            this.PopupResetCom.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("PopupResetCom.ImageOptions.LargeImage")));
-            this.PopupResetCom.Name = "PopupResetCom";
-            this.PopupResetCom.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.PopupResetCom_ItemClick);
-            // 
-            // PopupChangeIMEI
-            // 
-            this.PopupChangeIMEI.Caption = "Thay đổi IMEI";
-            this.PopupChangeIMEI.Id = 28;
-            this.PopupChangeIMEI.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("PopupChangeIMEI.ImageOptions.Image")));
-            this.PopupChangeIMEI.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("PopupChangeIMEI.ImageOptions.LargeImage")));
-            this.PopupChangeIMEI.Name = "PopupChangeIMEI";
-            this.PopupChangeIMEI.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.PopupChangeIMEI_ItemClick);
-            // 
-            // Popup101
-            // 
-            this.Popup101.Caption = "USSD *101#";
-            this.Popup101.Id = 29;
-            this.Popup101.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("Popup101.ImageOptions.Image")));
-            this.Popup101.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("Popup101.ImageOptions.LargeImage")));
-            this.Popup101.Name = "Popup101";
-            this.Popup101.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.Popup101_ItemClick);
-            // 
-            // PopupSao0Thang
-            // 
+
+            // ── PopupSao0Thang ──────────────────────────────────────────────
             this.PopupSao0Thang.Caption = "USSD *0#";
             this.PopupSao0Thang.Id = 30;
             this.PopupSao0Thang.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("PopupSao0Thang.ImageOptions.Image")));
             this.PopupSao0Thang.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("PopupSao0Thang.ImageOptions.LargeImage")));
             this.PopupSao0Thang.Name = "PopupSao0Thang";
+            this.PopupSao0Thang.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph;
             this.PopupSao0Thang.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.PopupSao0Thang_ItemClick);
-            // 
-            // [MỚI] PopupPhatSinhData4G — mục trong right-click menu
-            // 
-            this.PopupPhatSinhData4G.Caption = "Phát sinh Data 4G";
-            this.PopupPhatSinhData4G.Id = 41;
-            this.PopupPhatSinhData4G.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold);
-            this.PopupPhatSinhData4G.ItemAppearance.Normal.ForeColor = System.Drawing.Color.DarkBlue;
-            this.PopupPhatSinhData4G.ItemAppearance.Normal.Options.UseFont = true;
-            this.PopupPhatSinhData4G.ItemAppearance.Normal.Options.UseForeColor = true;
-            this.PopupPhatSinhData4G.Name = "PopupPhatSinhData4G";
-            this.PopupPhatSinhData4G.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.PopupPhatSinhData4G_ItemClick);
-            // 
-            // gcCOM
-            // 
+
+            // ── Popup101 ────────────────────────────────────────────────────
+            this.Popup101.Caption = "USSD *101#";
+            this.Popup101.Id = 29;
+            this.Popup101.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("Popup101.ImageOptions.Image")));
+            this.Popup101.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("Popup101.ImageOptions.LargeImage")));
+            this.Popup101.Name = "Popup101";
+            this.Popup101.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph;
+            this.Popup101.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.Popup101_ItemClick);
+
+            // ── Dock controls ───────────────────────────────────────────────
+            this.barDockControlTop.CausesValidation = false;
+            this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
+            this.barDockControlTop.Manager = this.barManager;
+            this.barDockControlTop.Size = new System.Drawing.Size(1233, 27);
+
+            this.barDockControlBottom.CausesValidation = false;
+            this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 806);
+            this.barDockControlBottom.Manager = this.barManager;
+            this.barDockControlBottom.Size = new System.Drawing.Size(1233, 0);
+
+            this.barDockControlLeft.CausesValidation = false;
+            this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
+            this.barDockControlLeft.Location = new System.Drawing.Point(0, 27);
+            this.barDockControlLeft.Manager = this.barManager;
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 779);
+
+            this.barDockControlRight.CausesValidation = false;
+            this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
+            this.barDockControlRight.Location = new System.Drawing.Point(1233, 27);
+            this.barDockControlRight.Manager = this.barManager;
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 779);
+
+            // ── gcCOM ───────────────────────────────────────────────────────
             this.gcCOM.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gcCOM.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.gcCOM.Location = new System.Drawing.Point(0, 27);
@@ -319,44 +240,27 @@
             this.gcCOM.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.gcCOM.Name = "gcCOM";
             this.gcCOM.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
-            this.repositoryItemComboBox1,
-            this.repositoryItemTextEdit2});
+                this.repositoryItemComboBox1});
             this.gcCOM.Size = new System.Drawing.Size(1233, 779);
             this.gcCOM.TabIndex = 0;
-            this.gcCOM.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.gvCOM});
-            // 
-            // gvCOM
-            // 
+            this.gcCOM.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { this.gvCOM });
+
+            // ── gvCOM ───────────────────────────────────────────────────────
             this.gvCOM.AppearancePrint.FooterPanel.Font = new System.Drawing.Font("Verdana", 14F);
             this.gvCOM.AppearancePrint.FooterPanel.Options.UseFont = true;
             this.gvCOM.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.COM,
-            this.STT,
-            this.ICCID,
-            this.PhoneNumber,
-            this.HSD,
-            this.TKChinh,
-            this.Message101});
+                this.COM, this.STT, this.ICCID, this.PhoneNumber, this.HSD, this.TKChinh, this.Message101});
             this.gvCOM.GridControl = this.gcCOM;
             this.gvCOM.Name = "gvCOM";
             this.gvCOM.OptionsClipboard.CopyColumnHeaders = DevExpress.Utils.DefaultBoolean.False;
-            // ─── [MỚI] Checkbox row select ────────────────────────────────────
-            // MultiSelect = true  : bắt buộc
-            // MultiSelectMode = CheckBoxRowSelect :
-            //   • Mỗi row có checkbox ở cột đầu tiên (trước cột COM)
-            //   • Header có checkbox "Chọn tất cả / Bỏ chọn tất cả"
-            //   • Click vào checkbox hoặc vào row đều toggle trạng thái check
-            //   • gvCOM.GetSelectedRows() trả về đúng những row được check
-            // ─────────────────────────────────────────────────────────────────
+            // CheckBoxRowSelect: checkbox ở đầu mỗi row + header "chọn tất cả"
             this.gvCOM.OptionsSelection.MultiSelect = true;
             this.gvCOM.OptionsSelection.MultiSelectMode =
                 DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
             this.gvCOM.OptionsView.ShowGroupPanel = false;
-            this.gvCOM.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GvCOM_MouseDown);
-            // 
-            // COM
-            // 
+            // Không có right-click popup menu → không cần MouseDown handler
+
+            // ── COM column ──────────────────────────────────────────────────
             this.COM.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
             this.COM.AppearanceCell.Options.UseFont = true;
             this.COM.AppearanceCell.Options.UseTextOptions = true;
@@ -379,11 +283,10 @@
             this.COM.OptionsFilter.AllowAutoFilter = false;
             this.COM.OptionsFilter.AllowFilter = false;
             this.COM.Visible = true;
-            this.COM.VisibleIndex = 0;
+            this.COM.VisibleIndex = 1;
             this.COM.Width = 60;
-            // 
-            // STT
-            // 
+
+            // ── STT column ──────────────────────────────────────────────────
             this.STT.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
             this.STT.AppearanceCell.Options.UseFont = true;
             this.STT.AppearanceCell.Options.UseTextOptions = true;
@@ -410,70 +313,32 @@
             this.STT.OptionsFilter.AllowAutoFilter = false;
             this.STT.OptionsFilter.AllowFilter = false;
             this.STT.Visible = true;
-            this.STT.VisibleIndex = 1;
+            this.STT.VisibleIndex = 2;
             this.STT.Width = 50;
-            // 
-            // repositoryItemComboBox1  (STT 1–500)
-            // 
+
+            // ── repositoryItemComboBox1 (STT 1–128) ─────────────────────────
             this.repositoryItemComboBox1.AutoHeight = false;
             this.repositoryItemComboBox1.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+                new DevExpress.XtraEditors.Controls.EditorButton(
+                    DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.repositoryItemComboBox1.DropDownRows = 10;
             this.repositoryItemComboBox1.Items.AddRange(new object[] {
-            "1","2","3","4","5","6","7","8","9","10",
-            "11","12","13","14","15","16","17","18","19","20",
-            "21","22","23","24","25","26","27","28","29","30",
-            "31","32","33","34","35","36","37","38","39","40",
-            "41","42","43","44","45","46","47","48","49","50",
-            "51","52","53","54","55","56","57","58","59","60",
-            "61","62","63","64","65","66","67","68","69","70",
-            "71","72","73","74","75","76","77","78","79","80",
-            "81","82","83","84","85","86","87","88","89","90",
-            "91","92","93","94","95","96","97","98","99","100",
-            "101","102","103","104","105","106","107","108","109","110",
-            "111","112","113","114","115","116","117","118","119","120",
-            "121","122","123","124","125","126","127","128","129","130",
-            "131","132","133","134","135","136","137","138","139","140",
-            "141","142","143","144","145","146","147","148","149","150",
-            "151","152","153","154","155","156","157","158","159","160",
-            "161","162","163","164","165","166","167","168","169","170",
-            "171","172","173","174","175","176","177","178","179","180",
-            "181","182","183","184","185","186","187","188","189","190",
-            "191","192","193","194","195","196","197","198","199","200",
-            "201","202","203","204","205","206","207","208","209","210",
-            "211","212","213","214","215","216","217","218","219","220",
-            "221","222","223","224","225","226","227","228","229","230",
-            "231","232","233","234","235","236","237","238","239","240",
-            "241","242","243","244","245","246","247","248","249","250",
-            "251","252","253","254","255","256","257","258","259","260",
-            "261","262","263","264","265","266","267","268","269","270",
-            "271","272","273","274","275","276","277","278","279","280",
-            "281","282","283","284","285","286","287","288","289","290",
-            "291","292","293","294","295","296","297","298","299","300",
-            "301","302","303","304","305","306","307","308","309","310",
-            "311","312","313","314","315","316","317","318","319","320",
-            "321","322","323","324","325","326","327","328","329","330",
-            "331","332","333","334","335","336","337","338","339","340",
-            "341","342","343","344","345","346","347","348","349","350",
-            "351","352","353","354","355","356","357","358","359","360",
-            "361","362","363","364","365","366","367","368","369","370",
-            "371","372","373","374","375","376","377","378","379","380",
-            "381","382","383","384","385","386","387","388","389","390",
-            "391","392","393","394","395","396","397","398","399","400",
-            "401","402","403","404","405","406","407","408","409","410",
-            "411","412","413","414","415","416","417","418","419","420",
-            "421","422","423","424","425","426","427","428","429","430",
-            "431","432","433","434","435","436","437","438","439","440",
-            "441","442","443","444","445","446","447","448","449","450",
-            "451","452","453","454","455","456","457","458","459","460",
-            "461","462","463","464","465","466","467","468","469","470",
-            "471","472","473","474","475","476","477","478","479","480",
-            "481","482","483","484","485","486","487","488","489","490",
-            "491","492","493","494","495","496","497","498","499","500"});
+                "1","2","3","4","5","6","7","8","9","10",
+                "11","12","13","14","15","16","17","18","19","20",
+                "21","22","23","24","25","26","27","28","29","30",
+                "31","32","33","34","35","36","37","38","39","40",
+                "41","42","43","44","45","46","47","48","49","50",
+                "51","52","53","54","55","56","57","58","59","60",
+                "61","62","63","64","65","66","67","68","69","70",
+                "71","72","73","74","75","76","77","78","79","80",
+                "81","82","83","84","85","86","87","88","89","90",
+                "91","92","93","94","95","96","97","98","99","100",
+                "101","102","103","104","105","106","107","108","109","110",
+                "111","112","113","114","115","116","117","118","119","120",
+                "121","122","123","124","125","126","127","128"});
             this.repositoryItemComboBox1.Name = "repositoryItemComboBox1";
-            // 
-            // ICCID
-            // 
+
+            // ── ICCID column ────────────────────────────────────────────────
             this.ICCID.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
             this.ICCID.AppearanceCell.Options.UseFont = true;
             this.ICCID.AppearanceCell.Options.UseTextOptions = true;
@@ -495,11 +360,10 @@
             this.ICCID.OptionsFilter.AllowAutoFilter = false;
             this.ICCID.OptionsFilter.AllowFilter = false;
             this.ICCID.Visible = true;
-            this.ICCID.VisibleIndex = 2;
+            this.ICCID.VisibleIndex = 3;
             this.ICCID.Width = 180;
-            // 
-            // PhoneNumber
-            // 
+
+            // ── PhoneNumber column ──────────────────────────────────────────
             this.PhoneNumber.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
             this.PhoneNumber.AppearanceCell.Options.UseFont = true;
             this.PhoneNumber.AppearanceCell.Options.UseTextOptions = true;
@@ -522,11 +386,10 @@
             this.PhoneNumber.OptionsFilter.AutoFilterCondition = DevExpress.XtraGrid.Columns.AutoFilterCondition.Like;
             this.PhoneNumber.OptionsFilter.FilterPopupMode = DevExpress.XtraGrid.Columns.FilterPopupMode.CheckedList;
             this.PhoneNumber.Visible = true;
-            this.PhoneNumber.VisibleIndex = 3;
+            this.PhoneNumber.VisibleIndex = 4;
             this.PhoneNumber.Width = 150;
-            // 
-            // HSD
-            // 
+
+            // ── HSD column ──────────────────────────────────────────────────
             this.HSD.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
             this.HSD.AppearanceCell.Options.UseFont = true;
             this.HSD.AppearanceCell.Options.UseTextOptions = true;
@@ -546,11 +409,10 @@
             this.HSD.OptionsFilter.AllowAutoFilter = false;
             this.HSD.OptionsFilter.AllowFilter = false;
             this.HSD.Visible = true;
-            this.HSD.VisibleIndex = 4;
+            this.HSD.VisibleIndex = 5;
             this.HSD.Width = 100;
-            // 
-            // TKChinh
-            // 
+
+            // ── TKChinh column ──────────────────────────────────────────────
             this.TKChinh.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
             this.TKChinh.AppearanceCell.ForeColor = System.Drawing.Color.DarkRed;
             this.TKChinh.AppearanceCell.Options.UseFont = true;
@@ -573,11 +435,10 @@
             this.TKChinh.OptionsFilter.AllowAutoFilter = false;
             this.TKChinh.OptionsFilter.AllowFilter = false;
             this.TKChinh.Visible = true;
-            this.TKChinh.VisibleIndex = 5;
+            this.TKChinh.VisibleIndex = 6;
             this.TKChinh.Width = 100;
-            // 
-            // Message101
-            // 
+
+            // ── Message101 column ───────────────────────────────────────────
             this.Message101.AppearanceCell.Font = new System.Drawing.Font("Verdana", 8F);
             this.Message101.AppearanceCell.Options.UseFont = true;
             this.Message101.AppearanceCell.Options.UseTextOptions = true;
@@ -589,34 +450,14 @@
             this.Message101.Name = "Message101";
             this.Message101.OptionsColumn.AllowEdit = false;
             this.Message101.Visible = true;
-            this.Message101.VisibleIndex = 6;
+            this.Message101.VisibleIndex = 7;
             this.Message101.Width = 568;
-            // 
-            // repositoryItemTextEdit2
-            // 
-            this.repositoryItemTextEdit2.AutoHeight = false;
-            this.repositoryItemTextEdit2.Name = "repositoryItemTextEdit2";
-            this.repositoryItemTextEdit2.ReadOnly = true;
-            // 
-            // TimerCheckSim
-            // 
+
+            // ── TimerCheckSim ───────────────────────────────────────────────
             this.TimerCheckSim.Interval = 15000;
             this.TimerCheckSim.Tick += new System.EventHandler(this.TimerCheckSim_Tick);
-            // 
-            // popupMenu1  (right-click menu)
-            // 
-            this.popupMenu1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.Popup101),
-            new DevExpress.XtraBars.LinkPersistInfo(this.PopupSao0Thang),
-            new DevExpress.XtraBars.LinkPersistInfo(this.PopupResetCom),
-            new DevExpress.XtraBars.LinkPersistInfo(this.PopupChangeIMEI),
-            // [MỚI] Phát sinh Data 4G trong right-click menu
-            new DevExpress.XtraBars.LinkPersistInfo(this.PopupPhatSinhData4G)});
-            this.popupMenu1.Manager = this.barManager;
-            this.popupMenu1.Name = "popupMenu1";
-            // 
-            // CheckToolForm
-            // 
+
+            // ── CheckToolForm ───────────────────────────────────────────────
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1233, 806);
@@ -632,12 +473,11 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Luck Check";
             this.Load += new System.EventHandler(this.CheckToolForm_Load);
+
             ((System.ComponentModel.ISupportInitialize)(this.barManager)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gcCOM)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvCOM)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.popupMenu1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -654,6 +494,11 @@
         private DevExpress.XtraBars.BarButtonItem btnResetComPort;
         private DevExpress.XtraBars.BarButtonItem btnResetCom;
         private DevExpress.XtraBars.BarButtonItem btnRestoreSettings;
+        private DevExpress.XtraBars.BarButtonItem btnChangeIMEI;
+        private DevExpress.XtraBars.BarButtonItem btnPhatSinhData4G;
+        private DevExpress.XtraBars.BarButtonItem Popup101;
+        private DevExpress.XtraBars.BarButtonItem PopupSao0Thang;
+        private DevExpress.XtraBars.BarSubItem barSubItem1;
         private DevExpress.XtraGrid.GridControl gcCOM;
         private DevExpress.XtraGrid.Views.Grid.GridView gvCOM;
         private DevExpress.XtraGrid.Columns.GridColumn COM;
@@ -661,20 +506,9 @@
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repositoryItemComboBox1;
         private DevExpress.XtraGrid.Columns.GridColumn ICCID;
         private DevExpress.XtraGrid.Columns.GridColumn PhoneNumber;
-        private DevExpress.XtraEditors.Repository.RepositoryItemTextEdit repositoryItemTextEdit2;
-        private DevExpress.XtraGrid.Columns.GridColumn TKChinh;
-        private System.Windows.Forms.Timer TimerCheckSim;
-        private DevExpress.XtraGrid.Columns.GridColumn Message101;
-        private DevExpress.XtraBars.BarButtonItem btnChangeIMEI;
-        private DevExpress.XtraBars.PopupMenu popupMenu1;
-        private DevExpress.XtraBars.BarButtonItem PopupResetCom;
-        private DevExpress.XtraBars.BarButtonItem PopupChangeIMEI;
-        private DevExpress.XtraBars.BarButtonItem Popup101;
         private DevExpress.XtraGrid.Columns.GridColumn HSD;
-        private DevExpress.XtraBars.BarButtonItem PopupSao0Thang;
-        private DevExpress.XtraBars.BarSubItem barSubItem1;
-        // [MỚI]
-        private DevExpress.XtraBars.BarButtonItem btnPhatSinhData4G;
-        private DevExpress.XtraBars.BarButtonItem PopupPhatSinhData4G;
+        private DevExpress.XtraGrid.Columns.GridColumn TKChinh;
+        private DevExpress.XtraGrid.Columns.GridColumn Message101;
+        private System.Windows.Forms.Timer TimerCheckSim;
     }
 }

@@ -11,7 +11,7 @@ namespace LuckBurn.Utils
 {
     public class Common
     {
-#if !DEBUG
+#if DEBUG
         //public static string UrlBurnAUTH = "https://gmeta.io.vn/auth/";
         //public static string UrlBurnAPI = "https://gmeta.io.vn/api/";
         public static string UrlBurnAUTH = "https://luckburn.mobi/auth/";
@@ -21,7 +21,7 @@ namespace LuckBurn.Utils
         public static string UrlBurnAPI = "http://localhost:3001/";
 #endif
 
-        public static string Title = "Luck Tools for G-Meta";
+        public static string Title = "Luck Tools for PA";
 
         public static IEnumerable<Dictionary<string, string>> GetFullPortNames()
         {
