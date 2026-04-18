@@ -28,17 +28,11 @@ namespace LuckBurn
         private readonly ConcurrentDictionary<string, bool> _dirtyRows = new ConcurrentDictionary<string, bool>();
         private System.Windows.Forms.Timer _uiRefreshTimer;
         private int _timerCheckRunning = 0;
-
-        // ── 4G / HTTP chunked download ───────────────────────────────────────
         private const string DataGenUrl = "https://luckburn.mobi/update-app/25";
         private const long DataGenSafetyLimitBytes = 1024L * 1024 * 1024; // giới hạn an toàn 1GB
         private const string UfsChunkFile = "UFS:c.zip";
         private const int ChunkTimeoutMs = 300_000;
         private const int MaxRetryPerChunk = 2;
-
-        // ════════════════════════════════════════════════════════════════════
-        //  4G — Query UFS free space
-        // ════════════════════════════════════════════════════════════════════
 
         private long QueryUfsFreeBytes(SerialPort sp)
         {
@@ -67,10 +61,6 @@ namespace LuckBurn
             }
         }
 
-        // ════════════════════════════════════════════════════════════════════
-        //  4G — Cấu hình HTTP context + PDP
-        // ════════════════════════════════════════════════════════════════════
-
         private bool SetupHttpContext(SerialPort sp)
         {
             try
@@ -98,10 +88,6 @@ namespace LuckBurn
                 return false;
             }
         }
-
-        // ════════════════════════════════════════════════════════════════════
-        //  4G — Set URL cho HTTP session
-        // ════════════════════════════════════════════════════════════════════
 
         private bool SetHttpUrl(SerialPort sp, string url)
         {
@@ -134,10 +120,6 @@ namespace LuckBurn
             }
         }
 
-        // ════════════════════════════════════════════════════════════════════
-        //  4G — Xoá file trên UFS
-        // ════════════════════════════════════════════════════════════════════
-
         private void DeleteUfsFile(SerialPort sp, string ufsPath)
         {
             try
@@ -151,11 +133,6 @@ namespace LuckBurn
                 logger.Warn($"[{sp.PortName}] DeleteUfsFile({ufsPath}): {ex.Message}");
             }
         }
-
-        // ════════════════════════════════════════════════════════════════════
-        //  4G — Tải một chunk (AT+QHTTPGETEX + AT+QHTTPREADFILE)
-        //  Trả về: > 0 = bytes nhận được, -2 = HTTP 416 (hết file), -1 = lỗi
-        // ════════════════════════════════════════════════════════════════════
 
         private long DownloadChunk(SerialPort sp, string fileUrl, long rangeStart, long rangeEnd, int chunkIndex)
         {
@@ -226,11 +203,6 @@ namespace LuckBurn
                 return -1;
             }
         }
-
-        // ════════════════════════════════════════════════════════════════════
-        //  4G — Main: Tiêu thụ Data 4G theo từng đợt (HTTP Range chunked)
-        //  Cột "Tin nhắn" hiển thị tiến trình sử dụng theo MB.
-        // ════════════════════════════════════════════════════════════════════
 
         private void DownloadFileVia4G(SerialPort sp, string fileUrl = null)
         {
@@ -333,13 +305,6 @@ namespace LuckBurn
             }
         }
 
-        // ════════════════════════════════════════════════════════════════════
-        //  HELPERS
-        // ════════════════════════════════════════════════════════════════════
-
-        /// <summary>
-        /// Poll cho đến khi token xuất hiện trong MessageCOMs hoặc hết timeout.
-        /// </summary>
         private bool WaitForResponseInCOM(string portName, string token, int timeoutMs)
         {
             const int pollMs = 200;
@@ -355,20 +320,16 @@ namespace LuckBurn
             return false;
         }
 
-        /// <summary>
-        /// Trả về các cổng đang được check (checkbox). Nếu không có → trả về tất cả.
-        /// Dùng chung cho tất cả các action: Khởi động lại, IMEI, USSD, 4G...
-        /// </summary>
         private List<SerialPort> GetSelectedOrAllPorts()
         {
-            var handles = gvCOM.GetSelectedRows();
+            var handles = GridViewCOM.GetSelectedRows();
             if (handles == null || handles.Length == 0)
                 return SerialPorts.ToList();
 
             var result = new List<SerialPort>();
             foreach (int h in handles)
             {
-                if (gvCOM.GetRow(h) is ComDto row)
+                if (GridViewCOM.GetRow(h) is ComDto row)
                 {
                     var sp = SerialPorts.FirstOrDefault(x => x.PortName == row.COM);
                     if (sp != null) result.Add(sp);
@@ -376,10 +337,6 @@ namespace LuckBurn
             }
             return result.Count > 0 ? result : SerialPorts.ToList();
         }
-
-        // ════════════════════════════════════════════════════════════════════
-        //  KHỞI TẠO
-        // ════════════════════════════════════════════════════════════════════
 
         public CheckToolForm()
         {
@@ -393,8 +350,8 @@ namespace LuckBurn
             _uiRefreshTimer.Tick += UiRefreshTimer_Tick;
             _uiRefreshTimer.Start();
 
-            gvCOM.OptionsSelection.MultiSelect = true;
-            gvCOM.OptionsSelection.MultiSelectMode =
+            GridViewCOM.OptionsSelection.MultiSelect = true;
+            GridViewCOM.OptionsSelection.MultiSelectMode =
                 DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
 
             LoadCOMForm();
@@ -476,10 +433,6 @@ namespace LuckBurn
                     .ToList());
         }
 
-        // ════════════════════════════════════════════════════════════════════
-        //  DEDICATED PROCESSING THREAD
-        // ════════════════════════════════════════════════════════════════════
-
         private void ProcessPortQueue(SerialPort sp)
         {
             if (!_portQueues.TryGetValue(sp.PortName, out var queue)) return;
@@ -499,10 +452,6 @@ namespace LuckBurn
                 }
             }
         }
-
-        // ════════════════════════════════════════════════════════════════════
-        //  MODEM
-        // ════════════════════════════════════════════════════════════════════
 
         private void InitializeModem(SerialPort sp)
         {
@@ -528,10 +477,6 @@ namespace LuckBurn
                     dto => dto.Message101 = $"Lỗi khởi tạo modem: {ex.Message}", "Message101");
             }
         }
-
-        // ════════════════════════════════════════════════════════════════════
-        //  SERIAL PORT EVENTS
-        // ════════════════════════════════════════════════════════════════════
 
         private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
@@ -584,10 +529,6 @@ namespace LuckBurn
                 dto.Message101 = "";
             }, "PhoneNumber", "HSD", "TKChinh", "Message101");
         }
-
-        // ════════════════════════════════════════════════════════════════════
-        //  LISTEN EVENTS
-        // ════════════════════════════════════════════════════════════════════
 
         private void ListenEventSIMStatus(SerialPort sp)
         {
@@ -767,10 +708,6 @@ namespace LuckBurn
             }
         }
 
-        // ════════════════════════════════════════════════════════════════════
-        //  UI HELPERS
-        // ════════════════════════════════════════════════════════════════════
-
         private void UiRefreshTimer_Tick(object sender, EventArgs e)
         {
             if (_dirtyRows.IsEmpty) return;
@@ -778,8 +715,8 @@ namespace LuckBurn
             foreach (var key in dirty) _dirtyRows.TryRemove(key, out _);
             foreach (var portName in dirty)
             {
-                int rowHandle = gvCOM.LocateByValue("COM", portName);
-                if (rowHandle >= 0) gvCOM.RefreshRow(rowHandle);
+                int rowHandle = GridViewCOM.LocateByValue("COM", portName);
+                if (rowHandle >= 0) GridViewCOM.RefreshRow(rowHandle);
             }
         }
 
@@ -799,10 +736,6 @@ namespace LuckBurn
             }
         }
 
-        // ════════════════════════════════════════════════════════════════════
-        //  AT COMMAND
-        // ════════════════════════════════════════════════════════════════════
-
         private void SendATCommand(SerialPort sp, string command, int timeout = 1000)
         {
             try
@@ -819,10 +752,6 @@ namespace LuckBurn
                 logger.Error($"[{sp.PortName}] SendATCommand: {ex.Message}");
             }
         }
-
-        // ════════════════════════════════════════════════════════════════════
-        //  TIMER CHECK SIM
-        // ════════════════════════════════════════════════════════════════════
 
         private void TimerCheckSim_Tick(object sender, EventArgs e)
         {
@@ -870,13 +799,6 @@ namespace LuckBurn
             }
         }
 
-        // ════════════════════════════════════════════════════════════════════
-        //  BUTTON HANDLERS — tất cả đều dùng GetSelectedOrAllPorts()
-        //  Nếu có checkbox được tick → chỉ áp dụng cho các cổng đó.
-        //  Nếu không tick gì → áp dụng cho tất cả.
-        // ════════════════════════════════════════════════════════════════════
-
-        // ── USSD *101# ────────────────────────────────────────────────────
         private void Popup101_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             foreach (var sp in GetSelectedOrAllPorts())
@@ -897,7 +819,6 @@ namespace LuckBurn
             }
         }
 
-        // ── USSD *0# ──────────────────────────────────────────────────────
         private void PopupSao0Thang_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             foreach (var sp in GetSelectedOrAllPorts())
@@ -920,7 +841,6 @@ namespace LuckBurn
             }
         }
 
-        // ── Khởi động lại ─────────────────────────────────────────────────
         private void BtnResetCom_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             var ports = GetSelectedOrAllPorts();
@@ -960,7 +880,6 @@ namespace LuckBurn
             }
         }
 
-        // ── Thay đổi IMEI ─────────────────────────────────────────────────
         private void BtnChangeIMEI_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             var ports = GetSelectedOrAllPorts();
@@ -989,7 +908,6 @@ namespace LuckBurn
             }
         }
 
-        // ── Khôi phục cài đặt gốc ─────────────────────────────────────────
         private void BtnRestoreSettings_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             var ports = GetSelectedOrAllPorts();
@@ -1030,7 +948,6 @@ namespace LuckBurn
             }
         }
 
-        // ── Phát sinh Data 4G ─────────────────────────────────────────────
         private void BtnPhatSinhData4G_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             var ports = GetSelectedOrAllPorts();
@@ -1053,10 +970,9 @@ namespace LuckBurn
             }
         }
 
-        // ── Cài đặt STT ───────────────────────────────────────────────────
         private void BtnUpdateComPort_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            var dataSource = gvCOM.DataSource as BindingList<ComDto>;
+            var dataSource = GridViewCOM.DataSource as BindingList<ComDto>;
             if (dataSource == null) { logger.Error("DataSource là null!"); return; }
 
             foreach (var item in dataSource)
@@ -1087,12 +1003,8 @@ namespace LuckBurn
             var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "com_settings.json");
             if (File.Exists(configPath)) File.Delete(configPath);
             foreach (var item in ComDataGrid) item.STT = "";
-            gvCOM.RefreshData();
+            GridViewCOM.RefreshData();
         }
-
-        // ════════════════════════════════════════════════════════════════════
-        //  HELPERS
-        // ════════════════════════════════════════════════════════════════════
 
         private IEnumerable<Dictionary<string, string>> CheckComOnline()
         {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Management;
 using System.Security.Cryptography;
@@ -11,6 +10,8 @@ namespace LuckCheck.Utils
 {
     public class Common
     {
+        public static string Title = "LuckTool Check";
+
         public static IEnumerable<Dictionary<string, string>> GetFullPortNames()
         {
             using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Caption LIKE '%(COM%' AND ConfigManagerErrorCode = 0"))
@@ -160,7 +161,7 @@ namespace LuckCheck.Utils
             }
             return null; // Không hợp lệ
         }
-        
+
         public static string ExtractHanSD(string input)
         {
             var pattern = @"(?:\bhsd\b|het\s*han|han\s*su\s*dung(?:\s*den\s*ngay)?|dung\s*den)" +

@@ -126,8 +126,10 @@ namespace LuckBurn.Models
 
             // Dùng cho đầu 7x39
             public string request_id { get; set; }
+
             public string prefix { get; set; }
             public string prefix_unit { get; set; }
+
             // time khởi chạy
             public DateTime start_time { get; set; }
         }

@@ -142,11 +142,17 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BurnForm.cs">
+    <Compile Include="BurnLandline.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BurnForm.Designer.cs">
-      <DependentUpon>BurnForm.cs</DependentUpon>
+    <Compile Include="BurnLandline.Designer.cs">
+      <DependentUpon>BurnLandline.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Burn1900.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Burn1900.Designer.cs">
+      <DependentUpon>Burn1900.cs</DependentUpon>
     </Compile>
     <Compile Include="ChangePassForm.cs">
       <SubType>Form</SubType>
@@ -194,8 +200,11 @@
     <Compile Include="Utils\Common.cs" />
     <Compile Include="Utils\SecureConfig.cs" />
     <Compile Include="Utils\StringExtensions.cs" />
-    <EmbeddedResource Include="BurnForm.resx">
-      <DependentUpon>BurnForm.cs</DependentUpon>
+    <EmbeddedResource Include="BurnLandline.resx">
+      <DependentUpon>BurnLandline.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Burn1900.resx">
+      <DependentUpon>Burn1900.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ChangePassForm.resx">
       <DependentUpon>ChangePassForm.cs</DependentUpon>

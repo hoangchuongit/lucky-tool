@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckUpdater", "LuckUpdater\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckCheck", "LuckCheck\LuckCheck.csproj", "{99DD1C4C-B004-4D22-B084-8544A0C0697D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Luck7539", "Luck7539\Luck7539.csproj", "{7BB84052-3C16-4436-B04D-DF452EB26F5E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,10 +31,6 @@ Global
 		{99DD1C4C-B004-4D22-B084-8544A0C0697D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99DD1C4C-B004-4D22-B084-8544A0C0697D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99DD1C4C-B004-4D22-B084-8544A0C0697D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7BB84052-3C16-4436-B04D-DF452EB26F5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7BB84052-3C16-4436-B04D-DF452EB26F5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7BB84052-3C16-4436-B04D-DF452EB26F5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7BB84052-3C16-4436-B04D-DF452EB26F5E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

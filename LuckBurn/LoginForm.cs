@@ -1,6 +1,5 @@
 ﻿using DevExpress.XtraEditors;
 using LuckBurn.Utils;
-using LuckCheck;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
@@ -92,7 +91,7 @@ namespace LuckBurn
                     //}
                     else if (cbType.SelectedIndex == 1)
                     {
-                        var mainForm = new BurnForm(result.api_key.ToString());
+                        var mainForm = new Burn1900(result.api_key.ToString());
                         mainForm.ShowDialog();
                     }
                     Close();

@@ -43,7 +43,7 @@
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             this.gcCOM = new DevExpress.XtraGrid.GridControl();
-            this.gvCOM = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.GridViewCOM = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.COM = new DevExpress.XtraGrid.Columns.GridColumn();
             this.STT = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemComboBox1 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
@@ -56,7 +56,7 @@
 
             ((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gcCOM)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gvCOM)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GridViewCOM)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
             this.SuspendLayout();
 
@@ -236,28 +236,28 @@
             this.gcCOM.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gcCOM.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.gcCOM.Location = new System.Drawing.Point(0, 27);
-            this.gcCOM.MainView = this.gvCOM;
+            this.gcCOM.MainView = this.GridViewCOM;
             this.gcCOM.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.gcCOM.Name = "gcCOM";
             this.gcCOM.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
                 this.repositoryItemComboBox1});
             this.gcCOM.Size = new System.Drawing.Size(1233, 779);
             this.gcCOM.TabIndex = 0;
-            this.gcCOM.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { this.gvCOM });
+            this.gcCOM.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { this.GridViewCOM });
 
-            // ── gvCOM ───────────────────────────────────────────────────────
-            this.gvCOM.AppearancePrint.FooterPanel.Font = new System.Drawing.Font("Verdana", 14F);
-            this.gvCOM.AppearancePrint.FooterPanel.Options.UseFont = true;
-            this.gvCOM.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            // ── GridViewCOM ───────────────────────────────────────────────────────
+            this.GridViewCOM.AppearancePrint.FooterPanel.Font = new System.Drawing.Font("Verdana", 14F);
+            this.GridViewCOM.AppearancePrint.FooterPanel.Options.UseFont = true;
+            this.GridViewCOM.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
                 this.COM, this.STT, this.ICCID, this.PhoneNumber, this.HSD, this.TKChinh, this.Message101});
-            this.gvCOM.GridControl = this.gcCOM;
-            this.gvCOM.Name = "gvCOM";
-            this.gvCOM.OptionsClipboard.CopyColumnHeaders = DevExpress.Utils.DefaultBoolean.False;
+            this.GridViewCOM.GridControl = this.gcCOM;
+            this.GridViewCOM.Name = "GridViewCOM";
+            this.GridViewCOM.OptionsClipboard.CopyColumnHeaders = DevExpress.Utils.DefaultBoolean.False;
             // CheckBoxRowSelect: checkbox ở đầu mỗi row + header "chọn tất cả"
-            this.gvCOM.OptionsSelection.MultiSelect = true;
-            this.gvCOM.OptionsSelection.MultiSelectMode =
+            this.GridViewCOM.OptionsSelection.MultiSelect = true;
+            this.GridViewCOM.OptionsSelection.MultiSelectMode =
                 DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
-            this.gvCOM.OptionsView.ShowGroupPanel = false;
+            this.GridViewCOM.OptionsView.ShowGroupPanel = false;
             // Không có right-click popup menu → không cần MouseDown handler
 
             // ── COM column ──────────────────────────────────────────────────
@@ -476,7 +476,7 @@
 
             ((System.ComponentModel.ISupportInitialize)(this.barManager)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gcCOM)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gvCOM)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GridViewCOM)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -500,7 +500,7 @@
         private DevExpress.XtraBars.BarButtonItem PopupSao0Thang;
         private DevExpress.XtraBars.BarSubItem barSubItem1;
         private DevExpress.XtraGrid.GridControl gcCOM;
-        private DevExpress.XtraGrid.Views.Grid.GridView gvCOM;
+        private DevExpress.XtraGrid.Views.Grid.GridView GridViewCOM;
         private DevExpress.XtraGrid.Columns.GridColumn COM;
         private DevExpress.XtraGrid.Columns.GridColumn STT;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repositoryItemComboBox1;

@@ -1,6 +1,6 @@
 ﻿namespace LuckBurn
 {
-    partial class BurnForm
+    partial class Burn1900
     {
         /// <summary>
         /// Required designer variable.
@@ -29,15 +29,15 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            DevExpress.Utils.SuperToolTip superToolTip5 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem5 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip6 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem6 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip7 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem7 = new DevExpress.Utils.ToolTipItem();
-            DevExpress.Utils.SuperToolTip superToolTip8 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipItem toolTipItem8 = new DevExpress.Utils.ToolTipItem();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BurnForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Burn1900));
+            DevExpress.Utils.SuperToolTip superToolTip1 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem1 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip2 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem2 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip3 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem3 = new DevExpress.Utils.ToolTipItem();
+            DevExpress.Utils.SuperToolTip superToolTip4 = new DevExpress.Utils.SuperToolTip();
+            DevExpress.Utils.ToolTipItem toolTipItem4 = new DevExpress.Utils.ToolTipItem();
             this.barManager = new DevExpress.XtraBars.BarManager(this.components);
             this.mainToolBar = new DevExpress.XtraBars.Bar();
             this.barSubItem1 = new DevExpress.XtraBars.BarSubItem();
@@ -70,7 +70,7 @@
             this.txtMinAccountControl = new DevExpress.XtraEditors.TextEdit();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.gcCOM = new DevExpress.XtraGrid.GridControl();
-            this.gvCOM = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.GridViewCOM = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.COM = new DevExpress.XtraGrid.Columns.GridColumn();
             this.STT = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemComboBox1 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
@@ -90,7 +90,7 @@
             this.panelControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtMinAccountControl.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gcCOM)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gvCOM)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GridViewCOM)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.popupMenu1)).BeginInit();
@@ -250,9 +250,9 @@
             this.btnUpdateComPort.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnUpdateComPort.ItemAppearance.Normal.Options.UseFont = true;
             this.btnUpdateComPort.Name = "btnUpdateComPort";
-            toolTipItem5.Text = "Cập nhật lại số thứ tự cổng COM";
-            superToolTip5.Items.Add(toolTipItem5);
-            this.btnUpdateComPort.SuperTip = superToolTip5;
+            toolTipItem1.Text = "Cập nhật lại số thứ tự cổng COM";
+            superToolTip1.Items.Add(toolTipItem1);
+            this.btnUpdateComPort.SuperTip = superToolTip1;
             this.btnUpdateComPort.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnUpdateComPort_ItemClick);
             // 
             // btnResetComPort
@@ -264,9 +264,9 @@
             this.btnResetComPort.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnResetComPort.ItemAppearance.Normal.Options.UseFont = true;
             this.btnResetComPort.Name = "btnResetComPort";
-            toolTipItem6.Text = "Đặt lại số thứ tự cổng COM";
-            superToolTip6.Items.Add(toolTipItem6);
-            this.btnResetComPort.SuperTip = superToolTip6;
+            toolTipItem2.Text = "Đặt lại số thứ tự cổng COM";
+            superToolTip2.Items.Add(toolTipItem2);
+            this.btnResetComPort.SuperTip = superToolTip2;
             this.btnResetComPort.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnResetComPort_ItemClick);
             // 
             // btnChangeIMEI
@@ -289,9 +289,9 @@
             this.btnResetCom.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnResetCom.ItemAppearance.Normal.Options.UseFont = true;
             this.btnResetCom.Name = "btnResetCom";
-            toolTipItem7.Text = "Reset lại cổng COM";
-            superToolTip7.Items.Add(toolTipItem7);
-            this.btnResetCom.SuperTip = superToolTip7;
+            toolTipItem3.Text = "Reset lại cổng COM";
+            superToolTip3.Items.Add(toolTipItem3);
+            this.btnResetCom.SuperTip = superToolTip3;
             this.btnResetCom.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnResetCom_ItemClick);
             // 
             // btnRestoreSettings
@@ -303,9 +303,9 @@
             this.btnRestoreSettings.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnRestoreSettings.ItemAppearance.Normal.Options.UseFont = true;
             this.btnRestoreSettings.Name = "btnRestoreSettings";
-            toolTipItem8.Text = "Khôi phục lại cài đặt mặc định";
-            superToolTip8.Items.Add(toolTipItem8);
-            this.btnRestoreSettings.SuperTip = superToolTip8;
+            toolTipItem4.Text = "Khôi phục lại cài đặt mặc định";
+            superToolTip4.Items.Add(toolTipItem4);
+            this.btnRestoreSettings.SuperTip = superToolTip4;
             this.btnRestoreSettings.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnRestoreSettings_ItemClick);
             // 
             // BarNotification
@@ -523,7 +523,7 @@
             this.gcCOM.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gcCOM.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.gcCOM.Location = new System.Drawing.Point(0, 77);
-            this.gcCOM.MainView = this.gvCOM;
+            this.gcCOM.MainView = this.GridViewCOM;
             this.gcCOM.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.gcCOM.Name = "gcCOM";
             this.gcCOM.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
@@ -532,13 +532,13 @@
             this.gcCOM.Size = new System.Drawing.Size(1171, 714);
             this.gcCOM.TabIndex = 0;
             this.gcCOM.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.gvCOM});
+            this.GridViewCOM});
             // 
-            // gvCOM
+            // GridViewCOM
             // 
-            this.gvCOM.AppearancePrint.FooterPanel.Font = new System.Drawing.Font("Verdana", 14F);
-            this.gvCOM.AppearancePrint.FooterPanel.Options.UseFont = true;
-            this.gvCOM.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.GridViewCOM.AppearancePrint.FooterPanel.Font = new System.Drawing.Font("Verdana", 14F);
+            this.GridViewCOM.AppearancePrint.FooterPanel.Options.UseFont = true;
+            this.GridViewCOM.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.COM,
             this.STT,
             this.ICCID,
@@ -547,14 +547,15 @@
             this.TKChinh,
             this.Message101,
             this.Message});
-            this.gvCOM.GridControl = this.gcCOM;
-            this.gvCOM.Name = "gvCOM";
-            this.gvCOM.OptionsClipboard.CopyColumnHeaders = DevExpress.Utils.DefaultBoolean.False;
-            this.gvCOM.OptionsSelection.MultiSelect = true;
-            this.gvCOM.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CellSelect;
-            this.gvCOM.OptionsView.ShowGroupPanel = false;
-            this.gvCOM.RowCellStyle += new DevExpress.XtraGrid.Views.Grid.RowCellStyleEventHandler(this.GvCOM_RowCellStyle);
-            this.gvCOM.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GvCOM_MouseDown);
+            this.GridViewCOM.GridControl = this.gcCOM;
+            this.GridViewCOM.Name = "GridViewCOM";
+            this.GridViewCOM.OptionsClipboard.CopyColumnHeaders = DevExpress.Utils.DefaultBoolean.False;
+            this.GridViewCOM.OptionsSelection.MultiSelect = true;
+            this.GridViewCOM.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CellSelect;
+            this.GridViewCOM.OptionsView.ShowGroupPanel = false;
+            this.GridViewCOM.RowCellStyle += new DevExpress.XtraGrid.Views.Grid.RowCellStyleEventHandler(this.GvCOM_RowCellStyle);
+            this.GridViewCOM.CustomColumnDisplayText += new DevExpress.XtraGrid.Views.Base.CustomColumnDisplayTextEventHandler(this.GridViewCOM_CustomColumnDisplayText);
+            this.GridViewCOM.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GvCOM_MouseDown);
             // 
             // COM
             // 
@@ -920,7 +921,7 @@
             this.TimerNotification.Interval = 900000;
             this.TimerNotification.Tick += new System.EventHandler(this.TimerNotification_Tick);
             // 
-            // BurnForm
+            // Burn1900
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -931,10 +932,10 @@
             this.Controls.Add(this.barDockControlRight);
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
-            this.IconOptions.Image = ((System.Drawing.Image)(resources.GetObject("BurnForm.IconOptions.Image")));
+            this.IconOptions.Image = ((System.Drawing.Image)(resources.GetObject("Burn1900.IconOptions.Image")));
             this.LookAndFeel.SkinName = "Office 2019 Colorful";
             this.LookAndFeel.UseDefaultLookAndFeel = false;
-            this.Name = "BurnForm";
+            this.Name = "Burn1900";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MetaHub";
             this.Load += new System.EventHandler(this.BurnTKForm_Load);
@@ -945,7 +946,7 @@
             this.panelControl1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtMinAccountControl.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gcCOM)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gvCOM)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GridViewCOM)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.popupMenu1)).EndInit();
@@ -975,7 +976,7 @@
         private DevExpress.XtraEditors.LabelControl labelControl2;
         private DevExpress.XtraEditors.LabelControl labelControl3;
         private DevExpress.XtraGrid.GridControl gcCOM;
-        private DevExpress.XtraGrid.Views.Grid.GridView gvCOM;
+        private DevExpress.XtraGrid.Views.Grid.GridView GridViewCOM;
         private DevExpress.XtraGrid.Columns.GridColumn COM;
         private DevExpress.XtraGrid.Columns.GridColumn STT;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repositoryItemComboBox1;

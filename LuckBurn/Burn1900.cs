@@ -20,7 +20,7 @@ using static LuckBurn.Models.PrefixNumberDto;
 
 namespace LuckBurn
 {
-    public partial class BurnForm : XtraForm
+    public partial class Burn1900 : XtraForm
     {
         private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -31,55 +31,45 @@ namespace LuckBurn
         private BindingList<ComDto> ComDataGrid { get; set; } = new BindingList<ComDto>();
 
         // ─── Lịch sử tin nhắn từng cổng COM ──────────────────────────────────
-        private readonly ConcurrentDictionary<string, string> MessageCOMs
-            = new ConcurrentDictionary<string, string>();
+        private readonly ConcurrentDictionary<string, string> MessageCOMs = new ConcurrentDictionary<string, string>();
 
         // ─── Danh sách cổng COM đang ghi âm ──────────────────────────────────
-        private readonly ConcurrentDictionary<string, CallDetail> RecordingPorts
-            = new ConcurrentDictionary<string, CallDetail>();
+        private readonly ConcurrentDictionary<string, CallDetail> RecordingPorts = new ConcurrentDictionary<string, CallDetail>();
 
         // ─── Danh sách cổng COM đang gửi SMS ─────────────────────────────────
-        private readonly ConcurrentDictionary<string, TranferMoneySMSPort> SMSPorts
-            = new ConcurrentDictionary<string, TranferMoneySMSPort>();
+        private readonly ConcurrentDictionary<string, TranferMoneySMSPort> SMSPorts = new ConcurrentDictionary<string, TranferMoneySMSPort>();
 
         // ─── Nội dung ghi âm của từng cổng COM ───────────────────────────────
-        private readonly ConcurrentDictionary<string, byte[]> RecordingCOMs
-            = new ConcurrentDictionary<string, byte[]>();
+        private readonly ConcurrentDictionary<string, byte[]> RecordingCOMs = new ConcurrentDictionary<string, byte[]>();
 
         // ─── CancellationToken để dừng ghi âm sớm nếu có NO CARRIER ─────────
-        private readonly ConcurrentDictionary<string, CancellationTokenSource> RecordingTokens
-            = new ConcurrentDictionary<string, CancellationTokenSource>();
+        private readonly ConcurrentDictionary<string, CancellationTokenSource> RecordingTokens = new ConcurrentDictionary<string, CancellationTokenSource>();
 
         // ─── Lock com để tránh timeout khi gửi lệnh AT ───────────────────────
-        private readonly ConcurrentDictionary<string, bool> _isCalling
-            = new ConcurrentDictionary<string, bool>();
+        private readonly ConcurrentDictionary<string, bool> _isCalling = new ConcurrentDictionary<string, bool>();
 
-        private readonly ConcurrentDictionary<string, int> _callingSkipCount
-            = new ConcurrentDictionary<string, int>();
+        private readonly ConcurrentDictionary<string, int> _callingSkipCount = new ConcurrentDictionary<string, int>();
 
         private readonly PrefixNumberController _prefixController;
+
         private readonly string ApiKey;
 
-        // ─── [MỚI] Lock riêng mỗi cổng - tránh race condition MessageCOMs ────
-        private readonly ConcurrentDictionary<string, object> _portLocks
-            = new ConcurrentDictionary<string, object>();
+        // ─── Lock riêng mỗi cổng - tránh race condition MessageCOMs ────
+        private readonly ConcurrentDictionary<string, object> _portLocks = new ConcurrentDictionary<string, object>();
 
-        // ─── [MỚI] Hàng đợi xử lý riêng mỗi cổng - tách khỏi ThreadPool ─────
-        private readonly ConcurrentDictionary<string, BlockingCollection<byte>> _portQueues
-            = new ConcurrentDictionary<string, BlockingCollection<byte>>();
+        // ─── Hàng đợi xử lý riêng mỗi cổng - tách khỏi ThreadPool ─────
+        private readonly ConcurrentDictionary<string, BlockingCollection<byte>> _portQueues = new ConcurrentDictionary<string, BlockingCollection<byte>>();
 
-        // ─── [MỚI] Dirty rows để batch refresh UI ────────────────────────────
-        private readonly ConcurrentDictionary<string, bool> _dirtyRows
-            = new ConcurrentDictionary<string, bool>();
+        // ─── Dirty rows để batch refresh UI ────────────────────────────
+        private readonly ConcurrentDictionary<string, bool> _dirtyRows = new ConcurrentDictionary<string, bool>();
 
-        // ─── [MỚI] Timer batch refresh UI 20fps ──────────────────────────────
+        // ─── Timer batch refresh UI 20fps ──────────────────────────────
         private System.Windows.Forms.Timer _uiRefreshTimer;
 
-        // ─── [MỚI] Guard chống re-entrancy cho TimerCheckSim ─────────────────
+        // ─── Guard chống re-entrancy cho TimerCheckSim ─────────────────
         private int _timerCheckRunning = 0;
 
-        // ─────────────────────────────────────────────────────────────────────
-        public BurnForm(string apikey)
+        public Burn1900(string apikey)
         {
             InitializeComponent();
             ApiKey = apikey;
@@ -87,13 +77,9 @@ namespace LuckBurn
             InitializeControls();
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        //  KHỞI TẠO
-        // ─────────────────────────────────────────────────────────────────────
-
         private void InitializeControls()
         {
-            // [MỚI] Timer batch-refresh UI 50ms = 20fps
+            // Timer batch-refresh UI 50ms = 20fps
             _uiRefreshTimer = new System.Windows.Forms.Timer { Interval = 50 };
             _uiRefreshTimer.Tick += UiRefreshTimer_Tick;
             _uiRefreshTimer.Start();
@@ -127,8 +113,7 @@ namespace LuckBurn
             }
         }
 
-        private void InitializeSerialPorts(string[] portNames,
-            IEnumerable<Dictionary<string, string>> fullPortNames)
+        private void InitializeSerialPorts(string[] portNames, IEnumerable<Dictionary<string, string>> fullPortNames)
         {
             foreach (string port in portNames)
             {
@@ -156,14 +141,14 @@ namespace LuckBurn
                 SerialPorts.Add(sp);
                 MessageCOMs.TryAdd(sp.PortName, string.Empty);
 
-                // [MỚI] Lock riêng cho cổng này
+                // Lock riêng cho cổng này
                 _portLocks.TryAdd(sp.PortName, new object());
 
-                // [MỚI] Hàng đợi xử lý riêng (bounded = 50, tránh tràn RAM)
+                // Hàng đợi xử lý riêng (bounded = 50, tránh tràn RAM)
                 var queue = new BlockingCollection<byte>(boundedCapacity: 50);
                 _portQueues[sp.PortName] = queue;
 
-                // [MỚI] Dedicated processing thread - KHÔNG dùng ThreadPool
+                // Dedicated processing thread - KHÔNG dùng ThreadPool
                 var capturedSp = sp;
                 var procThread = new Thread(() => ProcessPortQueue(capturedSp))
                 {
@@ -191,15 +176,6 @@ namespace LuckBurn
                     .ToList());
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        //  [MỚI] DEDICATED PROCESSING THREAD
-        // ─────────────────────────────────────────────────────────────────────
-
-        /// <summary>
-        /// Chạy suốt vòng đời app trên dedicated thread của cổng.
-        /// DataReceived chỉ signal vào queue, thread này mới thực sự xử lý.
-        /// → Thread.Sleep ở đây KHÔNG ảnh hưởng ThreadPool.
-        /// </summary>
         private void ProcessPortQueue(SerialPort sp)
         {
             if (!_portQueues.TryGetValue(sp.PortName, out var queue)) return;
@@ -226,10 +202,6 @@ namespace LuckBurn
                 }
             }
         }
-
-        // ─────────────────────────────────────────────────────────────────────
-        //  MODEM
-        // ─────────────────────────────────────────────────────────────────────
 
         private void InitializeModem(SerialPort sp)
         {
@@ -266,14 +238,6 @@ namespace LuckBurn
             }
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        //  SERIAL PORT EVENTS
-        // ─────────────────────────────────────────────────────────────────────
-
-        /// <summary>
-        /// [CẢI TIẾN] Chỉ đọc bytes + append (có lock) + cập nhật buffer ghi âm + signal queue.
-        /// KHÔNG gọi SendATCommand hay ListenEvent* ở đây (tránh chiếm ThreadPool).
-        /// </summary>
         private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             SerialPort sp = (SerialPort)sender;
@@ -295,7 +259,7 @@ namespace LuckBurn
 
             if (bytesRead <= 0) return;
 
-            // [MỚI] Lock tránh race condition trên MessageCOMs
+            // Lock tránh race condition trên MessageCOMs
             lock (_portLocks[sp.PortName])
             {
                 MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
@@ -333,7 +297,7 @@ namespace LuckBurn
                 }
             }
 
-            // [MỚI] Signal queue - xử lý logic nặng trên dedicated thread
+            // Signal queue - xử lý logic nặng trên dedicated thread
             if (_portQueues.TryGetValue(sp.PortName, out var queue))
                 queue.TryAdd(1);
         }
@@ -360,13 +324,6 @@ namespace LuckBurn
             }, "PhoneNumber", "TKChinh", "HSD", "Message101", "Message", "IsFinish");
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        //  HANDLERS CHẠY TRÊN DEDICATED THREAD
-        // ─────────────────────────────────────────────────────────────────────
-
-        /// <summary>
-        /// [MỚI] Xử lý RING - đã tách ra khỏi DataReceived vì có SendATCommand(sleep)
-        /// </summary>
         private void HandleRing(SerialPort sp)
         {
             string content;
@@ -377,9 +334,6 @@ namespace LuckBurn
             lock (_portLocks[sp.PortName]) { MessageCOMs[sp.PortName] = string.Empty; }
         }
 
-        /// <summary>
-        /// [MỚI] Kiểm tra và lưu file ghi âm khi hoàn thành - tách khỏi DataReceived
-        /// </summary>
         private void HandleRecordingComplete(SerialPort sp)
         {
             string content;
@@ -390,11 +344,6 @@ namespace LuckBurn
                 SaveRecord(sp);
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        //  LISTEN EVENTS - chạy trên dedicated thread của cổng
-        // ─────────────────────────────────────────────────────────────────────
-
-        /// <summary>Khi lấy được status của SIM</summary>
         private void ListenEventSIMStatus(SerialPort sp)
         {
             string content;
@@ -465,7 +414,6 @@ namespace LuckBurn
             }
         }
 
-        /// <summary>Khi lấy được thông tin của ICCID</summary>
         private void ListenEventICCID(SerialPort sp)
         {
             try
@@ -501,7 +449,6 @@ namespace LuckBurn
             }
         }
 
-        /// <summary>Khi lấy được thông tin nhà mạng</summary>
         private void ListenEventTelecom(SerialPort sp)
         {
             try
@@ -531,7 +478,6 @@ namespace LuckBurn
             }
         }
 
-        /// <summary>Khi lấy được thông tin số điện thoại</summary>
         private void ListenEventPhoneNumber(SerialPort sp)
         {
             try
@@ -548,7 +494,6 @@ namespace LuckBurn
             }
         }
 
-        /// <summary>Khi có IMEI thay đổi</summary>
         private void ListenEventChangeIMEI(SerialPort sp)
         {
             try
@@ -579,7 +524,6 @@ namespace LuckBurn
             }
         }
 
-        /// <summary>Xử lý cuộc gọi đến tổng đài (nhấc máy, ngắt máy,...)</summary>
         private void ListenEventCallPrefix(SerialPort sp)
         {
             try
@@ -647,7 +591,6 @@ namespace LuckBurn
             }
         }
 
-        /// <summary>Xử lý khi có tin phản hồi từ tổng đài SMS</summary>
         private async void ListenEventSmsResponse(SerialPort sp)
         {
             try
@@ -732,11 +675,6 @@ namespace LuckBurn
             }
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        //  BUSINESS LOGIC
-        // ─────────────────────────────────────────────────────────────────────
-
-        /// <summary>Lấy ra thông tin tổng đài để thực hiện CALL hoặc SMS</summary>
         private async Task SmsOrCallWithPrefix(SerialPort sp)
         {
             int minAccount = int.Parse(txtMinAccountControl.Text.Replace(".", string.Empty));
@@ -882,7 +820,6 @@ namespace LuckBurn
             return sb.ToString();
         }
 
-        /// <summary>Dừng ghi âm cuộc gọi</summary>
         private async void StopCallAndRecord(SerialPort sp, bool noCarrier)
         {
             try
@@ -934,7 +871,6 @@ namespace LuckBurn
             }
         }
 
-        /// <summary>Lưu bản ghi âm thành file</summary>
         private async void SaveRecord(SerialPort sp)
         {
             try
@@ -971,11 +907,6 @@ namespace LuckBurn
             }
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        //  UI HELPERS
-        // ─────────────────────────────────────────────────────────────────────
-
-        /// <summary>[MỚI] Flush dirty rows lên UI mỗi 50ms - tránh bão hoà message queue</summary>
         private void UiRefreshTimer_Tick(object sender, EventArgs e)
         {
             if (_dirtyRows.IsEmpty) return;
@@ -983,17 +914,12 @@ namespace LuckBurn
             foreach (var key in dirty) _dirtyRows.TryRemove(key, out _);
             foreach (var portName in dirty)
             {
-                int rowHandle = gvCOM.LocateByValue("COM", portName);
-                if (rowHandle >= 0) gvCOM.RefreshRow(rowHandle);
+                int rowHandle = GridViewCOM.LocateByValue("COM", portName);
+                if (rowHandle >= 0) GridViewCOM.RefreshRow(rowHandle);
             }
         }
 
-        /// <summary>
-        /// [CẢI TIẾN] Chỉ update data + đánh dấu dirty.
-        /// UI timer sẽ flush định kỳ → tránh bão hoà UI message queue.
-        /// </summary>
-        private void UpdateComData(string portName, Action<ComDto> updateAction,
-            params string[] propertyNames)
+        private void UpdateComData(string portName, Action<ComDto> updateAction, params string[] propertyNames)
         {
             try
             {
@@ -1010,10 +936,6 @@ namespace LuckBurn
                 logger.Error($"UpdateComData error: {ex.Message}");
             }
         }
-
-        // ─────────────────────────────────────────────────────────────────────
-        //  AT COMMAND
-        // ─────────────────────────────────────────────────────────────────────
 
         private void SendATCommand(SerialPort sp, string command, int timeout = 1000)
         {
@@ -1038,14 +960,6 @@ namespace LuckBurn
             }
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        //  TIMER CHECK SIM
-        // ─────────────────────────────────────────────────────────────────────
-
-        /// <summary>
-        /// [CẢI TIẾN] Re-entrancy guard + ToList() + capturedItem/capturedSp
-        /// tránh tích lũy Task và closure bug.
-        /// </summary>
         private void TimerCheckSim_Tick(object sender, EventArgs e)
         {
             if (Interlocked.CompareExchange(ref _timerCheckRunning, 1, 0) != 0) return;
@@ -1148,16 +1062,12 @@ namespace LuckBurn
             }
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        //  BUTTON / POPUP HANDLERS
-        // ─────────────────────────────────────────────────────────────────────
-
         private void GvCOM_RowCellStyle(object sender, RowCellStyleEventArgs e)
         {
             GridView view = sender as GridView;
             if (e.Column.FieldName == "Message")
             {
-                var val = gvCOM.GetRowCellValue(e.RowHandle, "Message")?.ToString();
+                var val = GridViewCOM.GetRowCellValue(e.RowHandle, "Message")?.ToString();
                 if (!view.IsRowSelected(e.RowHandle))
                     e.Appearance.ForeColor = (val == "Stop burn") ? Color.Red : Color.Green;
             }
@@ -1218,7 +1128,7 @@ namespace LuckBurn
 
         private void BtnUpdateComPort_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            BindingList<ComDto> dataSource = gvCOM.DataSource as BindingList<ComDto>;
+            BindingList<ComDto> dataSource = GridViewCOM.DataSource as BindingList<ComDto>;
             if (dataSource == null)
             {
                 logger.Error("Cảnh báo: DataSource là null!");
@@ -1267,7 +1177,7 @@ namespace LuckBurn
             var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "com_settings.json");
             if (File.Exists(configPath)) File.Delete(configPath);
             foreach (var item in ComDataGrid) item.STT = "";
-            gvCOM.RefreshData();
+            GridViewCOM.RefreshData();
         }
 
         private void BtnChangeIMEI_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -1389,10 +1299,10 @@ namespace LuckBurn
 
         private void PopupResetCom_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            int[] selectedHandles = gvCOM.GetSelectedRows();
+            int[] selectedHandles = GridViewCOM.GetSelectedRows();
             foreach (int handle in selectedHandles)
             {
-                if (gvCOM.GetRow(handle) is ComDto row)
+                if (GridViewCOM.GetRow(handle) is ComDto row)
                 {
                     var sp = SerialPorts.FirstOrDefault(x => x.PortName == row.COM);
                     if (sp == null) continue;
@@ -1435,10 +1345,10 @@ namespace LuckBurn
 
         private void PopupChangeIMEI_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            int[] selectedHandles = gvCOM.GetSelectedRows();
+            int[] selectedHandles = GridViewCOM.GetSelectedRows();
             foreach (int handle in selectedHandles)
             {
-                if (gvCOM.GetRow(handle) is ComDto row)
+                if (GridViewCOM.GetRow(handle) is ComDto row)
                 {
                     var sp = SerialPorts.FirstOrDefault(x => x.PortName == row.COM);
                     if (sp == null) continue;
@@ -1467,10 +1377,10 @@ namespace LuckBurn
 
         private void PopupBurn_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            int[] selectedHandles = gvCOM.GetSelectedRows();
+            int[] selectedHandles = GridViewCOM.GetSelectedRows();
             foreach (int handle in selectedHandles)
             {
-                if (gvCOM.GetRow(handle) is ComDto row)
+                if (GridViewCOM.GetRow(handle) is ComDto row)
                 {
                     var sp = SerialPorts.FirstOrDefault(x => x.PortName == row.COM);
                     if (sp == null) continue;
@@ -1496,10 +1406,6 @@ namespace LuckBurn
                 }
             }
         }
-
-        // ─────────────────────────────────────────────────────────────────────
-        //  HELPERS
-        // ─────────────────────────────────────────────────────────────────────
 
         private IEnumerable<Dictionary<string, string>> CheckComOnline()
         {
@@ -1539,5 +1445,15 @@ namespace LuckBurn
 
         private void BtnUserInfor_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
             => new UserInforForm(ApiKey).ShowDialog();
+
+        private void GridViewCOM_CustomColumnDisplayText(object sender, DevExpress.XtraGrid.Views.Base.CustomColumnDisplayTextEventArgs e)
+        {
+            if (e.Column.FieldName == "PhoneNumber" && e.Value != null)
+            {
+                string phone = e.Value.ToString();
+                if (phone.Length > 5) e.DisplayText = new string('*', 5) + phone.Substring(5);
+                else e.DisplayText = new string('*', phone.Length);
+            }
+        }
     }
 }
