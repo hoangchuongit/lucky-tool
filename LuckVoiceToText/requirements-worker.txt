@@ -1,5 +1,0 @@
-faster-whisper
-redis
-torch
-numpy
-python-dotenv
