@@ -1,6 +1,6 @@
 ﻿using DevExpress.XtraEditors;
+using LuckBurn.Utils;
 using LuckCheck.Model;
-using LuckCheck.Utils;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,11 +14,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace LuckCheck
+namespace LuckBurn
 {
-    public partial class GSMForm : XtraForm
+    public partial class CheckToolForm : XtraForm
     {
         private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         private readonly List<SerialPort> SerialPorts = new List<SerialPort>();
         private BindingList<ComDto> ComDataGrid { get; set; } = new BindingList<ComDto>();
         private readonly ConcurrentDictionary<string, string> MessageCOMs = new ConcurrentDictionary<string, string>();
@@ -210,7 +211,9 @@ namespace LuckCheck
                 if (!sp.IsOpen) sp.Open();
                 fileUrl = string.IsNullOrWhiteSpace(fileUrl) ? DataGenUrl : fileUrl.Trim();
 
-                UpdateComData(sp.PortName, dto => dto.Message101 = "Đang chuẩn bị sử dụng Data 4G...", "Message101");
+                UpdateComData(sp.PortName,
+                    dto => dto.Message101 = "Đang chuẩn bị sử dụng Data 4G...",
+                    "Message101");
 
                 long freeBytes = QueryUfsFreeBytes(sp);
                 if (freeBytes <= 0)
@@ -224,7 +227,9 @@ namespace LuckCheck
                 double chunkMB = chunkSize / 1024.0 / 1024.0;
                 logger.Info($"[{sp.PortName}] Bắt đầu sử dụng 4G: {fileUrl}, đợt ~{chunkMB:F1} MB");
 
-                UpdateComData(sp.PortName, dto => dto.Message101 = $"Bắt đầu sử dụng Data 4G, mỗi đợt ~{chunkMB:F1} MB...", "Message101");
+                UpdateComData(sp.PortName,
+                    dto => dto.Message101 = $"Bắt đầu sử dụng Data 4G, mỗi đợt ~{chunkMB:F1} MB...",
+                    "Message101");
 
                 if (!SetupHttpContext(sp))
                     throw new Exception("Lỗi cấu hình kết nối 4G");
@@ -263,7 +268,9 @@ namespace LuckCheck
                     }
 
                     if (received < 0)
+                    {
                         throw new Exception($"Đã sử dụng: {totalConsumed / 1024.0 / 1024.0:F1} MB");
+                    }
 
                     totalConsumed += received;
 
@@ -287,7 +294,9 @@ namespace LuckCheck
             catch (Exception ex)
             {
                 logger.Error($"[{sp.PortName}] DownloadFileVia4G Error: {ex.Message}");
-                UpdateComData(sp.PortName, dto => dto.Message101 = $"Lỗi sử dụng Data 4G: {ex.Message}", "Message101");
+                UpdateComData(sp.PortName,
+                    dto => dto.Message101 = $"Lỗi sử dụng Data 4G: {ex.Message}",
+                    "Message101");
             }
             finally
             {
@@ -329,7 +338,7 @@ namespace LuckCheck
             return result.Count > 0 ? result : SerialPorts.ToList();
         }
 
-        public GSMForm()
+        public CheckToolForm()
         {
             InitializeComponent();
             InitializeControls();
@@ -342,7 +351,8 @@ namespace LuckCheck
             _uiRefreshTimer.Start();
 
             GridViewCOM.OptionsSelection.MultiSelect = true;
-            GridViewCOM.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+            GridViewCOM.OptionsSelection.MultiSelectMode =
+                DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
 
             LoadCOMForm();
             TimerCheckSim.Enabled = true;
@@ -363,10 +373,7 @@ namespace LuckCheck
                 new Thread(() =>
                 {
                     try { InitializeModem(captured); }
-                    catch (Exception ex)
-                    {
-                        logger.Error($"{captured.PortName} - InitializeModem: {ex.Message}");
-                    }
+                    catch (Exception ex) { logger.Error($"{captured.PortName} - InitializeModem: {ex.Message}"); }
                 })
                 { IsBackground = true, Name = $"Init_{port.PortName}" }.Start();
             }
@@ -378,7 +385,8 @@ namespace LuckCheck
             foreach (string port in portNames)
             {
                 var regexPattern = $@"\b{Regex.Escape(port)}\b";
-                var isValid = fullPortNames.FirstOrDefault(x => Regex.IsMatch(x["Caption"], regexPattern, RegexOptions.IgnoreCase));
+                var isValid = fullPortNames.FirstOrDefault(
+                    x => Regex.IsMatch(x["Caption"], regexPattern, RegexOptions.IgnoreCase));
                 if (isValid == null) continue;
 
                 var sp = new SerialPort(port)
@@ -406,10 +414,7 @@ namespace LuckCheck
 
                 var capturedSp = sp;
                 new Thread(() => ProcessPortQueue(capturedSp))
-                {
-                    IsBackground = true,
-                    Name = $"Proc_{sp.PortName}"
-                }.Start();
+                { IsBackground = true, Name = $"Proc_{sp.PortName}" }.Start();
 
                 ComDataGrid.Add(new ComDto
                 {
@@ -422,7 +427,10 @@ namespace LuckCheck
                 });
             }
 
-            ComDataGrid = new BindingList<ComDto>(ComDataGrid.OrderBy(c => !string.IsNullOrEmpty(c.STT) ? int.Parse(c.STT) : -1).ToList());
+            ComDataGrid = new BindingList<ComDto>(
+                ComDataGrid
+                    .OrderBy(c => !string.IsNullOrEmpty(c.STT) ? int.Parse(c.STT) : -1)
+                    .ToList());
         }
 
         private void ProcessPortQueue(SerialPort sp)
@@ -518,8 +526,8 @@ namespace LuckCheck
                 dto.PhoneNumber = string.Empty;
                 dto.HSD = string.Empty;
                 dto.TKChinh = 0;
-                dto.Message = "";
-            }, "PhoneNumber", "HSD", "TKChinh", "Message");
+                dto.Message101 = "";
+            }, "PhoneNumber", "HSD", "TKChinh", "Message101");
         }
 
         private void ListenEventSIMStatus(SerialPort sp)
@@ -527,7 +535,8 @@ namespace LuckCheck
             string content;
             lock (_portLocks[sp.PortName]) { content = MessageCOMs[sp.PortName]; }
 
-            if ((content.Contains("+CPIN: NOT INSERTED") || content.Contains("+CPIN: NOT READY")) && content.Contains("+QSIMSTAT: 1,0"))
+            if ((content.Contains("+CPIN: NOT INSERTED") || content.Contains("+CPIN: NOT READY"))
+                && content.Contains("+QSIMSTAT: 1,0"))
             {
                 lock (_portLocks[sp.PortName]) { MessageCOMs[sp.PortName] = string.Empty; }
                 sp.DiscardInBuffer();
@@ -647,13 +656,15 @@ namespace LuckCheck
                 content.AT_Command("AT+EGMR=");
                 lock (_portLocks[sp.PortName]) { MessageCOMs[sp.PortName] = string.Empty; }
 
-                UpdateComData(sp.PortName, dto => dto.Message101 = "Thay đổi IMEI thành công. Chờ 5s.", "Message101");
+                UpdateComData(sp.PortName,
+                    dto => dto.Message101 = "Thay đổi IMEI thành công. Chờ 5s.", "Message101");
                 Thread.Sleep(5000);
                 SendATCommand(sp, "AT+QCCID");
             }
             catch (Exception)
             {
-                UpdateComData(sp.PortName, dto => dto.Message101 = "Thay đổi IMEI thất bại. Thử lại sau 10s.", "Message101");
+                UpdateComData(sp.PortName,
+                    dto => dto.Message101 = "Thay đổi IMEI thất bại. Thử lại sau 10s.", "Message101");
                 Thread.Sleep(10000);
                 SendATCommand(sp, "AT+EGMR=1,7,\"" + Common.GenerateIMEI() + "\"\r\n");
             }
@@ -686,7 +697,10 @@ namespace LuckCheck
                 if (string.IsNullOrEmpty(hsd))
                     UpdateComData(sp.PortName, dto => dto.Message101 = messData, "Message101");
                 else
-                    UpdateComData(sp.PortName, dto => { dto.Message101 = messData; dto.HSD = hsd; }, "Message101", "HSD");
+                    UpdateComData(sp.PortName, dto =>
+                    {
+                        dto.Message101 = messData; dto.HSD = hsd;
+                    }, "Message101", "HSD");
             }
             catch (Exception)
             {
@@ -830,11 +844,11 @@ namespace LuckCheck
         private void BtnResetCom_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             var ports = GetSelectedOrAllPorts();
-            string prompt = ports.Count == SerialPorts.Count 
-                ? $"Khởi động lại toàn bộ {ports.Count} cổng COM?" 
+            string prompt = ports.Count == SerialPorts.Count
+                ? $"Khởi động lại toàn bộ {ports.Count} cổng COM?"
                 : $"Khởi động lại {ports.Count} cổng COM đã chọn?";
-            if (XtraMessageBox.Show(prompt, "Xác nhận",MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) 
-                return;
+            if (XtraMessageBox.Show(prompt, "Xác nhận",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 
             foreach (var sp in ports)
             {
@@ -872,8 +886,8 @@ namespace LuckCheck
             string prompt = ports.Count == SerialPorts.Count
                 ? $"Thay đổi IMEI toàn bộ {ports.Count} cổng COM?"
                 : $"Thay đổi IMEI {ports.Count} cổng COM đã chọn?";
-            if (XtraMessageBox.Show(prompt, "Xác nhận",MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) 
-                return;
+            if (XtraMessageBox.Show(prompt, "Xác nhận",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 
             foreach (var sp in ports)
             {
@@ -900,8 +914,8 @@ namespace LuckCheck
             string prompt = ports.Count == SerialPorts.Count
                 ? $"Khôi phục cài đặt gốc toàn bộ {ports.Count} cổng COM?"
                 : $"Khôi phục cài đặt gốc {ports.Count} cổng COM đã chọn?";
-            if (XtraMessageBox.Show(prompt, "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) 
-                return;
+            if (XtraMessageBox.Show(prompt, "Xác nhận",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 
             foreach (var sp in ports)
             {
@@ -939,14 +953,15 @@ namespace LuckCheck
             var ports = GetSelectedOrAllPorts();
             if (ports.Count == 0)
             {
-                XtraMessageBox.Show("Không tìm thấy cổng COM nào.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                XtraMessageBox.Show("Không tìm thấy cổng COM nào.", "Thông báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             string prompt = ports.Count == SerialPorts.Count
                 ? $"Tiêu thụ Data 4G trên tất cả {ports.Count} cổng COM?"
                 : $"Tiêu thụ Data 4G trên {ports.Count} cổng COM đã chọn?";
-            if (XtraMessageBox.Show(prompt, "Xác nhận",MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) 
-                return;
+            if (XtraMessageBox.Show(prompt, "Xác nhận",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 
             foreach (var sp in ports)
             {
@@ -957,11 +972,8 @@ namespace LuckCheck
 
         private void BtnUpdateComPort_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            if (!(GridViewCOM.DataSource is BindingList<ComDto> dataSource))
-            {
-                logger.Error("DataSource là null!");
-                return;
-            }
+            var dataSource = GridViewCOM.DataSource as BindingList<ComDto>;
+            if (dataSource == null) { logger.Error("DataSource là null!"); return; }
 
             foreach (var item in dataSource)
             {
@@ -986,8 +998,8 @@ namespace LuckCheck
 
         private void BtnResetComPort_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            if (XtraMessageBox.Show("Đặt lại STT cổng COM?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) 
-                return;
+            if (XtraMessageBox.Show("Đặt lại STT cổng COM?", "Xác nhận",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
             var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "com_settings.json");
             if (File.Exists(configPath)) File.Delete(configPath);
             foreach (var item in ComDataGrid) item.STT = "";

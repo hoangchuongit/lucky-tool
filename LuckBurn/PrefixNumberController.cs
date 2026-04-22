@@ -1,5 +1,4 @@
-﻿using DevExpress.Pdf.Native.BouncyCastle.Ocsp;
-using LuckBurnTK.Utils;
+﻿using LuckBurn.Utils;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -7,9 +6,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using static LuckBurnTK.Models.PrefixNumberDto;
+using static LuckBurn.Models.PrefixNumberDto;
 
-namespace LuckBurnTK
+namespace LuckBurn
 {
     public class PrefixNumberController
     {
@@ -183,35 +182,6 @@ namespace LuckBurnTK
         }
 
         /// <summary>
-        /// Lấy thông tin về tin nhắn đã gửi đi từ VMG trả về
-        /// </summary>
-        /// <param name="req"></param>
-        /// <returns></returns>
-        public async Task<VMGSmsRes> GetVMGSms(VMGSmsRes req)
-        {
-            try
-            {
-                string jsonData = JsonConvert.SerializeObject(req);
-                var client = new HttpClient();
-                var request = new HttpRequestMessage(HttpMethod.Post, "Http://103.68.240.22:8077/api_km.php");
-                var content = new StringContent(jsonData, null, "application/json");
-                request.Content = content;
-                var response = await client.SendAsync(request);
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseBody = await response.Content.ReadAsStringAsync();
-                    return JsonConvert.DeserializeObject<VMGSmsRes>(responseBody);
-                }
-                return null;
-            }
-            catch (Exception ex)
-            {
-                logger.Error($"GetVMGSms ERROR: {ex.Message}");
-                throw ex;
-            }
-        }
-
-        /// <summary>
         /// Cập nhật thông tin của VMG sau khi gửi tin nhắn
         /// </summary>
         /// <param name="req"></param>
@@ -229,51 +199,6 @@ namespace LuckBurnTK
             {
                 logger.Error($"UpdateVMGsms ERROR: {ex.Message}");
                 throw;
-            }
-        }
-
-        /// <summary>
-        /// Lấy thông tin sim để chuyển tiền vào
-        /// </summary>
-        /// <param name="req"></param>
-        /// <returns></returns>
-        public async Task<TranferMoneyRes> GetSimTopupPool(TranferMoneyReq req)
-        {
-            try
-            {
-                string jsonData = JsonConvert.SerializeObject(req);
-                var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync("tranfer-money", content);
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseBody = await response.Content.ReadAsStringAsync();
-                    return JsonConvert.DeserializeObject<TranferMoneyRes>(responseBody);
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error($"GetSimTopupPool ERROR: {ex.Message}");
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Update thông tin chuyển tiền
-        /// </summary>
-        /// <param name="history_id"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public async Task<bool> UpdateStatusGetSimTopupPool(string history_id, string type)
-        {
-            try
-            {
-                var response = await _httpClient.GetAsync($"tranfer-money?history_id={history_id}&type={type}");
-                return response.IsSuccessStatusCode;
-            }
-            catch (Exception ex)
-            {
-                logger.Error($"GetRevenueDetail ERROR: {ex.Message}");
-                throw ex;
             }
         }
     }

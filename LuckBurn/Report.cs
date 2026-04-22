@@ -1,13 +1,10 @@
-﻿using DevExpress.Export;
-using DevExpress.XtraEditors;
-using DevExpress.XtraPrinting;
+﻿using DevExpress.XtraEditors;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
-using static LuckBurnTK.Models.PrefixNumberDto;
+using static LuckBurn.Models.PrefixNumberDto;
 
-namespace LuckBurnTK
+namespace LuckBurn
 {
     public partial class Report : XtraForm
     {

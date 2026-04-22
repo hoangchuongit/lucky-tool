@@ -1,4 +1,4 @@
-﻿namespace LuckBurnTK
+﻿namespace LuckBurn
 {
     partial class UserInforForm
     {
@@ -64,7 +64,7 @@
             // 
             // labelControl1
             // 
-            this.labelControl1.Appearance.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl1.Appearance.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelControl1.Appearance.Options.UseFont = true;
             this.labelControl1.Location = new System.Drawing.Point(15, 12);
             this.labelControl1.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
@@ -79,7 +79,7 @@
             this.txtFullname.Location = new System.Drawing.Point(15, 29);
             this.txtFullname.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
             this.txtFullname.Name = "txtFullname";
-            this.txtFullname.Properties.Appearance.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtFullname.Properties.Appearance.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtFullname.Properties.Appearance.Options.UseFont = true;
             this.txtFullname.Properties.AutoHeight = false;
             this.txtFullname.Properties.NullText = "Nhập họ và tên";
@@ -113,7 +113,7 @@
             this.txtChuTaiKhoan.Location = new System.Drawing.Point(14, 194);
             this.txtChuTaiKhoan.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
             this.txtChuTaiKhoan.Name = "txtChuTaiKhoan";
-            this.txtChuTaiKhoan.Properties.Appearance.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtChuTaiKhoan.Properties.Appearance.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtChuTaiKhoan.Properties.Appearance.Options.UseFont = true;
             this.txtChuTaiKhoan.Properties.AutoHeight = false;
             this.txtChuTaiKhoan.Properties.NullText = "Nhập chủ tài khoản";
@@ -122,7 +122,7 @@
             // 
             // labelControl4
             // 
-            this.labelControl4.Appearance.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl4.Appearance.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelControl4.Appearance.Options.UseFont = true;
             this.labelControl4.Location = new System.Drawing.Point(14, 175);
             this.labelControl4.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
@@ -137,7 +137,7 @@
             this.txtSoTaiKhoan.Location = new System.Drawing.Point(15, 139);
             this.txtSoTaiKhoan.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
             this.txtSoTaiKhoan.Name = "txtSoTaiKhoan";
-            this.txtSoTaiKhoan.Properties.Appearance.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSoTaiKhoan.Properties.Appearance.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtSoTaiKhoan.Properties.Appearance.Options.UseFont = true;
             this.txtSoTaiKhoan.Properties.AutoHeight = false;
             this.txtSoTaiKhoan.Properties.NullText = "Nhập số tài khoản";
@@ -146,7 +146,7 @@
             // 
             // labelControl3
             // 
-            this.labelControl3.Appearance.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl3.Appearance.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelControl3.Appearance.Options.UseFont = true;
             this.labelControl3.Location = new System.Drawing.Point(14, 120);
             this.labelControl3.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
@@ -161,7 +161,7 @@
             this.txtNganHang.Location = new System.Drawing.Point(15, 84);
             this.txtNganHang.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
             this.txtNganHang.Name = "txtNganHang";
-            this.txtNganHang.Properties.Appearance.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNganHang.Properties.Appearance.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNganHang.Properties.Appearance.Options.UseFont = true;
             this.txtNganHang.Properties.AutoHeight = false;
             this.txtNganHang.Properties.NullText = "Nhập ngân hàng";
@@ -170,7 +170,7 @@
             // 
             // labelControl2
             // 
-            this.labelControl2.Appearance.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl2.Appearance.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelControl2.Appearance.Options.UseFont = true;
             this.labelControl2.Location = new System.Drawing.Point(14, 65);
             this.labelControl2.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
@@ -186,7 +186,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(298, 291);
             this.Controls.Add(this.panelControl1);
-            this.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("Verdana", 8F);
             this.FormBorderEffect = DevExpress.XtraEditors.FormBorderEffect.Shadow;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.IconOptions.Image = ((System.Drawing.Image)(resources.GetObject("UserInforForm.IconOptions.Image")));

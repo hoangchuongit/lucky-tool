@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LuckCheck.Model
+﻿namespace LuckCheck.Model
 {
     public class ComDto
     {

@@ -36,7 +36,7 @@ namespace LuckCheck.Utils
             var existing = list.FirstOrDefault(x => x.PortName == PortName);
             if (existing != null)
                 return existing.STT;
-            if(isDefault) return string.Empty;
+            if (isDefault) return string.Empty;
             var stt = (list.Count + 1).ToString();
             list.Add(new ComConfig { PortName = PortName, STT = stt });
             Save(list);

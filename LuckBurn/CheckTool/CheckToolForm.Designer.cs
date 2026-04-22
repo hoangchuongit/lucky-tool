@@ -1,6 +1,6 @@
-﻿namespace LuckCheck
+﻿namespace LuckBurn
 {
-    partial class GSMForm
+    partial class CheckToolForm
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -17,7 +17,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources =
-                new System.ComponentModel.ComponentResourceManager(typeof(GSMForm));
+                new System.ComponentModel.ComponentResourceManager(typeof(CheckToolForm));
             DevExpress.Utils.SuperToolTip superToolTip1 = new DevExpress.Utils.SuperToolTip();
             DevExpress.Utils.ToolTipItem toolTipItem1 = new DevExpress.Utils.ToolTipItem();
             DevExpress.Utils.SuperToolTip superToolTip2 = new DevExpress.Utils.SuperToolTip();
@@ -137,9 +137,9 @@
             this.btnUpdateComPort.ItemAppearance.Normal.Font = new System.Drawing.Font("Verdana", 8F);
             this.btnUpdateComPort.ItemAppearance.Normal.Options.UseFont = true;
             this.btnUpdateComPort.Name = "btnUpdateComPort";
-            toolTipItem5.Text = "Cập nhật lại số thứ tự cổng COM";
-            superToolTip5.Items.Add(toolTipItem5);
-            this.btnUpdateComPort.SuperTip = superToolTip5;
+            toolTipItem2.Text = "Cập nhật lại số thứ tự cổng COM";
+            superToolTip2.Items.Add(toolTipItem2);
+            this.btnUpdateComPort.SuperTip = superToolTip2;
             this.btnUpdateComPort.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.BtnUpdateComPort_ItemClick);
 
             // ── btnChangeIMEI ───────────────────────────────────────────────

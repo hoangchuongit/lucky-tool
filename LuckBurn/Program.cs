@@ -7,7 +7,7 @@ using System.Net;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace LuckBurnTK
+namespace LuckBurn
 {
     internal static class Program
     {
@@ -33,7 +33,7 @@ namespace LuckBurnTK
             AutoUpdater.ReportErrors = true;
             AutoUpdater.RunUpdateAsAdmin = true; // nếu ghi vào C:\Program Files
             AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
-            AutoUpdater.Start("https://luckburn.mobi/update-app/update.xml");
+            AutoUpdater.Start("https://gmeta.io.vn/update-app/update.xml");
 #endif
 
             Application.EnableVisualStyles();

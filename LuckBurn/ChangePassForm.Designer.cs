@@ -1,4 +1,4 @@
-﻿namespace LuckBurnTK
+﻿namespace LuckBurn
 {
     partial class ChangePassForm
     {
@@ -43,7 +43,7 @@
             // 
             // labelControl2
             // 
-            this.labelControl2.Appearance.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl2.Appearance.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelControl2.Appearance.Options.UseFont = true;
             this.labelControl2.Location = new System.Drawing.Point(13, 68);
             this.labelControl2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -100,7 +100,7 @@
             // 
             // labelControl1
             // 
-            this.labelControl1.Appearance.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl1.Appearance.Font = new System.Drawing.Font("Verdana", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelControl1.Appearance.Options.UseFont = true;
             this.labelControl1.Location = new System.Drawing.Point(13, 12);
             this.labelControl1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);

@@ -1,23 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Management;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace LuckBurnTK.Utils
+namespace LuckBurn.Utils
 {
     public class Common
     {
-#if !DEBUG
+#if DEBUG
+
+        //public static string UrlBurnAUTH = "https://gmeta.io.vn/auth/";
+        //public static string UrlBurnAPI = "https://gmeta.io.vn/api/";
         public static string UrlBurnAUTH = "https://luckburn.mobi/auth/";
+
         public static string UrlBurnAPI = "https://luckburn.mobi/api/";
 #else
         public static string UrlBurnAUTH = "http://localhost:3000/";
         public static string UrlBurnAPI = "http://localhost:3001/";
 #endif
+
+        public static string Title = "Luck Tools for PA";
 
         public static IEnumerable<Dictionary<string, string>> GetFullPortNames()
         {
@@ -27,18 +32,6 @@ namespace LuckBurnTK.Utils
                     { "Caption", p["Caption"]?.ToString() ?? string.Empty },
                     { "DeviceID", p["DeviceID"]?.ToString() ?? string.Empty }
                 }).ToList().Where(x => x["Caption"].Contains("XR21V1414"));
-            }
-        }
-
-        public static byte[] StringToByteArray(string hex)
-        {
-            try
-            {
-                return Enumerable.Range(0, hex.Length).Where(x => x % 2 == 0).Select(x => Convert.ToByte(hex.Substring(x, 2), 16)).ToArray();
-            }
-            catch (Exception)
-            {
-                return null;
             }
         }
 
@@ -155,12 +148,6 @@ namespace LuckBurnTK.Utils
             return int.TryParse(cleaned, out int balance) ? balance : (int?)null;
         }
 
-        public static string ExtractNgayKH(string input)
-        {
-            var m = Regex.Match(input, @"ngay kh:\s*(\d{2}/\d{2}/\d{4})", RegexOptions.IgnoreCase);
-            if (!m.Success) return null;
-            return m.Groups[1].Value;
-        }
         public static string ExtractHanSD(string input)
         {
             var pattern = @"(?:\bhsd\b|het\s*han|han\s*su\s*dung(?:\s*den\s*ngay)?|dung\s*den)" +
@@ -184,15 +171,6 @@ namespace LuckBurnTK.Utils
             byte[] newBuffer = new byte[remainingLength];
             Buffer.BlockCopy(buffer, byteOffset, newBuffer, 0, remainingLength);
             return newBuffer;
-        }
-
-        public static int? DaysSinceHsd(string hsd, string currentDate)
-        {
-            if (!DateTime.TryParseExact(hsd, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime expiry))
-                return null;
-            if (!DateTime.TryParseExact(currentDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime current))
-                return null;
-            return (current.Date - expiry.Date).Days;
         }
     }
 }
