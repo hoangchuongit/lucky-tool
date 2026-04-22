@@ -518,8 +518,8 @@ namespace LuckCheck
                 dto.PhoneNumber = string.Empty;
                 dto.HSD = string.Empty;
                 dto.TKChinh = 0;
-                dto.Message101 = "";
-            }, "PhoneNumber", "HSD", "TKChinh", "Message101");
+                dto.Message = "";
+            }, "PhoneNumber", "HSD", "TKChinh", "Message");
         }
 
         private void ListenEventSIMStatus(SerialPort sp)

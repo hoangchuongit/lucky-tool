@@ -8,6 +8,6 @@
         public string PhoneNumber { get; set; }
         public string HSD { get; set; }
         public int TKChinh { get; set; }
-        public string Message101 { get; set; }
+        public string Message { get; set; }
     }
 }
