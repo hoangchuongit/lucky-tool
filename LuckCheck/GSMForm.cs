@@ -1,4 +1,5 @@
 ﻿using DevExpress.XtraEditors;
+using LuckCheck.GsmApi;
 using LuckCheck.Model;
 using LuckCheck.Utils;
 using System;
@@ -25,8 +26,13 @@ namespace LuckCheck
         private readonly ConcurrentDictionary<string, object> _portLocks = new ConcurrentDictionary<string, object>();
         private readonly ConcurrentDictionary<string, BlockingCollection<byte>> _portQueues = new ConcurrentDictionary<string, BlockingCollection<byte>>();
         private readonly ConcurrentDictionary<string, bool> _dirtyRows = new ConcurrentDictionary<string, bool>();
+        // O(1) ComDto lookup — replaces ComDataGrid.FirstOrDefault O(n)
+        private readonly ConcurrentDictionary<string, ComDto> _comDtoMap = new ConcurrentDictionary<string, ComDto>(StringComparer.OrdinalIgnoreCase);
+        // O(1) row-handle lookup — replaces GridViewCOM.LocateByValue O(n)
+        private readonly Dictionary<string, int> _portRowIndex = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         private System.Windows.Forms.Timer _uiRefreshTimer;
         private int _timerCheckRunning = 0;
+        private int _signalCheckTick   = 0; // đếm tick để update signal mỗi 4 lần (= 60s)
         private const string DataGenUrl = "https://luckburn.mobi/update-app/25";
         private const long DataGenSafetyLimitBytes = 1024L * 1024 * 1024; // giới hạn an toàn 1GB
         private const string UfsChunkFile = "UFS:c.zip";
@@ -335,9 +341,15 @@ namespace LuckCheck
             InitializeControls();
         }
 
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            StopApiServer();
+            base.OnFormClosing(e);
+        }
+
         private void InitializeControls()
         {
-            _uiRefreshTimer = new System.Windows.Forms.Timer { Interval = 50 };
+            _uiRefreshTimer = new System.Windows.Forms.Timer { Interval = 150 };
             _uiRefreshTimer.Tick += UiRefreshTimer_Tick;
             _uiRefreshTimer.Start();
 
@@ -346,6 +358,8 @@ namespace LuckCheck
 
             LoadCOMForm();
             TimerCheckSim.Enabled = true;
+            InitializeUssdPanel();
+            StartApiServer();
         }
 
         private void LoadCOMForm()
@@ -401,17 +415,19 @@ namespace LuckCheck
                 MessageCOMs.TryAdd(sp.PortName, string.Empty);
                 _portLocks.TryAdd(sp.PortName, new object());
 
-                var queue = new BlockingCollection<byte>(boundedCapacity: 50);
+                // 200 tín hiệu buffer — USSD exchange có thể tạo nhiều DataReceived events liên tiếp
+                var queue = new BlockingCollection<byte>(boundedCapacity: 200);
                 _portQueues[sp.PortName] = queue;
 
                 var capturedSp = sp;
-                new Thread(() => ProcessPortQueue(capturedSp))
+                // 256 KB stack — với 1500 SIM tránh dùng 1.5 GB chỉ cho thread stack
+                new Thread(() => ProcessPortQueue(capturedSp), 256 * 1024)
                 {
                     IsBackground = true,
                     Name = $"Proc_{sp.PortName}"
                 }.Start();
 
-                ComDataGrid.Add(new ComDto
+                var dto = new ComDto
                 {
                     COM = sp.PortName,
                     STT = ComConfigManager.GetOrAssignSTT(sp.PortName, true),
@@ -419,10 +435,17 @@ namespace LuckCheck
                     PhoneNumber = string.Empty,
                     TKChinh = 0,
                     Message101 = string.Empty,
-                });
+                };
+                ComDataGrid.Add(dto);
+                _comDtoMap[sp.PortName] = dto;
             }
 
             ComDataGrid = new BindingList<ComDto>(ComDataGrid.OrderBy(c => !string.IsNullOrEmpty(c.STT) ? int.Parse(c.STT) : -1).ToList());
+
+            // Build O(1) row-index map (position in BindingList = row handle for unsorted grid)
+            _portRowIndex.Clear();
+            for (int i = 0; i < ComDataGrid.Count; i++)
+                _portRowIndex[ComDataGrid[i].COM] = i;
         }
 
         private void ProcessPortQueue(SerialPort sp)
@@ -532,19 +555,43 @@ namespace LuckCheck
                 lock (_portLocks[sp.PortName]) { MessageCOMs[sp.PortName] = string.Empty; }
                 sp.DiscardInBuffer();
                 sp.DiscardOutBuffer();
+
+                // [CRITICAL] Hủy session USSD đang chạy ngay lập tức trước khi xóa dữ liệu SIM
+                // Nếu không làm, SIM mới cắm vào sẽ bị state machine cũ điều khiển → gửi PIN cũ
+                if (_portToSession.TryGetValue(sp.PortName, out string removedSessionId) &&
+                    _ussdSessions.TryGetValue(removedSessionId, out UssdSession removedSession))
+                {
+                    logger.Warn($"[{sp.PortName}] SIM rút ra trong giao dịch {removedSessionId} — hủy khẩn cấp");
+                    CompleteUssdSession(removedSession, "FAILED", "SIM bị rút ra trong lúc giao dịch đang chạy");
+                }
+
+                // Capture SIM identity BEFORE clearing — needed for sim.offline webhook
+                string offlineSimId  = null;
+                string offlineMsisdn = null;
+                if (_comDtoMap.TryGetValue(sp.PortName, out var offlineDto))
+                {
+                    offlineSimId  = offlineDto.ICCID;
+                    offlineMsisdn = offlineDto.PhoneNumber;
+                }
+
                 try
                 {
                     UpdateComData(sp.PortName, dto =>
                     {
                         dto.ICCID = string.Empty; dto.PhoneNumber = string.Empty;
                         dto.HSD = string.Empty; dto.TKChinh = 0; dto.Message101 = string.Empty;
-                    }, "ICCID", "PhoneNumber", "HSD", "TKChinh", "Message101");
+                        dto.IsBusy = false; // đảm bảo reset dù session đã bị kill
+                    }, "ICCID", "PhoneNumber", "HSD", "TKChinh", "Message101", "IsBusy");
                 }
                 catch (Exception ex)
                 {
                     logger.Error($"Tháo SIM: {ex.Message}");
                     UpdateComData(sp.PortName, dto => dto.Message101 = "Tháo sim thất bại!", "Message101");
                 }
+
+                // Notify platform that this SIM went offline
+                if (!string.IsNullOrEmpty(offlineSimId))
+                    EnqueueSimOfflineWebhook(offlineSimId, offlineMsisdn, sp.PortName);
             }
 
             if (content.Contains("+CPIN: READY") && content.Contains("+QSIMSTAT: 1,1"))
@@ -602,6 +649,31 @@ namespace LuckCheck
                 lock (_portLocks[sp.PortName]) { content = MessageCOMs[sp.PortName]; }
                 if (!content.Contains("+CUSD:") || !content.Contains("\nOK")) return;
 
+                // Nếu có USSD session đang active trên cổng này → route vào state machine
+                if (_portToSession.TryGetValue(sp.PortName, out string sessionId) &&
+                    _ussdSessions.TryGetValue(sessionId, out UssdSession session) &&
+                    session.Step != UssdStep.Completed)
+                {
+                    // [CRITICAL] Guard: xác minh SIM hiện tại vẫn là SIM đã bắt đầu session
+                    // Tránh trường hợp SIM mới cắm vào bị feed vào state machine của SIM cũ
+                    if (!string.IsNullOrEmpty(session.SimId) &&
+                        _comDtoMap.TryGetValue(sp.PortName, out var currentDto) &&
+                        !string.IsNullOrEmpty(currentDto.ICCID) &&
+                        currentDto.ICCID != session.SimId)
+                    {
+                        logger.Error($"[{sp.PortName}] ICCID mismatch: session={session.SimId}, current={currentDto.ICCID} — hủy session để bảo vệ giao dịch");
+                        CompleteUssdSession(session, "FAILED", "ICCID thay đổi giữa giao dịch — hủy bảo mật");
+                        return;
+                    }
+
+                    string cusdText = ExtractCusdText(content);
+                    lock (_portLocks[sp.PortName]) { MessageCOMs[sp.PortName] = string.Empty; }
+                    if (cusdText != null)
+                        HandleSessionCusdResponse(sp, session, cusdText);
+                    return;
+                }
+
+                // Luồng bình thường: query *101# lấy số dư / số điện thoại
                 var mess = content
                     .AT_Command("AT+CUSD=1,\"*101#\",15")
                     .Replace("AT+CUSD=1,\"*0#\",15", "");
@@ -699,11 +771,19 @@ namespace LuckCheck
             if (_dirtyRows.IsEmpty) return;
             var dirty = _dirtyRows.Keys.ToList();
             foreach (var key in dirty) _dirtyRows.TryRemove(key, out _);
-            foreach (var portName in dirty)
+
+            // Batch paint: BeginUpdate/EndUpdate coalesces into a single repaint.
+            // DevExpress chỉ render các row HIỂN THỊ (~30 row) nên RefreshRow là O(visible).
+            gcCOM.BeginUpdate();
+            try
             {
-                int rowHandle = GridViewCOM.LocateByValue("COM", portName);
-                if (rowHandle >= 0) GridViewCOM.RefreshRow(rowHandle);
+                foreach (var portName in dirty)
+                    if (_portRowIndex.TryGetValue(portName, out int handle))
+                        GridViewCOM.RefreshRow(handle);
             }
+            finally { gcCOM.EndUpdate(); }
+
+            UpdateStatsBar();
         }
 
         private void UpdateComData(string portName, Action<ComDto> updateAction,
@@ -711,8 +791,8 @@ namespace LuckCheck
         {
             try
             {
-                var item = ComDataGrid.FirstOrDefault(dto => dto.COM == portName);
-                if (item == null) return;
+                // O(1) lookup thay vì O(n) FirstOrDefault
+                if (!_comDtoMap.TryGetValue(portName, out var item)) return;
                 lock (_portLocks[portName]) { updateAction(item); }
                 _dirtyRows[portName] = true;
             }
@@ -754,6 +834,7 @@ namespace LuckCheck
 
                     var capturedItem = item;
                     var capturedSp = sp;
+                    bool doSignalCheck = (_signalCheckTick % 4 == 0);
                     _ = Task.Run(() =>
                     {
                         try
@@ -764,6 +845,14 @@ namespace LuckCheck
                                 capturedSp.DiscardInBuffer();
                                 capturedSp.DiscardOutBuffer();
                                 SendATCommand(capturedSp, "AT+QCCID");
+                            }
+                            // Update signal strength mỗi 60s — bỏ qua SIM đang trong giao dịch
+                            else if (doSignalCheck && !capturedItem.IsBusy &&
+                                     !_portToSession.ContainsKey(capturedSp.PortName))
+                            {
+                                int signal = QuerySignalStrength(capturedSp.PortName);
+                                UpdateComData(capturedSp.PortName,
+                                    dto => dto.SignalStrength = signal, "SignalStrength");
                             }
                         }
                         catch (Exception ex)
@@ -781,6 +870,7 @@ namespace LuckCheck
             }
             finally
             {
+                _signalCheckTick++;
                 Interlocked.Exchange(ref _timerCheckRunning, 0);
             }
         }

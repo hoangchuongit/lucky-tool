@@ -213,6 +213,19 @@
     <Compile Include="GSMForm.Designer.cs">
       <DependentUpon>GSMForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GSMForm.Api.cs">
+      <DependentUpon>GSMForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GSMForm.Ui.cs">
+      <DependentUpon>GSMForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GsmApi\ApiDocs.cs" />
+    <Compile Include="GsmApi\GsmApiServer.cs" />
+    <Compile Include="GsmApi\GsmStore.cs" />
+    <Compile Include="GsmApi\PinCrypto.cs" />
+    <Compile Include="GsmApi\PrometheusMetrics.cs" />
+    <Compile Include="GsmApi\RequestAuth.cs" />
+    <Compile Include="GsmApi\UssdSession.cs" />
     <Compile Include="ComDto.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
