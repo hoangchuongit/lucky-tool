@@ -647,7 +647,10 @@ namespace LuckCheck
             {
                 string content;
                 lock (_portLocks[sp.PortName]) { content = MessageCOMs[sp.PortName]; }
-                if (!content.Contains("+CUSD:") || !content.Contains("\nOK")) return;
+                if (!content.Contains("+CUSD:")) return;
+                // Carrier confirmation (+CUSD: URC) đến không kèm OK — bỏ qua check \nOK khi có session active
+                bool hasActiveSession = _portToSession.ContainsKey(sp.PortName);
+                if (!hasActiveSession && !content.Contains("\nOK")) return;
 
                 // Nếu có USSD session đang active trên cổng này → route vào state machine
                 if (_portToSession.TryGetValue(sp.PortName, out string sessionId) &&
@@ -840,7 +843,8 @@ namespace LuckCheck
                         try
                         {
                             if (!capturedSp.IsOpen) capturedSp.Open();
-                            if (string.IsNullOrEmpty(capturedItem.PhoneNumber))
+                            if (string.IsNullOrEmpty(capturedItem.PhoneNumber) &&
+                                !_portToSession.ContainsKey(capturedSp.PortName))
                             {
                                 capturedSp.DiscardInBuffer();
                                 capturedSp.DiscardOutBuffer();
