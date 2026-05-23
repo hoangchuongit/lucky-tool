@@ -2,7 +2,7 @@ name: Build LuckCheck
 
 on:
   push:
-    branches: [ master, feat/topup ]
+    branches: [ '**' ]
   workflow_dispatch:   # cho phép chạy thủ công từ GitHub UI
 
 jobs:
