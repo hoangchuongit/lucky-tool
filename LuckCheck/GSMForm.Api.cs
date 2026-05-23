@@ -38,14 +38,14 @@ namespace LuckCheck
             = new ConcurrentDictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
         private const int UssdLogMaxEntries = 100;
 
-        private GsmApiServer      _apiServer;
-        private GsmStore          _store;
+        private GsmApiServer _apiServer;
+        private GsmStore _store;
         private CancellationTokenSource _workerCts;
 
-        private static readonly HttpClient   _webhookClient = new HttpClient();
-        private static readonly string       AuditDir       = Path.Combine(
+        private static readonly HttpClient _webhookClient = new HttpClient();
+        private static readonly string AuditDir = Path.Combine(
             AppDomain.CurrentDomain.BaseDirectory, "logs", "audit");
-        private static readonly object       _auditFileLock = new object();
+        private static readonly object _auditFileLock = new object();
 
         // Per-port mutex: prevents TOCTOU double-reservation / double-send on the same SIM
         private readonly ConcurrentDictionary<string, object> _portBusyLocks
@@ -60,12 +60,12 @@ namespace LuckCheck
         {
             try
             {
-                int    port         = int.TryParse(ConfigurationManager.AppSettings["GsmApiPort"], out int p) ? p : 8000;
+                int port = int.TryParse(ConfigurationManager.AppSettings["GsmApiPort"], out int p) ? p : 8000;
                 string sharedSecret = ConfigurationManager.AppSettings["ApiSharedSecret"] ?? "";
-                string bindHost     = ConfigurationManager.AppSettings["GsmApiBindHost"] ?? "localhost";
+                string bindHost = ConfigurationManager.AppSettings["GsmApiBindHost"] ?? "localhost";
 
-                _store   = new GsmStore();
-                Metrics  = new PrometheusMetrics();
+                _store = new GsmStore();
+                Metrics = new PrometheusMetrics();
                 _workerCts = new CancellationTokenSource();
 
                 RecoverIncompleteSessions();
@@ -76,7 +76,7 @@ namespace LuckCheck
                 // Background workers (IsBackground = killed automatically on process exit)
                 var cts = _workerCts;
                 new Thread(() => RunTtlExpiryWorker(cts.Token))
-                    { IsBackground = true, Name = "GsmTtlExpiry" }.Start();
+                { IsBackground = true, Name = "GsmTtlExpiry" }.Start();
                 Task.Run(() => RunWebhookOutboxWorkerAsync(cts.Token));
             }
             catch (Exception ex)
@@ -109,22 +109,22 @@ namespace LuckCheck
                 string simId = !string.IsNullOrEmpty(dto.ICCID) ? dto.ICCID : $"slot-{dto.STT}";
                 bool isDisabled = dto.IsDisabled || disabledSet.Contains(simId);
 
-                string status = isDisabled                            ? "disabled"
-                              : dto.IsBusy                           ? "busy"
+                string status = isDisabled ? "disabled"
+                              : dto.IsBusy ? "busy"
                               : string.IsNullOrEmpty(dto.PhoneNumber) ? "offline"
                               : "available";
 
                 result.Add(new SimDto
                 {
-                    SimId          = simId,
-                    GatewayId      = GatewayId,
-                    SlotIndex      = int.TryParse(dto.STT, out int stt) ? stt : 0,
-                    Msisdn         = dto.PhoneNumber,
-                    Status         = status,
-                    Network        = dto.Network,
+                    SimId = simId,
+                    GatewayId = GatewayId,
+                    SlotIndex = int.TryParse(dto.STT, out int stt) ? stt : 0,
+                    Msisdn = dto.PhoneNumber,
+                    Status = status,
+                    Network = dto.Network,
                     SignalStrength = dto.SignalStrength,
-                    IsDisabled     = isDisabled,
-                    LastActivity   = dto.LastUssdAt?.ToString("o") ?? ""
+                    IsDisabled = isDisabled,
+                    LastActivity = dto.LastUssdAt?.ToString("o") ?? ""
                 });
             }
 
@@ -132,9 +132,9 @@ namespace LuckCheck
             if (Metrics != null)
             {
                 Metrics.SimsAvailable = result.Count(s => s.Status == "available");
-                Metrics.SimsBusy      = result.Count(s => s.Status == "busy");
-                Metrics.SimsOffline   = result.Count(s => s.Status == "offline");
-                Metrics.SimsDisabled  = result.Count(s => s.Status == "disabled");
+                Metrics.SimsBusy = result.Count(s => s.Status == "busy");
+                Metrics.SimsOffline = result.Count(s => s.Status == "offline");
+                Metrics.SimsDisabled = result.Count(s => s.Status == "disabled");
             }
             return result;
         }
@@ -147,22 +147,22 @@ namespace LuckCheck
                 if (!string.Equals(id, simId, StringComparison.OrdinalIgnoreCase)) continue;
 
                 bool isDisabled = dto.IsDisabled || (_store?.IsSimDisabled(simId) ?? false);
-                string status = isDisabled                            ? "disabled"
-                              : dto.IsBusy                           ? "busy"
+                string status = isDisabled ? "disabled"
+                              : dto.IsBusy ? "busy"
                               : string.IsNullOrEmpty(dto.PhoneNumber) ? "offline"
                               : "available";
 
                 return new SimDto
                 {
-                    SimId          = id,
-                    GatewayId      = GatewayId,
-                    SlotIndex      = int.TryParse(dto.STT, out int stt) ? stt : 0,
-                    Msisdn         = dto.PhoneNumber,
-                    Status         = status,
-                    Network        = dto.Network,
+                    SimId = id,
+                    GatewayId = GatewayId,
+                    SlotIndex = int.TryParse(dto.STT, out int stt) ? stt : 0,
+                    Msisdn = dto.PhoneNumber,
+                    Status = status,
+                    Network = dto.Network,
                     SignalStrength = dto.SignalStrength,
-                    IsDisabled     = isDisabled,
-                    LastActivity   = dto.LastUssdAt?.ToString("o") ?? ""
+                    IsDisabled = isDisabled,
+                    LastActivity = dto.LastUssdAt?.ToString("o") ?? ""
                 };
             }
             return null;
@@ -178,9 +178,9 @@ namespace LuckCheck
                     return new SimReserveResponse
                     {
                         ReservationId = existing.ReservationId,
-                        SimId         = existing.SimId,
-                        ExpiresAt     = existing.ExpiresAt.ToString("o"),
-                        IsIdempotent  = true
+                        SimId = existing.SimId,
+                        ExpiresAt = existing.ExpiresAt.ToString("o"),
+                        IsIdempotent = true
                     };
             }
 
@@ -208,11 +208,11 @@ namespace LuckCheck
             var record = new SimReservationRecord
             {
                 ReservationId = reservationId,
-                SimId         = simId,
-                GatewayId     = GatewayId,
-                SlotIndex     = req.SlotIndex,
-                CreatedAt     = DateTime.UtcNow,
-                ExpiresAt     = DateTime.UtcNow.AddSeconds(ttlSecs)
+                SimId = simId,
+                GatewayId = GatewayId,
+                SlotIndex = req.SlotIndex,
+                CreatedAt = DateTime.UtcNow,
+                ExpiresAt = DateTime.UtcNow.AddSeconds(ttlSecs)
             };
 
             _store?.InsertReservation(record);
@@ -221,9 +221,9 @@ namespace LuckCheck
             return new SimReserveResponse
             {
                 ReservationId = reservationId,
-                SimId         = simId,
-                ExpiresAt     = record.ExpiresAt.ToString("o"),
-                IsIdempotent  = false
+                SimId = simId,
+                ExpiresAt = record.ExpiresAt.ToString("o"),
+                IsIdempotent = false
             };
         }
 
@@ -238,7 +238,7 @@ namespace LuckCheck
                     _store.ReleaseReservation(req.ReservationId);
                     var comDto = _comDtoMap.Values.FirstOrDefault(d => d.ICCID == rec.SimId);
                     if (comDto != null)
-                        UpdateComData(comDto.COM, dto => dto.IsBusy = false, "IsBusy");
+                        UpdateComData(comDto.COM, simDto => simDto.IsBusy = false, "IsBusy");
                     return true;
                 }
             }
@@ -249,7 +249,7 @@ namespace LuckCheck
             {
                 _portToSession.TryRemove(sess.PortName, out _);
                 _ussdSessions.TryRemove(req.UssdSession, out _);
-                UpdateComData(sess.PortName, dto => dto.IsBusy = false, "IsBusy");
+                UpdateComData(sess.PortName, simDto => simDto.IsBusy = false, "IsBusy");
                 return true;
             }
 
@@ -301,9 +301,9 @@ namespace LuckCheck
                     if (existing != null)
                         return new UssdSendResponse
                         {
-                            SessionId    = existingSessId,
-                            Status       = existing.Status,
-                            SubmittedAt  = existing.SubmittedAt,
+                            SessionId = existingSessId,
+                            Status = existing.Status,
+                            SubmittedAt = existing.SubmittedAt,
                             IsIdempotent = true
                         };
                 }
@@ -357,7 +357,7 @@ namespace LuckCheck
                 {
                     logger.Warn($"[{comDto.COM}] Receiving PIN as plain-text ussd_code — use pin_encrypted in production.");
                     ussdCode = req.UssdCode;
-                    pinCode  = ExtractPinFromUssd(req.UssdCode);
+                    pinCode = ExtractPinFromUssd(req.UssdCode);
                 }
                 else
                 {
@@ -373,23 +373,23 @@ namespace LuckCheck
             string sessionId = "ussd-" + Guid.NewGuid().ToString("N").Substring(0, 12);
             var session = new UssdSession
             {
-                SessionId     = sessionId,
+                SessionId = sessionId,
                 TransactionId = req.TransactionId,
                 ReservationId = req.ReservationId,
-                PortName      = comDto.COM,
-                SimId         = simId,
-                GatewayId     = req.GatewayId ?? GatewayId,
-                SlotIndex     = req.SlotIndex,
-                UssdCode      = ussdCode,
-                TargetPhone   = req.PhoneNumber,
-                SimMsisdn     = !string.IsNullOrEmpty(req.Msisdn) ? req.Msisdn : comDto.PhoneNumber,
-                PinCode       = pinCode,
-                Step          = UssdStep.AwaitingMenu,
-                SubmittedAt   = DateTime.UtcNow,
-                Status        = "submitted"
+                PortName = comDto.COM,
+                SimId = simId,
+                GatewayId = req.GatewayId ?? GatewayId,
+                SlotIndex = req.SlotIndex,
+                UssdCode = ussdCode,
+                TargetPhone = req.PhoneNumber,
+                SimMsisdn = !string.IsNullOrEmpty(req.Msisdn) ? req.Msisdn : comDto.PhoneNumber,
+                PinCode = pinCode,
+                Step = UssdStep.AwaitingMenu,
+                SubmittedAt = DateTime.UtcNow,
+                Status = "submitted"
             };
 
-            _ussdSessions[sessionId]   = session;
+            _ussdSessions[sessionId] = session;
             _portToSession[comDto.COM] = sessionId;
 
             // Persist initial state for recovery across restart
@@ -399,14 +399,14 @@ namespace LuckCheck
             // Update SIM state and UI
             UpdateComData(comDto.COM, dto =>
             {
-                dto.IsBusy     = true;
+                dto.IsBusy = true;
                 dto.LastUssdAt = DateTime.UtcNow;
                 dto.Message101 = "Đang nạp thẻ...";
             }, "IsBusy", "LastUssdAt", "Message101");
 
-            int    timeoutSecs     = req.TimeoutSecs > 0 ? req.TimeoutSecs : 60;
-            var    capturedSp      = sp;
-            var    capturedSession = session;
+            int timeoutSecs = req.TimeoutSecs > 0 ? req.TimeoutSecs : 60;
+            var capturedSp = sp;
+            var capturedSession = session;
 
             Task.Run(() =>
             {
@@ -438,8 +438,8 @@ namespace LuckCheck
 
             return new UssdSendResponse
             {
-                SessionId   = sessionId,
-                Status      = "submitted",
+                SessionId = sessionId,
+                Status = "submitted",
                 SubmittedAt = session.SubmittedAt.ToString("o"),
                 IsIdempotent = false
             };
@@ -451,15 +451,15 @@ namespace LuckCheck
             if (_ussdSessions.TryGetValue(sessionId, out var session))
                 return new UssdSessionDto
                 {
-                    SessionId     = session.SessionId,
+                    SessionId = session.SessionId,
                     TransactionId = session.TransactionId,
-                    SimId         = session.SimId,
-                    GatewayId     = session.GatewayId,
-                    Status        = session.Status,
+                    SimId = session.SimId,
+                    GatewayId = session.GatewayId,
+                    Status = session.Status,
                     ResultMessage = session.ResultMessage,
-                    SubmittedAt   = session.SubmittedAt.ToString("o"),
-                    CompletedAt   = session.CompletedAt?.ToString("o"),
-                    TargetPhone   = session.TargetPhone
+                    SubmittedAt = session.SubmittedAt.ToString("o"),
+                    CompletedAt = session.CompletedAt?.ToString("o"),
+                    TargetPhone = session.TargetPhone
                 };
 
             // Fall back to SQLite (completed sessions)
@@ -469,15 +469,15 @@ namespace LuckCheck
 
             return new UssdSessionDto
             {
-                SessionId     = rec.SessionId,
+                SessionId = rec.SessionId,
                 TransactionId = rec.TransactionId,
-                SimId         = rec.SimId,
-                GatewayId     = rec.GatewayId,
-                Status        = rec.Status,
+                SimId = rec.SimId,
+                GatewayId = rec.GatewayId,
+                Status = rec.Status,
                 ResultMessage = rec.ResultMessage,
-                SubmittedAt   = rec.SubmittedAt.ToString("o"),
-                CompletedAt   = rec.CompletedAt?.ToString("o"),
-                TargetPhone   = rec.TargetPhone
+                SubmittedAt = rec.SubmittedAt.ToString("o"),
+                CompletedAt = rec.CompletedAt?.ToString("o"),
+                TargetPhone = rec.TargetPhone
             };
         }
 
@@ -502,18 +502,18 @@ namespace LuckCheck
                 string simId = !string.IsNullOrEmpty(dto.ICCID) ? dto.ICCID : $"slot-{dto.STT}";
                 bool isDisabled = dto.IsDisabled;
 
-                string status = isDisabled                            ? "disabled"
-                              : dto.IsBusy                           ? "busy"
+                string status = isDisabled ? "disabled"
+                              : dto.IsBusy ? "busy"
                               : string.IsNullOrEmpty(dto.PhoneNumber) ? "offline"
                               : "available";
 
                 statuses.Add(new SimStatusDto
                 {
-                    SimId          = simId,
-                    Status         = status,
+                    SimId = simId,
+                    Status = status,
                     SignalStrength = dto.SignalStrength,
-                    IsDisabled     = isDisabled,
-                    LastActivity   = dto.LastUssdAt?.ToString("o") ?? ""
+                    IsDisabled = isDisabled,
+                    LastActivity = dto.LastUssdAt?.ToString("o") ?? ""
                 });
             }
 
@@ -521,15 +521,15 @@ namespace LuckCheck
             if (Metrics != null)
             {
                 Metrics.SimsAvailable = statuses.Count(s => s.Status == "available");
-                Metrics.SimsBusy      = statuses.Count(s => s.Status == "busy");
-                Metrics.SimsOffline   = statuses.Count(s => s.Status == "offline");
-                Metrics.SimsDisabled  = statuses.Count(s => s.Status == "disabled");
+                Metrics.SimsBusy = statuses.Count(s => s.Status == "busy");
+                Metrics.SimsOffline = statuses.Count(s => s.Status == "offline");
+                Metrics.SimsDisabled = statuses.Count(s => s.Status == "disabled");
             }
 
             return new GatewayHealthResponse
             {
-                GatewayId   = gatewayId,
-                Online      = statuses.Count > 0,
+                GatewayId = gatewayId,
+                Online = statuses.Count > 0,
                 SimStatuses = statuses
             };
         }
@@ -600,33 +600,33 @@ namespace LuckCheck
                             }
                         }
                         else if (IsSuccessResult(lower)) CompleteUssdSession(session, "SUCCESS", cusdText);
-                        else if (IsFailureResult(lower)) CompleteUssdSession(session, "FAILED",  cusdText);
+                        else if (IsFailureResult(lower)) CompleteUssdSession(session, "FAILED", cusdText);
                         break;
 
                     case UssdStep.AwaitingPhoneInput:
                         if (IsSuccessResult(lower)) { CompleteUssdSession(session, "SUCCESS", cusdText); break; }
-                        if (IsFailureResult(lower)) { CompleteUssdSession(session, "FAILED",  cusdText); break; }
+                        if (IsFailureResult(lower)) { CompleteUssdSession(session, "FAILED", cusdText); break; }
                         session.Step = UssdStep.AwaitingPinInput;
                         SendUssdReply(sp, NormalizePhone(session.TargetPhone));
                         break;
 
                     case UssdStep.AwaitingPinInput:
                         if (IsSuccessResult(lower)) { CompleteUssdSession(session, "SUCCESS", cusdText); break; }
-                        if (IsFailureResult(lower)) { CompleteUssdSession(session, "FAILED",  cusdText); break; }
+                        if (IsFailureResult(lower)) { CompleteUssdSession(session, "FAILED", cusdText); break; }
                         session.Step = UssdStep.AwaitingConfirm;
                         SendUssdReply(sp, session.PinCode);
                         break;
 
                     case UssdStep.AwaitingConfirm:
                         if (IsSuccessResult(lower)) { CompleteUssdSession(session, "SUCCESS", cusdText); break; }
-                        if (IsFailureResult(lower)) { CompleteUssdSession(session, "FAILED",  cusdText); break; }
+                        if (IsFailureResult(lower)) { CompleteUssdSession(session, "FAILED", cusdText); break; }
                         session.Step = UssdStep.AwaitingResult;
                         SendUssdReply(sp, "1");
                         break;
 
                     case UssdStep.AwaitingResult:
                         if (IsSuccessResult(lower)) CompleteUssdSession(session, "SUCCESS", cusdText);
-                        else                        CompleteUssdSession(session, "FAILED",  cusdText);
+                        else CompleteUssdSession(session, "FAILED", cusdText);
                         break;
                 }
             }
@@ -642,19 +642,22 @@ namespace LuckCheck
             // Atomic: only one of (timeout / state-machine / SIM-removal / cancel) wins
             if (Interlocked.CompareExchange(ref session.CompletionFlag, 1, 0) != 0) return;
 
-            session.Step          = UssdStep.Completed;
-            session.Status        = result == "SUCCESS" ? "success" : "failed";
+            session.Step = UssdStep.Completed;
+            session.Status = result == "SUCCESS" ? "success" : "failed";
             session.ResultMessage = message;
-            session.CompletedAt   = DateTime.UtcNow;
+            session.CompletedAt = DateTime.UtcNow;
 
             _portToSession.TryRemove(session.PortName, out _);
             // Keep session in memory 30s for Go BE polling, then release
-            Task.Delay(30_000).ContinueWith(_ => _ussdSessions.TryRemove(session.SessionId, out _),
-                TaskScheduler.Default);
+            Task.Delay(30_000).ContinueWith(delayTask =>
+            {
+                UssdSession removedSession;
+                _ussdSessions.TryRemove(session.SessionId, out removedSession);
+            }, TaskScheduler.Default);
 
             UpdateComData(session.PortName, dto =>
             {
-                dto.IsBusy    = false;
+                dto.IsBusy = false;
                 dto.Message101 = $"[{result}] {message}";
             }, "IsBusy", "Message101");
 
@@ -671,7 +674,7 @@ namespace LuckCheck
             });
 
             if (result == "SUCCESS") Metrics?.IncrUssdSuccess();
-            else                     Metrics?.IncrUssdFailed();
+            else Metrics?.IncrUssdFailed();
 
             BeginInvokeOnUiThread(() => UpdateNapTheButtonState(session.PortName, false));
             if (_comDtoMap.TryGetValue(session.PortName, out var dtoForHeader))
@@ -734,15 +737,15 @@ namespace LuckCheck
 
             var payload = new
             {
-                event_type     = "ussd.completed",
-                session_id     = session.SessionId,
+                event_type = "ussd.completed",
+                session_id = session.SessionId,
                 transaction_id = session.TransactionId,
-                sim_id         = session.SimId,
-                gateway_id     = session.GatewayId ?? GatewayId,
-                result         = session.Status == "success" ? "SUCCESS" : "FAILED",
-                message        = session.ResultMessage,
-                submitted_at   = session.SubmittedAt.ToString("o"),
-                completed_at   = (session.CompletedAt ?? DateTime.UtcNow).ToString("o")
+                sim_id = session.SimId,
+                gateway_id = session.GatewayId ?? GatewayId,
+                result = session.Status == "success" ? "SUCCESS" : "FAILED",
+                message = session.ResultMessage,
+                submitted_at = session.SubmittedAt.ToString("o"),
+                completed_at = (session.CompletedAt ?? DateTime.UtcNow).ToString("o")
             };
             _store.EnqueueWebhook("ussd.completed", JsonConvert.SerializeObject(payload));
         }
@@ -757,11 +760,11 @@ namespace LuckCheck
             var payload = new
             {
                 event_type = "sim.offline",
-                sim_id     = simId,
-                msisdn     = msisdn,
+                sim_id = simId,
+                msisdn = msisdn,
                 gateway_id = GatewayId,
-                port       = portName,
-                ts         = DateTime.UtcNow.ToString("o")
+                port = portName,
+                ts = DateTime.UtcNow.ToString("o")
             };
             _store.EnqueueWebhook("sim.offline", JsonConvert.SerializeObject(payload));
         }
@@ -777,18 +780,18 @@ namespace LuckCheck
                 {
                     event_type = "gateway.offline",
                     gateway_id = GatewayId,
-                    ts         = DateTime.UtcNow.ToString("o")
+                    ts = DateTime.UtcNow.ToString("o")
                 };
-                string json   = JsonConvert.SerializeObject(payload);
+                string json = JsonConvert.SerializeObject(payload);
                 string secret = ConfigurationManager.AppSettings["WebhookSecret"] ?? "";
-                string sig    = HmacSha256Hex(json, secret);
+                string sig = HmacSha256Hex(json, secret);
 
                 using (var req = new HttpRequestMessage(HttpMethod.Post,
                     $"{baseUrl.TrimEnd('/')}/webhooks/gateway"))
                 {
                     req.Content = new StringContent(json, Encoding.UTF8, "application/json");
-                    req.Headers.TryAddWithoutValidation("X-Event-Type",         "gateway.offline");
-                    req.Headers.TryAddWithoutValidation("X-Webhook-Signature",  $"sha256={sig}");
+                    req.Headers.TryAddWithoutValidation("X-Event-Type", "gateway.offline");
+                    req.Headers.TryAddWithoutValidation("X-Webhook-Signature", $"sha256={sig}");
                     _webhookClient.SendAsync(req).Wait(5000);
                 }
             }
@@ -809,20 +812,20 @@ namespace LuckCheck
                 // Synthesise a minimal session object for DB update
                 var s = new UssdSession
                 {
-                    SessionId     = rec.SessionId,
+                    SessionId = rec.SessionId,
                     TransactionId = rec.TransactionId,
-                    SimId         = rec.SimId,
-                    GatewayId     = rec.GatewayId,
-                    SlotIndex     = rec.SlotIndex,
-                    PortName      = rec.PortName,
-                    TargetPhone   = rec.TargetPhone,
-                    SimMsisdn     = rec.SimMsisdn,
-                    Status        = "failed",
+                    SimId = rec.SimId,
+                    GatewayId = rec.GatewayId,
+                    SlotIndex = rec.SlotIndex,
+                    PortName = rec.PortName,
+                    TargetPhone = rec.TargetPhone,
+                    SimMsisdn = rec.SimMsisdn,
+                    Status = "failed",
                     ResultMessage = "Service restarted — session state lost",
-                    SubmittedAt   = rec.SubmittedAt,
-                    CompletedAt   = DateTime.UtcNow,
-                    Step          = UssdStep.Completed,
-                    CompletionFlag= 1
+                    SubmittedAt = rec.SubmittedAt,
+                    CompletedAt = DateTime.UtcNow,
+                    Step = UssdStep.Completed,
+                    CompletionFlag = 1
                 };
                 _store.UpsertSession(s);
 
@@ -923,7 +926,7 @@ namespace LuckCheck
             if (string.IsNullOrWhiteSpace(baseUrl)) return true;  // no-op if not configured
 
             string secret = ConfigurationManager.AppSettings["WebhookSecret"] ?? "";
-            string sig    = HmacSha256Hex(payloadJson, secret);
+            string sig = HmacSha256Hex(payloadJson, secret);
 
             // All webhook events go to {baseUrl}/webhooks/gsm — event_type is in the payload
             string url = $"{baseUrl.TrimEnd('/')}/webhooks/gsm";
@@ -990,39 +993,39 @@ namespace LuckCheck
             Regex.IsMatch(lower, @"\b2[\s]*[.\-\)\:]\s*\S");
 
         private static bool IsSuccessResult(string lower) =>
-            lower.Contains("thanh cong")           ||
-            lower.Contains("nap thanh cong")       ||
-            lower.Contains("nap tien thanh cong")  ||
-            lower.Contains("so du hien tai")       ||
+            lower.Contains("thanh cong") ||
+            lower.Contains("nap thanh cong") ||
+            lower.Contains("nap tien thanh cong") ||
+            lower.Contains("so du hien tai") ||
             lower.Contains("giao dich thanh cong") ||
-            lower.Contains("da nap")               ||
-            lower.Contains("nap tien vao")         ||
-            lower.Contains("top up success")       ||
-            lower.Contains("recharge success")     ||
+            lower.Contains("da nap") ||
+            lower.Contains("nap tien vao") ||
+            lower.Contains("top up success") ||
+            lower.Contains("recharge success") ||
             lower.Contains("successful");
 
         private static bool IsFailureResult(string lower) =>
-            lower.Contains("that bai")            ||
-            lower.Contains("khong thanh cong")    ||
-            lower.Contains("giao dich that bai")  ||
-            lower.Contains("khong hop le")        ||
-            lower.Contains("the khong hop le")    ||
-            lower.Contains("sai ma the")          ||
-            lower.Contains("ma the sai")          ||
-            lower.Contains("ma the khong dung")   ||
-            lower.Contains("the da su dung")      ||
-            lower.Contains("da su dung")          ||
-            lower.Contains("het han su dung")     ||
-            lower.Contains("the het han")         ||
-            lower.Contains("het han")             ||
-            lower.Contains("vuot qua gioi han")   ||
-            lower.Contains("qua so lan")          ||
-            lower.Contains("khong du")            ||
-            lower.Contains("so dien thoai sai")   ||
-            lower.Contains("loi giao dich")       ||
-            lower.Contains("loi he thong")        ||
-            lower.Contains("failed")              ||
-            lower.Contains("invalid")             ||
+            lower.Contains("that bai") ||
+            lower.Contains("khong thanh cong") ||
+            lower.Contains("giao dich that bai") ||
+            lower.Contains("khong hop le") ||
+            lower.Contains("the khong hop le") ||
+            lower.Contains("sai ma the") ||
+            lower.Contains("ma the sai") ||
+            lower.Contains("ma the khong dung") ||
+            lower.Contains("the da su dung") ||
+            lower.Contains("da su dung") ||
+            lower.Contains("het han su dung") ||
+            lower.Contains("the het han") ||
+            lower.Contains("het han") ||
+            lower.Contains("vuot qua gioi han") ||
+            lower.Contains("qua so lan") ||
+            lower.Contains("khong du") ||
+            lower.Contains("so dien thoai sai") ||
+            lower.Contains("loi giao dich") ||
+            lower.Contains("loi he thong") ||
+            lower.Contains("failed") ||
+            lower.Contains("invalid") ||
             lower.Contains("error");
 
         private static string StripDiacritics(string text)
@@ -1075,18 +1078,18 @@ namespace LuckCheck
 
                 var record = new
                 {
-                    ts           = DateTime.UtcNow.ToString("o"),
-                    session_id   = session.SessionId,
+                    ts = DateTime.UtcNow.ToString("o"),
+                    session_id = session.SessionId,
                     transaction_id = session.TransactionId,
-                    gateway_id   = session.GatewayId,
-                    port         = session.PortName,
-                    sim_id       = session.SimId,
-                    msisdn       = session.SimMsisdn,
+                    gateway_id = session.GatewayId,
+                    port = session.PortName,
+                    sim_id = session.SimId,
+                    msisdn = session.SimMsisdn,
                     target_phone = session.TargetPhone,
-                    ussd_code    = session.UssdCode,
-                    pin_hash     = string.IsNullOrEmpty(session.PinCode) ? "" : HmacSha256Hex(session.PinCode, "audit-pin-mask"),
-                    result       = session.Status,
-                    message      = session.ResultMessage,
+                    ussd_code = session.UssdCode,
+                    pin_hash = string.IsNullOrEmpty(session.PinCode) ? "" : HmacSha256Hex(session.PinCode, "audit-pin-mask"),
+                    result = session.Status,
+                    message = session.ResultMessage,
                     submitted_at = session.SubmittedAt.ToString("o"),
                     completed_at = session.CompletedAt?.ToString("o"),
                     conversation = conversation

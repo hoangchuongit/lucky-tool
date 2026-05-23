@@ -24,23 +24,23 @@ namespace LuckCheck
         private SplitContainer _mainSplit;
 
         // Header + log
-        private LabelControl  _lblSimHeader;
-        private RichTextBox   _rtbUssdLog;
+        private LabelControl _lblSimHeader;
+        private RichTextBox _rtbUssdLog;
 
         // "Phản hồi USSD" group
-        private GroupControl  _grpUssd;
-        private SimpleButton  _btnU1, _btnU2, _btnU3, _btnU0, _btnUCancel;
-        private TextEdit      _txtUssdReply;
-        private SimpleButton  _btnUssdSend;
+        private GroupControl _grpUssd;
+        private SimpleButton _btnU1, _btnU2, _btnU3, _btnU0, _btnUCancel;
+        private TextEdit _txtUssdReply;
+        private SimpleButton _btnUssdSend;
 
         // "Nạp thẻ" group
-        private GroupControl  _grpNapThe;
-        private TextEdit      _txtSoCan, _txtMaThe, _txtUssdTemplate;
-        private CheckEdit     _chkAutoMode;
-        private SimpleButton  _btnBatDauNap;
+        private GroupControl _grpNapThe;
+        private TextEdit _txtSoCan, _txtMaThe, _txtUssdTemplate;
+        private CheckEdit _chkAutoMode;
+        private SimpleButton _btnBatDauNap;
 
         // Stats bar
-        private LabelControl  _lblStats;
+        private LabelControl _lblStats;
 
         // ──────────────────── Layout setup (called from InitializeControls) ────────────────────
 
@@ -51,19 +51,16 @@ namespace LuckCheck
 
             _mainSplit = new SplitContainer
             {
-                Orientation   = Orientation.Vertical,
-                Dock          = DockStyle.Fill,
+                Orientation = Orientation.Vertical,
+                Dock = DockStyle.Fill,
                 SplitterWidth = 4,
-                Panel1MinSize = 300,
-                Panel2MinSize = 200,
             };
-            // Đặt SplitterDistance sau khi handle tạo xong (tránh InvalidOperationException)
-            _mainSplit.HandleCreated += (s, e) =>
-            {
-                int dist = (int)(_mainSplit.Width * 0.70);
-                if (dist > _mainSplit.Panel1MinSize && dist < _mainSplit.Width - _mainSplit.Panel2MinSize)
-                    _mainSplit.SplitterDistance = dist;
-            };
+
+            // Không set Panel1MinSize / Panel2MinSize trong object initializer.
+            // Lúc Form mới khởi tạo Width có thể còn rất nhỏ, set MinSize/SplitterDistance sớm
+            // sẽ gây lỗi: "SplitterDistance must be between Panel1MinSize and Width - Panel2MinSize".
+            _mainSplit.HandleCreated += (s, e) => BeginInvoke(new Action(ApplySafeMainSplitLayout));
+            _mainSplit.SizeChanged += (s, e) => ApplySafeMainSplitLayout();
 
             _mainSplit.Panel1.Controls.Add(gcCOM);
             gcCOM.Dock = DockStyle.Fill;
@@ -78,6 +75,41 @@ namespace LuckCheck
             SetupGridEnhancements();
         }
 
+        private void ApplySafeMainSplitLayout()
+        {
+            if (_mainSplit == null || _mainSplit.IsDisposed) return;
+
+            int width = _mainSplit.ClientSize.Width;
+            if (width <= 0) return;
+
+            // Chọn min-size theo width hiện tại để không vượt quá kích thước control.
+            int desiredPanel1Min = 300;
+            int desiredPanel2Min = 200;
+            int totalMin = desiredPanel1Min + desiredPanel2Min + _mainSplit.SplitterWidth;
+
+            if (width > totalMin)
+            {
+                _mainSplit.Panel1MinSize = desiredPanel1Min;
+                _mainSplit.Panel2MinSize = desiredPanel2Min;
+            }
+            else
+            {
+                int safeMin = Math.Max(25, (width - _mainSplit.SplitterWidth) / 4);
+                _mainSplit.Panel1MinSize = safeMin;
+                _mainSplit.Panel2MinSize = safeMin;
+            }
+
+            int minDistance = _mainSplit.Panel1MinSize;
+            int maxDistance = width - _mainSplit.Panel2MinSize - _mainSplit.SplitterWidth;
+            if (maxDistance < minDistance) return;
+
+            int desiredDistance = (int)(width * 0.70);
+            int safeDistance = Math.Max(minDistance, Math.Min(desiredDistance, maxDistance));
+
+            if (_mainSplit.SplitterDistance != safeDistance)
+                _mainSplit.SplitterDistance = safeDistance;
+        }
+
         // ──────────────────── Right panel ────────────────────
 
         private void BuildRightPanel(SplitterPanel container)
@@ -87,34 +119,34 @@ namespace LuckCheck
             // ── Header ──
             _lblSimHeader = new LabelControl
             {
-                Dock    = DockStyle.Top,
-                Height  = 28,
-                Text    = "─  Chọn một SIM để xem hội thoại USSD  ─",
+                Dock = DockStyle.Top,
+                Height = 28,
+                Text = "─  Chọn một SIM để xem hội thoại USSD  ─",
                 AutoSizeMode = LabelAutoSizeMode.None,
             };
             _lblSimHeader.Appearance.TextOptions.HAlignment = HorzAlignment.Center;
-            _lblSimHeader.Appearance.Font    = new Font("Verdana", 8.5f, FontStyle.Bold);
+            _lblSimHeader.Appearance.Font = new Font("Verdana", 8.5f, FontStyle.Bold);
             _lblSimHeader.Appearance.BackColor = Color.FromArgb(41, 128, 185);
             _lblSimHeader.Appearance.ForeColor = Color.White;
             _lblSimHeader.Appearance.Options.UseBackColor = true;
             _lblSimHeader.Appearance.Options.UseForeColor = true;
-            _lblSimHeader.Appearance.Options.UseFont      = true;
+            _lblSimHeader.Appearance.Options.UseFont = true;
 
             // ── Stats bar ──
             _lblStats = new LabelControl
             {
-                Dock    = DockStyle.Bottom,
-                Height  = 20,
-                Text    = "Tổng: 0  |  Rảnh: 0  |  Bận: 0  |  Offline: 0",
+                Dock = DockStyle.Bottom,
+                Height = 20,
+                Text = "Tổng: 0  |  Rảnh: 0  |  Bận: 0  |  Offline: 0",
                 AutoSizeMode = LabelAutoSizeMode.None,
             };
             _lblStats.Appearance.TextOptions.HAlignment = HorzAlignment.Center;
-            _lblStats.Appearance.Font      = new Font("Verdana", 7.5f);
+            _lblStats.Appearance.Font = new Font("Verdana", 7.5f);
             _lblStats.Appearance.BackColor = Color.FromArgb(44, 62, 80);
             _lblStats.Appearance.ForeColor = Color.White;
             _lblStats.Appearance.Options.UseBackColor = true;
             _lblStats.Appearance.Options.UseForeColor = true;
-            _lblStats.Appearance.Options.UseFont      = true;
+            _lblStats.Appearance.Options.UseFont = true;
 
             // ── "Nạp thẻ" group (bottom fixed) ──
             _grpNapThe = BuildNapTheGroup();
@@ -125,13 +157,13 @@ namespace LuckCheck
             // ── Conversation log (fills remaining height) ──
             _rtbUssdLog = new RichTextBox
             {
-                Dock        = DockStyle.Fill,
-                ReadOnly    = true,
-                BackColor   = Color.FromArgb(25, 25, 25),
-                ForeColor   = Color.FromArgb(0, 210, 80),
-                Font        = new Font("Consolas", 9f),
-                ScrollBars  = RichTextBoxScrollBars.Vertical,
-                WordWrap    = true,
+                Dock = DockStyle.Fill,
+                ReadOnly = true,
+                BackColor = Color.FromArgb(25, 25, 25),
+                ForeColor = Color.FromArgb(0, 210, 80),
+                Font = new Font("Consolas", 9f),
+                ScrollBars = RichTextBoxScrollBars.Vertical,
+                WordWrap = true,
                 BorderStyle = BorderStyle.None,
             };
 
@@ -150,30 +182,30 @@ namespace LuckCheck
         {
             var grp = new GroupControl
             {
-                Text   = "Phản hồi USSD",
-                Dock   = DockStyle.Bottom,
+                Text = "Phản hồi USSD",
+                Dock = DockStyle.Bottom,
                 Height = 82,
             };
 
             // Row 1: quick buttons
             var rowBtns = new Panel { Dock = DockStyle.Top, Height = 30, Padding = new Padding(2) };
 
-            _btnU1      = MakeQuickBtn("1",   Color.FromArgb(39, 174, 96));
-            _btnU2      = MakeQuickBtn("2",   Color.FromArgb(41, 128, 185));
-            _btnU3      = MakeQuickBtn("3",   Color.FromArgb(142, 68, 173));
-            _btnU0      = MakeQuickBtn("0",   Color.FromArgb(127, 140, 141));
+            _btnU1 = MakeQuickBtn("1", Color.FromArgb(39, 174, 96));
+            _btnU2 = MakeQuickBtn("2", Color.FromArgb(41, 128, 185));
+            _btnU3 = MakeQuickBtn("3", Color.FromArgb(142, 68, 173));
+            _btnU0 = MakeQuickBtn("0", Color.FromArgb(127, 140, 141));
             _btnUCancel = MakeQuickBtn("Huỷ", Color.FromArgb(192, 57, 43));
 
-            _btnU1.Dock = DockStyle.Left;  _btnU1.Width = 36;
-            _btnU2.Dock = DockStyle.Left;  _btnU2.Width = 36;
-            _btnU3.Dock = DockStyle.Left;  _btnU3.Width = 36;
-            _btnU0.Dock = DockStyle.Left;  _btnU0.Width = 36;
+            _btnU1.Dock = DockStyle.Left; _btnU1.Width = 36;
+            _btnU2.Dock = DockStyle.Left; _btnU2.Width = 36;
+            _btnU3.Dock = DockStyle.Left; _btnU3.Width = 36;
+            _btnU0.Dock = DockStyle.Left; _btnU0.Width = 36;
             _btnUCancel.Dock = DockStyle.Right; _btnUCancel.Width = 54;
 
-            _btnU1.Click      += (s, e) => OnUssdQuickBtn("1");
-            _btnU2.Click      += (s, e) => OnUssdQuickBtn("2");
-            _btnU3.Click      += (s, e) => OnUssdQuickBtn("3");
-            _btnU0.Click      += (s, e) => OnUssdQuickBtn("0");
+            _btnU1.Click += (s, e) => OnUssdQuickBtn("1");
+            _btnU2.Click += (s, e) => OnUssdQuickBtn("2");
+            _btnU3.Click += (s, e) => OnUssdQuickBtn("3");
+            _btnU0.Click += (s, e) => OnUssdQuickBtn("0");
             _btnUCancel.Click += BtnUssdCancel_Click;
 
             // Add in order: Right-docked first, then Left-docked in reverse
@@ -192,8 +224,8 @@ namespace LuckCheck
 
             _btnUssdSend = new SimpleButton
             {
-                Text  = "Gửi",
-                Dock  = DockStyle.Right,
+                Text = "Gửi",
+                Dock = DockStyle.Right,
                 Width = 52,
             };
             _btnUssdSend.Appearance.BackColor = Color.FromArgb(39, 174, 96);
@@ -214,31 +246,31 @@ namespace LuckCheck
         {
             var grp = new GroupControl
             {
-                Text   = "Nạp thẻ tự động",
-                Dock   = DockStyle.Bottom,
+                Text = "Nạp thẻ tự động",
+                Dock = DockStyle.Bottom,
                 Height = 150,
             };
 
             var tbl = new TableLayoutPanel
             {
-                Dock        = DockStyle.Fill,
-                RowCount    = 5,
+                Dock = DockStyle.Fill,
+                RowCount = 5,
                 ColumnCount = 2,
-                Padding     = new Padding(2),
+                Padding = new Padding(2),
             };
             tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 72));
             tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
             for (int i = 0; i < 5; i++)
                 tbl.RowStyles.Add(new RowStyle(SizeType.Percent, 20));
 
-            _txtSoCan       = new TextEdit(); _txtSoCan.Properties.NullValuePrompt       = "Số cần nạp...";
-            _txtMaThe       = new TextEdit(); _txtMaThe.Properties.NullValuePrompt        = "Mã thẻ cào...";
-            _txtUssdTemplate = new TextEdit(); _txtUssdTemplate.Text                      = "*103*{PIN}#";
+            _txtSoCan = new TextEdit(); _txtSoCan.Properties.NullValuePrompt = "Số cần nạp...";
+            _txtMaThe = new TextEdit(); _txtMaThe.Properties.NullValuePrompt = "Mã thẻ cào...";
+            _txtUssdTemplate = new TextEdit(); _txtUssdTemplate.Text = "*103*{PIN}#";
             _txtUssdTemplate.Properties.NullValuePrompt = "*103*{PIN}#";
 
-            AddTableRow(tbl, 0, "Số nạp:",  _txtSoCan);
-            AddTableRow(tbl, 1, "Mã thẻ:",  _txtMaThe);
-            AddTableRow(tbl, 2, "USSD:",    _txtUssdTemplate);
+            AddTableRow(tbl, 0, "Số nạp:", _txtSoCan);
+            AddTableRow(tbl, 1, "Mã thẻ:", _txtMaThe);
+            AddTableRow(tbl, 2, "USSD:", _txtUssdTemplate);
 
             _chkAutoMode = new CheckEdit { Text = "Chế độ tự động (state machine tự xử lý)", Checked = true };
             _chkAutoMode.Dock = DockStyle.Fill;
@@ -247,9 +279,9 @@ namespace LuckCheck
 
             _btnBatDauNap = new SimpleButton
             {
-                Text  = "BẮT ĐẦU NẠP THẺ",
-                Dock  = DockStyle.Fill,
-                Font  = new Font("Verdana", 8.5f, FontStyle.Bold),
+                Text = "BẮT ĐẦU NẠP THẺ",
+                Dock = DockStyle.Fill,
+                Font = new Font("Verdana", 8.5f, FontStyle.Bold),
             };
             _btnBatDauNap.Appearance.BackColor = Color.FromArgb(52, 152, 219);
             _btnBatDauNap.Appearance.ForeColor = Color.White;
@@ -267,8 +299,8 @@ namespace LuckCheck
         {
             var lbl = new LabelControl
             {
-                Text         = label,
-                Dock         = DockStyle.Fill,
+                Text = label,
+                Dock = DockStyle.Fill,
                 AutoSizeMode = LabelAutoSizeMode.None,
             };
             lbl.Appearance.TextOptions.HAlignment = HorzAlignment.Far;
@@ -282,10 +314,10 @@ namespace LuckCheck
             var btn = new SimpleButton { Text = text };
             btn.Appearance.BackColor = backColor;
             btn.Appearance.ForeColor = Color.White;
-            btn.Appearance.Font      = new Font("Verdana", 8f, FontStyle.Bold);
+            btn.Appearance.Font = new Font("Verdana", 8f, FontStyle.Bold);
             btn.Appearance.Options.UseBackColor = true;
             btn.Appearance.Options.UseForeColor = true;
-            btn.Appearance.Options.UseFont      = true;
+            btn.Appearance.Options.UseFont = true;
             return btn;
         }
 
@@ -296,10 +328,10 @@ namespace LuckCheck
             // Cột "Trạng thái" dựa trên StatusText property của ComDto
             var colStatus = new GridColumn
             {
-                FieldName    = "StatusText",
-                Caption      = "TT",
-                Name         = "colStatusText",
-                Width        = 58,
+                FieldName = "StatusText",
+                Caption = "TT",
+                Name = "colStatusText",
+                Width = 58,
                 VisibleIndex = 0,   // đặt trước cột COM
             };
             colStatus.OptionsColumn.AllowEdit = false;
@@ -309,7 +341,7 @@ namespace LuckCheck
             GridViewCOM.Columns.Add(colStatus);
 
             // Row coloring
-            GridViewCOM.RowStyle         += GridViewCOM_RowStyle;
+            GridViewCOM.RowStyle += GridViewCOM_RowStyle;
             GridViewCOM.FocusedRowChanged += GridViewCOM_FocusedRowChanged;
         }
 
@@ -385,7 +417,7 @@ namespace LuckCheck
         {
             if (InvokeRequired) { BeginInvoke(new Action(() => UpdateSimHeader(dto))); return; }
 
-            string phone  = string.IsNullOrEmpty(dto.PhoneNumber) ? "—" : dto.PhoneNumber;
+            string phone = string.IsNullOrEmpty(dto.PhoneNumber) ? "—" : dto.PhoneNumber;
             string status = dto.StatusText;
 
             // Hiển thị step hiện tại nếu có session đang chạy
@@ -400,9 +432,9 @@ namespace LuckCheck
             _lblSimHeader.Text = $"{dto.COM}   {phone}   [{status}]{stepInfo}";
 
             _lblSimHeader.Appearance.BackColor =
-                dto.IsDisabled                           ? Color.FromArgb(192,  57,  43)  // red   (vô hiệu)
-                : dto.IsBusy                             ? Color.FromArgb( 41, 128, 185)  // blue  (bận)
-                : !string.IsNullOrEmpty(dto.PhoneNumber) ? Color.FromArgb( 39, 174,  96)  // green (rảnh)
+                dto.IsDisabled ? Color.FromArgb(192, 57, 43)  // red   (vô hiệu)
+                : dto.IsBusy ? Color.FromArgb(41, 128, 185)  // blue  (bận)
+                : !string.IsNullOrEmpty(dto.PhoneNumber) ? Color.FromArgb(39, 174, 96)  // green (rảnh)
                 : Color.FromArgb(100, 100, 100);                                           // gray  (offline)
             _lblSimHeader.Appearance.Options.UseBackColor = true;
 
@@ -414,12 +446,12 @@ namespace LuckCheck
         {
             switch (step)
             {
-                case UssdStep.AwaitingMenu:       return "Chờ menu...";
+                case UssdStep.AwaitingMenu: return "Chờ menu...";
                 case UssdStep.AwaitingPhoneInput: return "Nhập số ĐT...";
-                case UssdStep.AwaitingPinInput:   return "Nhập mã thẻ...";
-                case UssdStep.AwaitingConfirm:    return "Chờ xác nhận...";
-                case UssdStep.AwaitingResult:     return "Chờ kết quả...";
-                default:                          return "";
+                case UssdStep.AwaitingPinInput: return "Nhập mã thẻ...";
+                case UssdStep.AwaitingConfirm: return "Chờ xác nhận...";
+                case UssdStep.AwaitingResult: return "Chờ kết quả...";
+                default: return "";
             }
         }
 
@@ -431,7 +463,7 @@ namespace LuckCheck
             if (InvokeRequired) { BeginInvoke(new Action(() => UpdateNapTheButtonState(portName, isBusy))); return; }
 
             _btnBatDauNap.Enabled = !isBusy;
-            _btnBatDauNap.Text    = isBusy ? "ĐANG NẠP THẺ..." : "BẮT ĐẦU NẠP THẺ";
+            _btnBatDauNap.Text = isBusy ? "ĐANG NẠP THẺ..." : "BẮT ĐẦU NẠP THẺ";
         }
 
         // ──────────────────── Stats bar ────────────────────
@@ -500,7 +532,7 @@ namespace LuckCheck
             if (!_comDtoMap.TryGetValue(_selectedPortName, out var dto))
                 return;
 
-            string maThe    = _txtMaThe.Text.Trim();
+            string maThe = _txtMaThe.Text.Trim();
             string template = _txtUssdTemplate.Text.Trim();
 
             if (string.IsNullOrEmpty(maThe) || string.IsNullOrEmpty(template))
@@ -518,14 +550,14 @@ namespace LuckCheck
             }
 
             string ussdCode = template.Replace("{PIN}", maThe);
-            bool   isManual = !_chkAutoMode.Checked;
+            bool isManual = !_chkAutoMode.Checked;
 
             // Che PIN trong confirmation: chỉ hiện 4 số cuối
             string maskedPin = maThe.Length > 4
                 ? new string('*', maThe.Length - 4) + maThe.Substring(maThe.Length - 4)
                 : new string('*', maThe.Length);
-            string soNap  = string.IsNullOrEmpty(_txtSoCan.Text.Trim()) ? dto.PhoneNumber : _txtSoCan.Text.Trim();
-            string mode   = isManual ? "THỦ CÔNG (bạn tự bấm)" : "TỰ ĐỘNG (state machine)";
+            string soNap = string.IsNullOrEmpty(_txtSoCan.Text.Trim()) ? dto.PhoneNumber : _txtSoCan.Text.Trim();
+            string mode = isManual ? "THỦ CÔNG (bạn tự bấm)" : "TỰ ĐỘNG (state machine)";
 
             string confirmMsg =
                 $"SIM:       {dto.COM}  ({dto.PhoneNumber})\n" +
@@ -547,10 +579,10 @@ namespace LuckCheck
 
             var req = new UssdSendRequest
             {
-                SimId       = dto.ICCID,
-                Msisdn      = dto.PhoneNumber,
-                GatewayId   = GatewayId,
-                UssdCode    = ussdCode,
+                SimId = dto.ICCID,
+                Msisdn = dto.PhoneNumber,
+                GatewayId = GatewayId,
+                UssdCode = ussdCode,
                 PhoneNumber = _txtSoCan.Text.Trim(),
                 TimeoutSecs = 60,
             };
