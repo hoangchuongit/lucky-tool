@@ -1,0 +1,42 @@
+name: Build LuckCheck
+
+on:
+  push:
+    branches: [ master, feat/topup ]
+  workflow_dispatch:   # cho phép chạy thủ công từ GitHub UI
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v2
+
+      - name: Restore NuGet packages
+        run: nuget restore LuckTools.sln
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build Release
+        run: |
+          msbuild LuckCheck\LuckCheck.csproj `
+            /p:Configuration=Release `
+            /p:Platform=x64 `
+            /p:DeployOnBuild=false `
+            /m /nologo /verbosity:minimal
+
+      - name: Copy secrets template into output
+        run: |
+          copy LuckCheck\secrets.config.example LuckCheck\bin\Release\secrets.config.example
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: LuckCheck-Release
+          path: LuckCheck\bin\Release\
+          retention-days: 30
