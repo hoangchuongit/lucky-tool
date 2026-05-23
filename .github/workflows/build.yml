@@ -26,7 +26,7 @@ jobs:
         run: |
           msbuild LuckCheck\LuckCheck.csproj `
             /p:Configuration=Release `
-            /p:Platform=x64 `
+            /p:Platform=AnyCPU `
             /p:DeployOnBuild=false `
             /m /nologo /verbosity:minimal
 
