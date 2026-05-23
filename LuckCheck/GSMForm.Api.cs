@@ -348,10 +348,9 @@ namespace LuckCheck
                         logger.Error($"[{comDto.COM}] PinCrypto.Decrypt failed: {ex.Message}");
                         throw new InvalidOperationException("PIN decryption failed — wrong key or tampered data.");
                     }
-                    string template = !string.IsNullOrEmpty(req.UssdTemplate) ? req.UssdTemplate : "*103*{PIN}#";
-                    if (!template.Contains("{PIN}"))
-                        throw new InvalidOperationException("ussd_template must contain {PIN} placeholder.");
-                    ussdCode = template.Replace("{PIN}", pinCode);
+                    string template = !string.IsNullOrEmpty(req.UssdTemplate) ? req.UssdTemplate : "*103#";
+                    // {PIN} trong template là tuỳ chọn — nếu không có thì PIN được gửi từng bước qua state machine
+                    ussdCode = template.Contains("{PIN}") ? template.Replace("{PIN}", pinCode) : template;
                 }
                 else if (!string.IsNullOrEmpty(req.UssdCode))
                 {
