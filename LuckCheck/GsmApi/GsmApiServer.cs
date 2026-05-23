@@ -155,7 +155,7 @@ namespace LuckCheck.GsmApi
         private readonly IGsmController _controller;
         private readonly string         _sharedSecret;
 
-        /// <param name="prefix">HttpListener prefix, e.g. "http://localhost:8080/"</param>
+        /// <param name="prefix">HttpListener prefix, e.g. "http://localhost:8000/"</param>
         /// <param name="sharedSecret">HMAC secret for X-Signature. Empty = auth disabled (dev only).</param>
         public GsmApiServer(string prefix, IGsmController controller, string sharedSecret = null)
         {

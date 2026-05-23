@@ -9,7 +9,7 @@ namespace LuckCheck.GsmApi
     {
         private static volatile string _cachedJson;
 
-        public static string GetOpenApiJson(string serverUrl = "http://localhost:8080")
+        public static string GetOpenApiJson(string serverUrl = "http://localhost:8000")
         {
             if (_cachedJson != null) return _cachedJson;
 

@@ -363,3 +363,12 @@ MigrationBackup/
 FodyWeavers.xsd
 **/env/
 **/.env/
+
+# Secrets — không bao giờ commit file này
+**/secrets.config
+
+# SQLite database và audit log sinh ra lúc chạy
+**/gsm_store.db
+**/gsm_store.db-wal
+**/gsm_store.db-shm
+**/logs/audit/

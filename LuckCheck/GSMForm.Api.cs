@@ -60,7 +60,7 @@ namespace LuckCheck
         {
             try
             {
-                int    port         = int.TryParse(ConfigurationManager.AppSettings["GsmApiPort"], out int p) ? p : 8080;
+                int    port         = int.TryParse(ConfigurationManager.AppSettings["GsmApiPort"], out int p) ? p : 8000;
                 string sharedSecret = ConfigurationManager.AppSettings["ApiSharedSecret"] ?? "";
                 string bindHost     = ConfigurationManager.AppSettings["GsmApiBindHost"] ?? "localhost";
 
