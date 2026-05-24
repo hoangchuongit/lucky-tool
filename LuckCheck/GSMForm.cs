@@ -20,6 +20,7 @@ namespace LuckCheck
     public partial class GSMForm : XtraForm
     {
         private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _modemLog = NLog.LogManager.GetLogger("ModemRaw");
         private readonly List<SerialPort> SerialPorts = new List<SerialPort>();
         private BindingList<ComDto> ComDataGrid { get; set; } = new BindingList<ComDto>();
         private readonly ConcurrentDictionary<string, string> MessageCOMs = new ConcurrentDictionary<string, string>();
@@ -513,14 +514,15 @@ namespace LuckCheck
 
             if (bytesRead <= 0) return;
 
+            string rawChunk = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+
+            // Ghi raw data TRƯỚC khi xử lý — capture tất cả message từ nhà mạng/modem
+            _modemLog.Debug($"[{sp.PortName}]← {rawChunk.Replace("\r", "\\r").Replace("\n", "\\n")}");
+
             lock (_portLocks[sp.PortName])
             {
-                MessageCOMs[sp.PortName] += Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                MessageCOMs[sp.PortName] += rawChunk;
             }
-
-#if DEBUG
-            Console.WriteLine($"{sp.PortName} --- {MessageCOMs[sp.PortName]}");
-#endif
 
             if (_portQueues.TryGetValue(sp.PortName, out var queue))
                 queue.TryAdd(1);
